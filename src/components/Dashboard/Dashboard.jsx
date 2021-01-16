@@ -62,8 +62,8 @@ const Dashboard = props => {
     const allBookings = await bookingService.getBookings(dateObj);
     if (allBookings.length > 0) {
       setAllBookings(allBookings);
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   const setDateObj = (dateObj, date) => {

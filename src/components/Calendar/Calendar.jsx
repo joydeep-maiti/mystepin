@@ -5,7 +5,9 @@ import CalendarBody from "./CalendarBody";
 import utils from "./../../utils/utils";
 import moment from "moment";
 
+
 import "./Calendar.scss";
+
 
 const Calendar = props => {
   const {
@@ -13,12 +15,16 @@ const Calendar = props => {
     allRooms,
     loading,
     currentDateObj: dateObj,
-    currentDate
+    currentDate,
+    view
   } = props;
 
   const [title, setTitle] = useState("");
   const [rows, setRows] = useState([]);
+
+
   let tempRows = [];
+  
 
   useEffect(() => {
     const title = getTitle(currentDate);
@@ -29,10 +35,18 @@ const Calendar = props => {
   }, []);
 
   useEffect(() => {
+    const title = getTitle(currentDate);
+    setTitle(title);
+    props.onLoading(true);
+    props.setBookings(dateObj);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view]);
+
+  useEffect(() => {
     if (allBookings.length > 0) showBookings(dateObj, allBookings, allRooms);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allBookings]);
+  }, [allBookings,view]);
 
   useEffect(() => {
     if (allRooms.length > 0) {
@@ -41,12 +55,13 @@ const Calendar = props => {
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allRooms, dateObj]);
+  }, [allRooms, dateObj,view]);
 
   useEffect(() => {
     const title = getTitle(currentDate);
     setTitle(title);
   }, [currentDate]);
+
 
   const showBookings = (dateObj, bookings, allRooms) => {
     tempRows = getTableRows(allRooms, dateObj);
@@ -89,16 +104,28 @@ const Calendar = props => {
 
   const updateRowObjByDate = (dates, rowIndex, booking, color) => {
     const rowsArray = [...tempRows];
-
-    dates.forEach(date => {
-      const dateNumber = moment(date).date();
-      rowsArray[rowIndex] = [...rowsArray[rowIndex]];
-      rowsArray[rowIndex][dateNumber] = {
-        ...rowsArray[rowIndex][dateNumber],
-        booking,
-        color
-      };
-    });
+    if(view === "day"){
+      dates.forEach(date => {
+        const dateNumber = moment(date).date();
+        rowsArray[0] = [...rowsArray[0]];
+        rowsArray[0][4] = {
+          ...rowsArray[0][4],
+          booking,
+          color
+        };
+      });
+    }else{
+      dates.forEach(date => {
+        const dateNumber = moment(date).date();
+        rowsArray[rowIndex] = [...rowsArray[rowIndex]];
+        rowsArray[rowIndex][dateNumber] = {
+          ...rowsArray[rowIndex][dateNumber],
+          booking,
+          color
+        };
+      });
+    }
+    
 
     tempRows = [...rowsArray];
   };
@@ -109,14 +136,40 @@ const Calendar = props => {
       .toUpperCase()} ${moment(date).year()}`;
 
   const getTableRows = (allRooms, dateObj) => {
-    let rows = new Array(allRooms.length).fill();
-    rows.forEach((row, index) => {
-      rows[index] = new Array(dateObj.days + 1).fill({
-        room: { ...allRooms[index] },
-        handleRedirect: handleRedirect
+    let rows = []
+    if(view==="day"){
+      let len = Math.floor(allRooms.length/10);
+      let rem = allRooms.length%10;
+      len = len +1
+      rows = new Array(len).fill();
+      let roomIndex = 0
+      rows.forEach((row, index) => {
+        for (let i = 0; i < 10; i++) {
+          if(roomIndex === allRooms.length){
+            break
+          }
+          if(i===0){
+            rows[index] = index===len-1?new Array(rem).fill():new Array(10).fill()
+          }
+          rows[index][i] = {
+            room: { ...allRooms[roomIndex] },
+            handleRedirect: handleRedirect,
+            show: false
+          }
+          roomIndex++
+        }
       });
-      rows[index][0] = { room: { ...allRooms[index] }, show: true };
-    });
+    }else {
+      rows = new Array(allRooms.length).fill();
+      rows.forEach((row, index) => {
+        rows[index] = new Array(dateObj.days + 1).fill({
+          room: { ...allRooms[index] },
+          handleRedirect: handleRedirect
+        });
+        rows[index][0] = { room: { ...allRooms[index] }, show: true };
+      });
+    }
+    console.log("rows",rows)
 
     return rows;
   };
@@ -151,6 +204,7 @@ const Calendar = props => {
   };
 
   const handleRedirect = (bookingObj, roomObj, date) => {
+    console.log("bookingObj, roomObj, date",bookingObj, roomObj, date)
     props.onFormRedirect(bookingObj, roomObj, date);
   };
 
@@ -170,12 +224,14 @@ const Calendar = props => {
         title={title}
         onChange={handleChange}
         month={dateObj.month}
+        view={view}
       />
       <CalendarBody
         tableHeaders={getTableHeaders()}
         tableRows={rows}
         loading={loading}
         dateObj={dateObj}
+        view={view}
       />
       {/* {showModal && (
         <Dialog

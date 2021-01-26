@@ -51,13 +51,25 @@ const useStyles = makeStyles(theme => ({
     minWidth: 40,
     "&:last-child": {
       padding: 0
-    }
+    },
+    position:"relative"
+  },
+  roomPop: {
+    position:"absolute",
+    bottom:"6px",
+    fontWeight: 600
   }
 }));
 
-const CalendarBody = ({ tableHeaders, tableRows, loading, dateObj }) => {
+
+const CalendarBody = ({ tableHeaders, tableRows, loading, dateObj, view }) => {
   const [open] = React.useState(true);
   const classes = useStyles();
+
+  // console.log("tableHeaders",tableHeaders)
+  // console.log("tableRows",tableRows)
+  // console.log("loading",loading)
+  // console.log("dateObj",dateObj)
 
   return (
     <React.Fragment>
@@ -65,10 +77,10 @@ const CalendarBody = ({ tableHeaders, tableRows, loading, dateObj }) => {
       <Paper className={`${classes.root} hideSrollbar`}>
         <Table className={classes.root} stickyHeader>
           <TableHead>
-            <TableRow>{renderTableHead(tableHeaders, classes)}</TableRow>
+            {view!=="day" && <TableRow>{renderTableHead(tableHeaders, classes)}</TableRow>}
           </TableHead>
           <TableBody className={classes.tableBody}>
-            {renderTableRows(tableRows, classes, dateObj)}
+            {renderTableRows(tableRows, classes, dateObj,view)}
           </TableBody>
         </Table>
       </Paper>
@@ -90,23 +102,23 @@ const renderTableHead = (tableHeaders, classes) => {
   );
 };
 
-const renderTableRows = (tableRows, classes, dateObj) => {
+const renderTableRows = (tableRows, classes, dateObj, view) => {
   return (
     <React.Fragment>
       {tableRows.map((row, index) => (
         <TableRow key={`row_${index}`}>
-          {renderTableColumns(row, classes, dateObj)}
+          {renderTableColumns(row, classes, dateObj, view)}
         </TableRow>
       ))}
     </React.Fragment>
   );
 };
 
-const renderTableColumns = (row, classes, dateObj) => {
+const renderTableColumns = (row, classes, dateObj, view) => {
   return (
     <React.Fragment>
       {row.map((column, index) =>
-        getStandardCell(getArgObj(column, index, classes, dateObj))
+        getStandardCell(getArgObj(column, index, classes, dateObj,view))
       )}
     </React.Fragment>
   );
@@ -149,12 +161,20 @@ const getStandardCell = (...argument) => {
             }
           />
         </div>
+        {arg.view=="day" && <div className={arg.classes.roomPop}>
+          <Popover
+            content={arg.room.roomNumber}
+            popoverContent={
+              arg.room.roomNumber
+            }
+          />
+        </div>}
       </ButtonBase>
     </TableCell>
   );
 };
 
-const getArgObj = (column, index, classes, dateObj) => {
+const getArgObj = (column, index, classes, dateObj, view) => {
   let { show, room, booking, handleRedirect, color } = column;
   const currentDate = moment().date();
   const name = booking && getShortName(booking.firstName, booking.lastName);
@@ -167,12 +187,12 @@ const getArgObj = (column, index, classes, dateObj) => {
   let disable = false;
 
   if (month === currentMonth && year === currentYear) {
-    disable = index < currentDate ? true : false;
+    disable = index < currentDate && view!=="day"  ? true : false;
     handleRedirect =
-      index >= currentDate || booking ? handleRedirect : () => {};
+      index >= currentDate || booking || view==="day" ? handleRedirect : () => {};
   }
 
-  const date = new Date(`${dateObj.month + 1}/${index}/${dateObj.year}`);
+  const date = view==="day" ? new Date() : new Date(`${dateObj.month + 1}/${index}/${dateObj.year}`);
 
   if (show) return { key, value: room.roomNumber, classes };
   else
@@ -185,7 +205,8 @@ const getArgObj = (column, index, classes, dateObj) => {
       booking,
       classes,
       date,
-      room
+      room,
+      view
     };
 };
 

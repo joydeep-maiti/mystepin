@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import InputLabel from '@material-ui/core/InputLabel';
+import { makeStyles } from '@material-ui/core/styles';
 
 import Calendar from "./../Calendar/Calendar";
 import Navbar from "./../Navbar/Navbar";
@@ -17,6 +22,16 @@ import SnackBarContext from "./../../context/snackBarContext";
 import constants from "../../utils/constants";
 import utils from "../../utils/utils";
 import "./Dashboard.scss";
+
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: "20px 0 0 20px",
+    minWidth: 200,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
+}));
 
 const Dashboard = props => {
   const [allRooms, setAllRooms] = useState([]);
@@ -48,6 +63,12 @@ const Dashboard = props => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [view, setView] = React.useState('month');
+
+  const handleViewChange = (event) => {
+    setView(event.target.value);
+  };
+  const classes = useStyles();
 
   useEffect(() => {
     const getRooms = async () => {
@@ -212,6 +233,19 @@ const Dashboard = props => {
               path="/"
               exact
               render={props => (
+                <>
+                <FormControl className={classes.formControl}>
+                  <InputLabel id="demo-simple-select-label">View</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={view}
+                    onChange={handleViewChange}
+                  >
+                    <MenuItem value="day">Day</MenuItem>
+                    <MenuItem value="month">Month</MenuItem>
+                  </Select>
+                </FormControl>
                 <Calendar
                   allRooms={allRooms}
                   currentDate={currentDate}
@@ -223,7 +257,9 @@ const Dashboard = props => {
                   setBookings={setBookings}
                   setDateObj={setDateObj}
                   {...props}
+                  view={view}
                 />
+                </>
               )}
             />
             <Redirect to="/" />

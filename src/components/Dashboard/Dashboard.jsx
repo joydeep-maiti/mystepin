@@ -25,12 +25,16 @@ import "./Dashboard.scss";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
-    margin: "20px 0 0 20px",
+    marginTop: "20px",
     minWidth: 200,
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
+  selectDiv:{
+    display: "flex",
+    justifyContent: "center"
+  }
 }));
 
 const Dashboard = props => {
@@ -63,7 +67,7 @@ const Dashboard = props => {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
-  const [view, setView] = React.useState('month');
+  const [view, setView] = React.useState('day');
 
   const handleViewChange = (event) => {
     setView(event.target.value);
@@ -234,18 +238,20 @@ const Dashboard = props => {
               exact
               render={props => (
                 <>
-                <FormControl className={classes.formControl}>
-                  <InputLabel id="demo-simple-select-label">View</InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={view}
-                    onChange={handleViewChange}
-                  >
-                    <MenuItem value="day">Day</MenuItem>
-                    <MenuItem value="month">Month</MenuItem>
-                  </Select>
-                </FormControl>
+                <div className={classes.selectDiv}>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel id="demo-simple-select-label">View</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={view}
+                      onChange={handleViewChange}
+                    >
+                      <MenuItem value="day">Day</MenuItem>
+                      <MenuItem value="month">Month</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
                 <Calendar
                   allRooms={allRooms}
                   currentDate={currentDate}

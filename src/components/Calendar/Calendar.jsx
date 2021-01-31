@@ -95,24 +95,43 @@ const Calendar = props => {
     booking,
     color
   ) => {
-    const rowIndex = tempRows.findIndex(
-      row => row[0].room.roomNumber === roomNumber
-    );
+    let rowIndex = null
+    
+    if(view === "day"){
+      tempRows.forEach((rows,i)=>{
+        let subindex = rows.findIndex(
+          row => row.room.roomNumber === roomNumber
+        )
+        if(subindex !== -1){
+          // console.log("subindex",subindex,i)
+          rowIndex = (i*10)+subindex
+        }
+      })
+
+    }else {
+      rowIndex = tempRows.findIndex(
+        row => row[0].room.roomNumber === roomNumber
+      );
+    }
     const dates = utils.daysBetweenDates(checkIn, checkOut);
     updateRowObjByDate(dates, rowIndex, booking, color);
   };
 
   const updateRowObjByDate = (dates, rowIndex, booking, color) => {
     const rowsArray = [...tempRows];
+    // console.log("dates, rowIndex, booking",dates, rowIndex, booking)
     if(view === "day"){
+      console.log(dates,currentDate)
       dates.forEach(date => {
-        const dateNumber = moment(date).date();
-        rowsArray[0] = [...rowsArray[0]];
-        rowsArray[0][4] = {
-          ...rowsArray[0][4],
-          booking,
-          color
-        };
+        if(moment(date).date() === moment(currentDate).date()){
+          const dateNumber = moment(date).date();
+          rowsArray[Math.floor(rowIndex/10)] = [...rowsArray[Math.floor(rowIndex/10)]];
+          rowsArray[Math.floor(rowIndex/10)][rowIndex%10] = {
+            ...rowsArray[Math.floor(rowIndex/10)][rowIndex%10],
+            booking,
+            color
+          };
+        }
       });
     }else{
       dates.forEach(date => {
@@ -137,7 +156,7 @@ const Calendar = props => {
 
   const getTableRows = (allRooms, dateObj) => {
     let rows = []
-    if(view==="day"){
+    if(view === "day"){
       let len = Math.floor(allRooms.length/10);
       let rem = allRooms.length%10;
       len = len +1
@@ -169,7 +188,7 @@ const Calendar = props => {
         rows[index][0] = { room: { ...allRooms[index] }, show: true };
       });
     }
-    console.log("rows",rows)
+    // console.log("rows",rows)
 
     return rows;
   };
@@ -204,7 +223,7 @@ const Calendar = props => {
   };
 
   const handleRedirect = (bookingObj, roomObj, date) => {
-    console.log("bookingObj, roomObj, date",bookingObj, roomObj, date)
+    // console.log("bookingObj, roomObj, date",bookingObj, roomObj, date)
     props.onFormRedirect(bookingObj, roomObj, date);
   };
 

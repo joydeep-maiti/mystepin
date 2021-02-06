@@ -23,15 +23,25 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const CalendarHeader = ({ title, onChange, month }) => {
+const CalendarHeader = ({ title, onChange, month, currentDate, view }) => {
   const classes = useStyles();
+
+  const [disable, setDisable] = React.useState(true)
+
+  React.useEffect(()=>{
+    if(view === "day"){
+      setDisable(moment(currentDate).isSame(new Date(),'d'))
+      return
+    }
+    setDisable(moment().month() === month)
+  },[ currentDate, month, view])
 
   return (
     <div className={classes.root}>
       <AppBar position="static" className={classes.appBar}>
         <Toolbar variant="dense" className={classes.toolbar}>
           <IconButton
-            disabled={moment().month() === month}
+            disabled={disable}
             edge="start"
             color="inherit"
             onClick={() => onChange(-1)}

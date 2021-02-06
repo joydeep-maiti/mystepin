@@ -36,7 +36,7 @@ const HeaderNavbar = ({
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
             <div onClick={onRedirectFromNavbar} className={classes.stepIn}>
-              STEPIN
+              StepInn
             </div>
           </Typography>
           <Button
@@ -44,7 +44,7 @@ const HeaderNavbar = ({
             color="inherit"
             onClick={() => showTaxes()}
           >
-            Taxes
+            Configuration
           </Button>
           {path === "/" && (
             <React.Fragment>

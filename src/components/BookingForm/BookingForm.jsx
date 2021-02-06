@@ -105,6 +105,14 @@ const BookingForm = props => {
         {FormUtils.renderInput(
           getInputArgObj("lastName", "Last Name", "text", shouldDisable)
         )}
+        {FormUtils.renderInput(
+          getInputArgObj(
+            "contactNumber",
+            "Contact Number",
+            "number",
+            shouldDisable
+          )
+        )}
       </div>
       <div className="form-group">
         {FormUtils.renderInput(
@@ -140,22 +148,13 @@ const BookingForm = props => {
             )
           )}
         </div>
-      </div>
-      <div className="form-group">
         {FormUtils.renderInput(
           getInputArgObj("adults", "Adults", "number", shouldDisable)
         )}
         {FormUtils.renderInput(
           getInputArgObj("children", "Children", "number", shouldDisable)
         )}
-        {FormUtils.renderInput(
-          getInputArgObj(
-            "contactNumber",
-            "Contact Number",
-            "number",
-            shouldDisable
-          )
-        )}
+        
       </div>
       <div className="form-group">
         {FormUtils.renderInput(

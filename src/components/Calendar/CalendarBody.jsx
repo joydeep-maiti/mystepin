@@ -62,7 +62,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const CalendarBody = ({ tableHeaders, tableRows, loading, dateObj, view }) => {
+const CalendarBody = ({ tableHeaders, tableRows, loading, dateObj, view , presentDate}) => {
   const [open] = React.useState(true);
   const classes = useStyles();
 
@@ -80,7 +80,7 @@ const CalendarBody = ({ tableHeaders, tableRows, loading, dateObj, view }) => {
             {view!=="day" && <TableRow>{renderTableHead(tableHeaders, classes)}</TableRow>}
           </TableHead>
           <TableBody className={classes.tableBody}>
-            {renderTableRows(tableRows, classes, dateObj,view)}
+            {renderTableRows(tableRows, classes, dateObj,view,presentDate)}
           </TableBody>
         </Table>
       </Paper>
@@ -102,23 +102,23 @@ const renderTableHead = (tableHeaders, classes) => {
   );
 };
 
-const renderTableRows = (tableRows, classes, dateObj, view) => {
+const renderTableRows = (tableRows, classes, dateObj, view, presentDate) => {
   return (
     <React.Fragment>
       {tableRows.map((row, index) => (
         <TableRow key={`row_${index}`}>
-          {renderTableColumns(row, classes, dateObj, view)}
+          {renderTableColumns(row, classes, dateObj, view, presentDate)}
         </TableRow>
       ))}
     </React.Fragment>
   );
 };
 
-const renderTableColumns = (row, classes, dateObj, view) => {
+const renderTableColumns = (row, classes, dateObj, view, presentDate) => {
   return (
     <React.Fragment>
       {row.map((column, index) =>
-        getStandardCell(getArgObj(column, index, classes, dateObj,view))
+        getStandardCell(getArgObj(column, index, classes, dateObj,view, presentDate))
       )}
     </React.Fragment>
   );
@@ -128,9 +128,9 @@ const getStandardCell = (...argument) => {
   const arg = argument[0];
 
   const customStyle = {
-    color: arg.color,
+    // color: arg.color,
     pointerEvents: "",
-    backgroundColor: arg.color && colorConverter(arg.color, 0.05)
+    backgroundColor: arg.color
   };
   const buttonBasedStyle = {
     pointerEvents: arg.booking && "all",
@@ -174,8 +174,9 @@ const getStandardCell = (...argument) => {
   );
 };
 
-const getArgObj = (column, index, classes, dateObj, view) => {
+const getArgObj = (column, index, classes, dateObj, view, presentDate) => {
   let { show, room, booking, handleRedirect, color } = column;
+  // console.log("column",column)
   const currentDate = moment().date();
   const name = booking && getShortName(booking.firstName, booking.lastName);
   const key = `column_${index}`;
@@ -192,7 +193,7 @@ const getArgObj = (column, index, classes, dateObj, view) => {
       index >= currentDate || booking || view==="day" ? handleRedirect : () => {};
   }
 
-  const date = view==="day" ? new Date() : new Date(`${dateObj.month + 1}/${index}/${dateObj.year}`);
+  const date = view==="day" ? presentDate : new Date(`${dateObj.month + 1}/${index}/${dateObj.year}`);
 
   if (show) return { key, value: room.roomNumber, classes };
   else

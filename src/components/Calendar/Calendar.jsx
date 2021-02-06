@@ -27,6 +27,7 @@ const Calendar = props => {
   
 
   useEffect(() => {
+    console.log("props",props)
     const title = getTitle(currentDate);
     setTitle(title);
     props.onLoading(true);
@@ -69,7 +70,8 @@ const Calendar = props => {
     bookings &&
       bookings.forEach(booking => {
         let { checkIn, checkOut, months } = booking;
-        const color = utils.generateRandomColor();
+        const color = "#f1d1d0";
+        // const color = utils.generateRandomColor();
         if (months.length > 1) {
           const updatedValue = getUpdatedValues(booking, dateObj);
           checkIn = updatedValue.checkIn;
@@ -121,7 +123,7 @@ const Calendar = props => {
     const rowsArray = [...tempRows];
     // console.log("dates, rowIndex, booking",dates, rowIndex, booking)
     if(view === "day"){
-      console.log(dates,currentDate)
+      // console.log(dates,currentDate)
       dates.forEach(date => {
         if(moment(date).date() === moment(currentDate).date()){
           const dateNumber = moment(date).date();
@@ -149,10 +151,16 @@ const Calendar = props => {
     tempRows = [...rowsArray];
   };
 
-  const getTitle = date =>
-    `${moment(date)
-      .format("MMMM")
-      .toUpperCase()} ${moment(date).year()}`;
+  const getTitle = date => {
+    if(view === "day"){
+      return `${moment(date)
+        .format("dddd, Do MMMM YYYY")}`;
+    }else {
+      return `${moment(date)
+              .format("MMMM")
+              .toUpperCase()} ${moment(date).year()}`;
+    }
+  }
 
   const getTableRows = (allRooms, dateObj) => {
     let rows = []
@@ -228,9 +236,15 @@ const Calendar = props => {
   };
 
   const handleChange = value => {
-    const prevDate = new Date(dateObj.year, dateObj.month);
-    const newDate = moment(prevDate).add(value, "M");
-    const newDateObj = utils.getDateObj(newDate);
+    console.log("value",value)
+    let prevDate = new Date(dateObj.year, dateObj.month);
+    let newDate = moment(prevDate).add(value, "M");
+    let newDateObj = utils.getDateObj(newDate);
+    if(view === "day"){
+      prevDate = currentDate
+      newDate = moment(prevDate).add(value, "d");
+      newDateObj = utils.getDateObj(newDate);
+    }
 
     props.setDateObj(newDateObj, newDate);
     props.onLoading(true);
@@ -243,6 +257,7 @@ const Calendar = props => {
         title={title}
         onChange={handleChange}
         month={dateObj.month}
+        currentDate={currentDate}
         view={view}
       />
       <CalendarBody
@@ -251,6 +266,7 @@ const Calendar = props => {
         loading={loading}
         dateObj={dateObj}
         view={view}
+        presentDate={currentDate}
       />
       {/* {showModal && (
         <Dialog

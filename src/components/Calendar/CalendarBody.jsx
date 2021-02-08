@@ -12,7 +12,7 @@ import "./CalendarBody.scss";
 const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
-    height: "90%",
+    height: "85%",
     overflowY: "auto"
   },
   head: {
@@ -48,7 +48,7 @@ const useStyles = makeStyles(theme => ({
     textAlign: "center",
     borderRight: "1px solid #9e9e9e",
     borderBottom: "1px solid #9e9e9e",
-    minWidth: 40,
+    width: "9%",
     "&:last-child": {
       padding: 0
     },
@@ -130,7 +130,8 @@ const getStandardCell = (...argument) => {
   const customStyle = {
     // color: arg.color,
     pointerEvents: "",
-    backgroundColor: arg.color
+    backgroundColor: arg.color,
+    
   };
   const buttonBasedStyle = {
     pointerEvents: arg.booking && "all",
@@ -155,7 +156,7 @@ const getStandardCell = (...argument) => {
       >
         <div className={arg.classes.div}>
           <Popover
-            content={arg.value}
+            content={arg.view=="day"?arg.booking && `${arg.booking.firstName} ${arg.booking.lastName}`:arg.value}
             popoverContent={
               arg.booking && `${arg.booking.firstName} ${arg.booking.lastName}`
             }

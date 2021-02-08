@@ -5,6 +5,10 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import { makeStyles } from '@material-ui/core/styles';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormLabel from '@material-ui/core/FormLabel';
 
 import Calendar from "./../Calendar/Calendar";
 import Navbar from "./../Navbar/Navbar";
@@ -71,6 +75,8 @@ const Dashboard = props => {
 
   const handleViewChange = (event) => {
     setView(event.target.value);
+    setCurrentDateObj(utils.getDateObj(utils.getDate()));
+    setCurrentDate(utils.getDate());
   };
   const classes = useStyles();
 
@@ -239,7 +245,7 @@ const Dashboard = props => {
               render={props => (
                 <>
                 <div className={classes.selectDiv}>
-                  <FormControl className={classes.formControl}>
+                  {/* <FormControl className={classes.formControl}>
                     <InputLabel id="demo-simple-select-label">View</InputLabel>
                     <Select
                       labelId="demo-simple-select-label"
@@ -250,6 +256,13 @@ const Dashboard = props => {
                       <MenuItem value="day">Day</MenuItem>
                       <MenuItem value="month">Month</MenuItem>
                     </Select>
+                  </FormControl> */}
+                  <FormControl component="fieldset" className={classes.formControl}>
+                    {/* <FormLabel component="legend">View</FormLabel> */}
+                    <RadioGroup aria-label="view" style={{flexDirection:"row"}} name="view" value={view} onChange={handleViewChange}>
+                      <FormControlLabel value="day" control={<Radio />} label="Day View" />
+                      <FormControlLabel value="month" control={<Radio />} label="Month view" />
+                    </RadioGroup>
                   </FormControl>
                 </div>
                 <Calendar

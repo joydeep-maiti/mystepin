@@ -48,7 +48,7 @@ const useStyles = makeStyles(theme => ({
     textAlign: "center",
     borderRight: "1px solid #9e9e9e",
     borderBottom: "1px solid #9e9e9e",
-    width: "9%",
+    // width: "9%",
     "&:last-child": {
       padding: 0
     },
@@ -128,7 +128,7 @@ const getStandardCell = (...argument) => {
   const arg = argument[0];
 
   const customStyle = {
-    // color: arg.color,
+    width: arg.view=="day"?"9%":"unset",
     pointerEvents: "",
     backgroundColor: arg.color,
     

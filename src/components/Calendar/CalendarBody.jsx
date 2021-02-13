@@ -106,7 +106,7 @@ const renderTableRows = (tableRows, classes, dateObj, view, presentDate) => {
   return (
     <React.Fragment>
       {tableRows.map((row, index) => (
-        <TableRow key={`row_${index}`}>
+        <TableRow key={`row_${index}`} style={view==="day"?{height:"4rem"}:{height:"2rem"}}>
           {renderTableColumns(row, classes, dateObj, view, presentDate)}
         </TableRow>
       ))}

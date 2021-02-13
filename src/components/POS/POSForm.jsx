@@ -32,6 +32,7 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
   const handleSnackbarEvent = useContext(SnackBarContext);
 
   useEffect(() => {
+    debugger
     let POSData = [];
     const filteredBookings = allBookings.filter(
       booking => booking.status.checkedIn && !booking.status.checkedOut

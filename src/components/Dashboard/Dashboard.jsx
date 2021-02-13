@@ -9,6 +9,7 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
+import moment from "moment";
 
 import Calendar from "./../Calendar/Calendar";
 import Navbar from "./../Navbar/Navbar";
@@ -37,13 +38,17 @@ const useStyles = makeStyles((theme) => ({
   },
   selectDiv:{
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "space-between",
+    width: "50%",
+    marginLeft: "auto",
+    marginRight: "50px"
   }
 }));
 
 const Dashboard = props => {
   const [allRooms, setAllRooms] = useState([]);
   const [allBookings, setAllBookings] = useState([]);
+  const [occupiedRooms, setOccupiedRooms] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentDate, setCurrentDate] = useState(utils.getDate());
   const [currentDateObj, setCurrentDateObj] = useState(
@@ -82,6 +87,7 @@ const Dashboard = props => {
 
   useEffect(() => {
     const getRooms = async () => {
+      // debugger
       const allRooms = await roomService.getRooms();
       allRooms.length > 0 && setAllRooms(allRooms);
     };
@@ -96,6 +102,32 @@ const Dashboard = props => {
     }
     setLoading(false);
   };
+
+  useEffect(() => {
+    
+    let rooms = [];
+    const filteredBookings = allBookings.filter(
+      booking => booking.status.checkedIn && !booking.status.checkedOut
+    );
+    filteredBookings.forEach(booking => {
+      // debugger
+      if(view==="day"){
+        const dates = utils.daysBetweenDates(booking.checkIn, booking.checkOut);
+        const today = dates.find(el => moment(el).isSame(currentDate, 'day'))
+        if(today){
+          booking.rooms.forEach(room => {
+            rooms.push({ room, booking });
+          });
+        }
+      }else{
+        booking.rooms.forEach(room => {
+          rooms.push({ room, booking });
+        });
+      }
+    });
+    
+    setOccupiedRooms(rooms);
+  }, [allBookings]);
 
   const setDateObj = (dateObj, date) => {
     setCurrentDateObj(dateObj);
@@ -244,26 +276,29 @@ const Dashboard = props => {
               exact
               render={props => (
                 <>
-                <div className={classes.selectDiv}>
-                  {/* <FormControl className={classes.formControl}>
-                    <InputLabel id="demo-simple-select-label">View</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={view}
-                      onChange={handleViewChange}
-                    >
-                      <MenuItem value="day">Day</MenuItem>
-                      <MenuItem value="month">Month</MenuItem>
-                    </Select>
-                  </FormControl> */}
-                  <FormControl component="fieldset" className={classes.formControl}>
-                    {/* <FormLabel component="legend">View</FormLabel> */}
-                    <RadioGroup aria-label="view" style={{flexDirection:"row"}} name="view" value={view} onChange={handleViewChange}>
-                      <FormControlLabel value="day" control={<Radio />} label="Day View" />
-                      <FormControlLabel value="month" control={<Radio />} label="Month view" />
-                    </RadioGroup>
-                  </FormControl>
+                <div>
+                  <div className={classes.selectDiv}>
+                    {/* <FormControl className={classes.formControl}>
+                      <InputLabel id="demo-simple-select-label">View</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={view}
+                        onChange={handleViewChange}
+                      >
+                        <MenuItem value="day">Day</MenuItem>
+                        <MenuItem value="month">Month</MenuItem>
+                      </Select>
+                    </FormControl> */}
+                    <FormControl component="fieldset" className={classes.formControl}>
+                      {/* <FormLabel component="legend">View</FormLabel> */}
+                      <RadioGroup aria-label="view" style={{flexDirection:"row"}} name="view" value={view} onChange={handleViewChange}>
+                        <FormControlLabel value="day" control={<Radio />} label="Day View" />
+                        <FormControlLabel value="month" control={<Radio />} label="Month view" />
+                      </RadioGroup>
+                    </FormControl>
+                    <h4 style={{marginTop:"20px", paddingRight:"20px"}}>{`Occupied Rooms: ${occupiedRooms.length}`}</h4>
+                  </div>
                 </div>
                 <Calendar
                   allRooms={allRooms}

@@ -165,6 +165,7 @@ const Calendar = props => {
   const getTableRows = (allRooms, dateObj) => {
     let rows = []
     if(view === "day"){
+      debugger
       let len = Math.floor(allRooms.length/10);
       let rem = allRooms.length%10;
       len = len +1

@@ -16,7 +16,8 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 20
+    marginBottom: 20,
+    maxWidth:"500px"
   },
   inputItems: {
     width: "70%"
@@ -66,11 +67,11 @@ const Taxes = ({ onClose }) => {
           </div>
         ))}
       </DialogContent>
-      <DialogActions>
+      {/* <DialogActions>
         <Button onClick={onClose} color="secondary">
           Close
         </Button>
-      </DialogActions>
+      </DialogActions> */}
     </React.Fragment>
   );
 };

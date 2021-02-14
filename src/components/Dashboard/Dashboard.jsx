@@ -17,6 +17,7 @@ import BookingFormLayout from "../BookingForm/BookingFormLayout";
 import BillingFormLayout from "../BillingForm/BillingFormLayout";
 import Report from "../Report/Report";
 import Taxes from "../Taxes/Taxes";
+import Configuration from "../Configuration/Configuration";
 import POSDialog from "../POS/POSDialog";
 import Snackbar from "../../common/Snackbar/Snackbar";
 import Dialog from "./../../common/Dialog/Dialog";
@@ -110,7 +111,7 @@ const Dashboard = props => {
       booking => booking.status.checkedIn && !booking.status.checkedOut
     );
     filteredBookings.forEach(booking => {
-      // debugger
+      debugger
       if(view==="day"){
         const dates = utils.daysBetweenDates(booking.checkIn, booking.checkOut);
         const today = dates.find(el => moment(el).isSame(currentDate, 'day'))
@@ -226,9 +227,9 @@ const Dashboard = props => {
           onClose={() => handleDialog(dialog.contentOf)}
           size={dialog.size}
         >
-          {dialog.openFor.taxes && (
+          {/* {dialog.openFor.taxes && (
             <Taxes onClose={() => handleDialog(dialog.contentOf)} />
-          )}
+          )} */}
           {dialog.openFor.pos && (
             <POSDialog
               allBookings={allBookings}
@@ -270,6 +271,10 @@ const Dashboard = props => {
               render={props => (
                 <Report selectedBooking={selectedBooking} {...props} />
               )}
+            />
+            <Route
+              path="/config"
+              component={Configuration}
             />
             <Route
               path="/"

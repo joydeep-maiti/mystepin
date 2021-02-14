@@ -2,6 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
 import POSMenu from "../POS/POSMenu";
+import { withRouter } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   stepIn: {
@@ -26,7 +27,8 @@ const HeaderNavbar = ({
   path,
   onRedirectFromNavbar,
   showTaxes,
-  showPOSDialog
+  showPOSDialog,
+  ...props
 }) => {
   const classes = useStyles();
 
@@ -42,7 +44,7 @@ const HeaderNavbar = ({
           <Button
             className={classes.buttonTaxes}
             color="inherit"
-            onClick={() => showTaxes()}
+            onClick={() => props.history.push("/config")}
           >
             Configuration
           </Button>
@@ -60,4 +62,4 @@ const HeaderNavbar = ({
   );
 };
 
-export default HeaderNavbar;
+export default withRouter(HeaderNavbar);

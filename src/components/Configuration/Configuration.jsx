@@ -90,6 +90,8 @@ const Configuration = () => {
           <Tab label="Taxes" {...a11yProps(0)} />
           <Tab label="Rooms" {...a11yProps(1)} />
           <Tab label="Room Category" {...a11yProps(2)} />
+          <Tab label="Rate Master" {...a11yProps(3)} />
+          <Tab label="Season Master" {...a11yProps(4)} />
         </Tabs>
       </AppBar>
       <TabPanel className={classes.tabDiv} value={value} index={0}>
@@ -99,7 +101,13 @@ const Configuration = () => {
         <Rooms/>
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={2}>
-        Item Three
+      Room Category
+      </TabPanel>
+      <TabPanel className={classes.tabDiv} value={value} index={3}>
+      Rate Master
+      </TabPanel>
+      <TabPanel className={classes.tabDiv} value={value} index={4}>
+      Season Master
       </TabPanel>
     </div>
   );

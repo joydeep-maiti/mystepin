@@ -19,6 +19,8 @@ const Calendar = props => {
     view
   } = props;
 
+  console.log("props",props)
+
   const [title, setTitle] = useState("");
   const [rows, setRows] = useState([]);
 
@@ -61,6 +63,8 @@ const Calendar = props => {
   useEffect(() => {
     const title = getTitle(currentDate);
     setTitle(title);
+    props.onLoading(true);
+    props.setBookings(dateObj);
   }, [currentDate]);
 
 

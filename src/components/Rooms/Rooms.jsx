@@ -87,8 +87,8 @@ const Rooms = ({ onClose }) => {
       <DialogContent className={classes.roomsDiv}>
         <form className={classes.formGroup} noValidate autoComplete="off">
           <TextField required id="standard-required" label="Room Number" name="roomNumber"/>
-          <TextField required id="standard-required" label="Floor" name="Floor"/>
-          <TextField required id="standard-required" label="Rate" name="roomRate"/>
+          {/* <TextField required id="standard-required" label="Floor" name="Floor"/> */}
+          {/* <TextField required id="standard-required" label="Rate" name="roomRate"/> */}
           <FormControl className={classes.formControl}>
             <InputLabel id="demo-simple-select-label">Room Type</InputLabel>
             <Select
@@ -102,12 +102,14 @@ const Rooms = ({ onClose }) => {
               {roomTypes.map(el=><MenuItem value={el.value}>{el.label}</MenuItem>)}
             </Select>
           </FormControl>
-          <Button type="submit" variant="contained" color="primary">
+          <Button 
+          // type="submit" 
+          variant="contained" color="primary">
             ADD
           </Button>
         </form>
         <TableContainer className={classes.table} component={Paper}>
-          <Table className={classes.table} stickyHeader aria-label="sticky table">
+          <Table className={classes.table} size="small" stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
                 <TableCell>Sl No.</TableCell>

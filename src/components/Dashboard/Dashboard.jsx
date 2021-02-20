@@ -10,6 +10,12 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormLabel from '@material-ui/core/FormLabel';
 import moment from "moment";
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
 
 import Calendar from "./../Calendar/Calendar";
 import Navbar from "./../Navbar/Navbar";
@@ -33,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     marginTop: "20px",
     minWidth: 200,
+    display:"flex"
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
@@ -40,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   selectDiv:{
     display: "flex",
     justifyContent: "space-between",
-    width: "50%",
+    width: "65%",
     marginLeft: "auto",
     marginRight: "50px"
   }
@@ -50,6 +57,7 @@ const Dashboard = props => {
   const [allRooms, setAllRooms] = useState([]);
   const [allBookings, setAllBookings] = useState([]);
   const [occupiedRooms, setOccupiedRooms] = useState([]);
+  const [bookedRooms, setBookedRooms] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentDate, setCurrentDate] = useState(utils.getDate());
   const [currentDateObj, setCurrentDateObj] = useState(
@@ -107,11 +115,12 @@ const Dashboard = props => {
   useEffect(() => {
     
     let rooms = [];
+    let bookedRooms = [];
     const filteredBookings = allBookings.filter(
       booking => booking.status.checkedIn && !booking.status.checkedOut
     );
     filteredBookings.forEach(booking => {
-      debugger
+      // debugger
       if(view==="day"){
         const dates = utils.daysBetweenDates(booking.checkIn, booking.checkOut);
         const today = dates.find(el => moment(el).isSame(currentDate, 'day'))
@@ -126,9 +135,33 @@ const Dashboard = props => {
         });
       }
     });
+
+    allBookings.forEach(booking => {
+      // debugger
+      if(view==="day"){
+        const dates = utils.daysBetweenDates(booking.checkIn, booking.checkOut);
+        const today = dates.find(el => moment(el).isSame(currentDate, 'day'))
+        if(today){
+          booking.rooms.forEach(room => {
+            bookedRooms.push({ room, booking });
+          });
+        }
+      }else{
+        booking.rooms.forEach(room => {
+          bookedRooms.push({ room, booking });
+        });
+      }
+    });
     
     setOccupiedRooms(rooms);
+    setBookedRooms(bookedRooms);
   }, [allBookings]);
+
+  const handleDateChange = (date) => {
+    // console.log("mmd",moment(date).toDate())
+    setCurrentDateObj(utils.getDateObj(utils.getDate(date)));
+    setCurrentDate(utils.getDate(date));
+  };
 
   const setDateObj = (dateObj, date) => {
     setCurrentDateObj(dateObj);
@@ -300,9 +333,24 @@ const Dashboard = props => {
                       <RadioGroup aria-label="view" style={{flexDirection:"row"}} name="view" value={view} onChange={handleViewChange}>
                         <FormControlLabel value="day" control={<Radio />} label="Day View" />
                         <FormControlLabel value="month" control={<Radio />} label="Month view" />
-                      </RadioGroup>
+                      <MuiPickersUtilsProvider  utils={DateFnsUtils} style={{marginLeft:"1rem"}}>
+                        <KeyboardDatePicker
+                          disableToolbar
+                          format="MM/dd/yyyy"
+                          margin="normal"
+                          id="date-picker-dialog"
+                          label="Date picker inline"
+                          value={currentDate}
+                          onChange={handleDateChange}
+                          KeyboardButtonProps={{
+                            'aria-label': 'change date',
+                          }}
+                          style={{marginLeft:"1rem"}}
+                          />
+                      </MuiPickersUtilsProvider>
+                          </RadioGroup>
                     </FormControl>
-                    <h4 style={{marginTop:"20px", paddingRight:"20px"}}>{`Occupied Rooms: ${occupiedRooms.length}`}</h4>
+                    <h4 style={{marginTop:"20px", paddingRight:"20px"}}>{`Occupied Rooms: ${occupiedRooms.length},  Booked Rooms: ${bookedRooms.length}`}</h4>
                   </div>
                 </div>
                 <Calendar

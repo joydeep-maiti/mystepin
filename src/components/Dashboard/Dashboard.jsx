@@ -137,10 +137,11 @@ const Dashboard = props => {
     });
 
     allBookings.forEach(booking => {
-      // debugger
+      debugger
       if(view==="day"){
         const dates = utils.daysBetweenDates(booking.checkIn, booking.checkOut);
         const today = dates.find(el => moment(el).isSame(currentDate, 'day'))
+        // const today = moment(currentDate).isBetween(moment(booking.checkIn).subtract(1, 'd'), moment(booking.checkOut));
         if(today){
           booking.rooms.forEach(room => {
             bookedRooms.push({ room, booking });

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import roomService from "../../services/roomService";
+import roomTypeService from "../../services/roomTypeService";
 
 import Loader from "../../common/Loader/Loader";
 import {
@@ -25,14 +25,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-
-const roomTypes = [
-  { label: "AC", value: "AC" },
-  { label: "Non AC", value: "Non AC" },
-  { label: "Deluxe", value: "Deluxe" },
-  { label: "Suite", value: "Suite" },
-  { label: "Dormitory", value: "Dormitory" }
-];
+import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
 
 const useStyles = makeStyles(theme => ({
   formGroup: {
@@ -64,9 +57,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const RoomCategory = ({ onClose }) => {
+const Rooms = ({ onClose }) => {
   const classes = useStyles();
   const [rooms, setRooms] = useState([]);
+  const [roomType, setNewRoomType] = useState({});
+  const [editingRow, setEditingRow] = useState({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -75,47 +70,79 @@ const RoomCategory = ({ onClose }) => {
   }, []);
 
   const fetchData = async () => {
-    const rooms = await roomService.getRooms();
+    const rooms = await roomTypeService.getRoomsTypes();
     setRooms(rooms);
     setLoading(false);
   };
 
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const res = await roomTypeService.addRoomType(roomType);
+    setLoading(false);
+    if(res){
+      setLoading(true);
+      fetchData()
+    }
+
+  }
+
+  const handleUpdate = async () => {
+    setLoading(true);
+    const res = await roomTypeService.updateRoomType(editingRow);
+    setLoading(false);
+    if(res){
+      setEditingRow({})
+      setLoading(true);
+      fetchData()
+    }
+  }
+
+  const handleDelete = async (row) => {
+    setLoading(true);
+    const res = await roomTypeService.deleteRoomType(row);
+    setLoading(false);
+    if(res){
+      setLoading(true);
+      fetchData()
+    }
+  }
+
+  const handleInput = (e) => {
+    setNewRoomType({
+      [e.target.name]:e.target.value
+    })
+  }
+
+  const handleInputChange = (e) => {
+    setEditingRow({
+      ...editingRow,
+      [e.target.name]:e.target.value
+    })
+  }
+
+  const handleEdit = (row) => {
+    setEditingRow(row)
+  }
+
   return (
     <React.Fragment>
-      <DialogTitle>Rooms</DialogTitle>
-      {loading && <Loader color="primary" />}
+      <DialogTitle>Room Type</DialogTitle>
       <DialogContent className={classes.roomsDiv}>
-        <form className={classes.formGroup} noValidate autoComplete="off">
-          <TextField required id="standard-required" label="Room Number" name="roomNumber"/>
-          {/* <TextField required id="standard-required" label="Floor" name="Floor"/> */}
-          {/* <TextField required id="standard-required" label="Rate" name="roomRate"/> */}
-          <FormControl className={classes.formControl}>
-            <InputLabel id="demo-simple-select-label">Room Type</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              required
-              name="roomType"
-              // value={age}
-              // onChange={handleChange}
-            >
-              {roomTypes.map(el=><MenuItem value={el.value}>{el.label}</MenuItem>)}
-            </Select>
-          </FormControl>
+        <form className={classes.formGroup} noValidate autoComplete="off" onSubmit={handleFormSubmit}>
+          <TextField required id="standard-required" label="Room Type" name="roomType" onChange={handleInput}/>
           <Button 
-          // type="submit" 
+          type="submit" 
           variant="contained" color="primary">
             ADD
           </Button>
         </form>
+        {loading && <Loader color="primary" />}
         <TableContainer className={classes.table} component={Paper}>
           <Table className={classes.table} size="small" stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
                 <TableCell>Sl No.</TableCell>
-                <TableCell align="center">Room Number</TableCell>
-                <TableCell align="center">Floor</TableCell>
-                <TableCell align="center">Rate</TableCell>
                 <TableCell align="center">Room Type</TableCell>
                 <TableCell align="center">Edit</TableCell>
                 <TableCell align="center">Delete</TableCell>
@@ -127,12 +154,13 @@ const RoomCategory = ({ onClose }) => {
                   <TableCell component="th" scope="row">
                     {i+1}
                   </TableCell>
-                  <TableCell align="center">{row.roomNumber}</TableCell>
-                  <TableCell align="center">{row.Floor}</TableCell>
-                  <TableCell align="center">{row.roomRate}</TableCell>
-                  <TableCell align="center">{row.roomType}</TableCell>
-                  <TableCell align="center"><EditOutlinedIcon/></TableCell>
-                  <TableCell align="center"><DeleteOutlineOutlinedIcon/></TableCell>
+                  {editingRow._id !== row._id && <TableCell align="center">{row.roomType}</TableCell>}
+                  {editingRow._id === row._id && <TableCell align="center">
+                    <TextField required id="standard-required" label="Room Type" name="roomType" value={editingRow.roomType} onChange={handleInputChange}/>
+                  </TableCell>}
+                  {editingRow._id !== row._id && <TableCell align="center"><EditOutlinedIcon style={{cursor:"pointer"}} onClick={()=>handleEdit(row)}/></TableCell>}
+                  {editingRow._id === row._id && <TableCell align="center"><SaveOutlinedIcon style={{cursor:"pointer"}} onClick={handleUpdate}/></TableCell>}
+                  <TableCell align="center"><DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(row)}/></TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -143,4 +171,4 @@ const RoomCategory = ({ onClose }) => {
   );
 };
 
-export default RoomCategory;
+export default Rooms;

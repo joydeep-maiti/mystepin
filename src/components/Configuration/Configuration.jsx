@@ -12,6 +12,7 @@ import {
 
 import Taxes from "../Taxes/Taxes";
 import Rooms from "../Rooms/Rooms";
+import RoomCategory from "../RoomCategory/RoomCategory";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -101,7 +102,7 @@ const Configuration = () => {
         <Rooms/>
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={2}>
-      Room Category
+        <RoomCategory />
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={3}>
       Rate Master

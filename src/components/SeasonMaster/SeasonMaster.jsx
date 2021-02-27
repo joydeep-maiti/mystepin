@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import roomTypeService from "../../services/roomTypeService";
+import seasonService from "../../services/seasonService";
 
 import Loader from "../../common/Loader/Loader";
 import {
@@ -27,6 +27,12 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
 import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
 
 const useStyles = makeStyles(theme => ({
   formGroup: {
@@ -58,10 +64,10 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Rooms = ({ onClose }) => {
+const SeasonMaster = ({ onClose }) => {
   const classes = useStyles();
   const [rooms, setRooms] = useState([]);
-  const [roomType, setNewRoomType] = useState({});
+  const [newDoc, setNewDoc] = useState({});
   const [editingRow, setEditingRow] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -71,7 +77,7 @@ const Rooms = ({ onClose }) => {
   }, []);
 
   const fetchData = async () => {
-    const rooms = await roomTypeService.getRoomsTypes();
+    const rooms = await seasonService.getSeason();
     setRooms(rooms);
     setLoading(false);
   };
@@ -79,10 +85,10 @@ const Rooms = ({ onClose }) => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const res = await roomTypeService.addRoomType(roomType);
+    const res = await seasonService.addSeason(newDoc);
     setLoading(false);
     if(res){
-      setNewRoomType({})
+      setNewDoc({})
       setLoading(true);
       fetchData()
     }
@@ -91,7 +97,7 @@ const Rooms = ({ onClose }) => {
 
   const handleUpdate = async () => {
     setLoading(true);
-    const res = await roomTypeService.updateRoomType(editingRow);
+    const res = await seasonService.updateSeason(editingRow);
     setLoading(false);
     if(res){
       setEditingRow({})
@@ -102,7 +108,7 @@ const Rooms = ({ onClose }) => {
 
   const handleDelete = async (row) => {
     setLoading(true);
-    const res = await roomTypeService.deleteRoomType(row);
+    const res = await seasonService.deleteSeason(row);
     setLoading(false);
     if(res){
       setLoading(true);
@@ -111,7 +117,7 @@ const Rooms = ({ onClose }) => {
   }
 
   const handleInput = (e) => {
-    setNewRoomType({
+    setNewDoc({
       [e.target.name]:e.target.value
     })
   }
@@ -131,12 +137,73 @@ const Rooms = ({ onClose }) => {
     setEditingRow({})
   }
 
+  const handleFromDateChange = (date) => {
+    setEditingRow({
+      ...editingRow,
+      fromDate:date
+    })
+  };
+
+  const handleToDateChange = (date) => {
+    setEditingRow({
+      ...editingRow,
+      toDate:date
+    })
+  };
+
+  const handleNewFromDateChange = (date) => {
+    setNewDoc({
+      ...newDoc,
+      fromDate:date
+    })
+  };
+
+  const handleNewToDateChange = (date) => {
+    setNewDoc({
+      ...newDoc,
+      toDate:date
+    })
+  };
+
+
   return (
     <React.Fragment>
-      <DialogTitle>Room Type</DialogTitle>
+      <DialogTitle>Seasons</DialogTitle>
       <DialogContent className={classes.roomsDiv}>
         <form className={classes.formGroup} noValidate autoComplete="off" onSubmit={handleFormSubmit}>
-          <TextField required id="standard-required" label="Room Type" name="roomType" onChange={handleInput}/>
+          <TextField required id="standard-required" label="Season" name="season" onChange={handleInput}/>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <KeyboardDatePicker
+              required
+              disableToolbar
+              variant="inline"
+              format="MM/dd/yyyy"
+              margin="normal"
+              id="date-picker-inline"
+              label="Start date"
+              name="fromDate"
+              value={newDoc.fromDate}
+              onChange={handleNewFromDateChange}
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }}
+            />
+            <KeyboardDatePicker
+              required
+              disableToolbar
+              variant="inline"
+              format="MM/dd/yyyy"
+              margin="normal"
+              id="date-picker-inline"
+              label="End date"
+              name="toDate"
+              value={newDoc.toDate}
+              onChange={handleNewToDateChange}
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }}
+            />
+          </MuiPickersUtilsProvider>
           <Button 
           type="submit" 
           variant="contained" color="primary">
@@ -149,7 +216,9 @@ const Rooms = ({ onClose }) => {
             <TableHead>
               <TableRow>
                 <TableCell>Sl No.</TableCell>
-                <TableCell align="center">Room Type</TableCell>
+                <TableCell align="center">Season</TableCell>
+                <TableCell align="center">Start Date</TableCell>
+                <TableCell align="center">End Date</TableCell>
                 <TableCell align="center">Edit</TableCell>
                 <TableCell align="center">Delete</TableCell>
               </TableRow>
@@ -160,9 +229,49 @@ const Rooms = ({ onClose }) => {
                   <TableCell component="th" scope="row">
                     {i+1}
                   </TableCell>
-                  {editingRow._id !== row._id && <TableCell align="center">{row.roomType}</TableCell>}
+                  {editingRow._id !== row._id && <TableCell align="center">{row.season}</TableCell>}
                   {editingRow._id === row._id && <TableCell align="center">
-                    <TextField required id="standard-required" label="Room Type" name="roomType" value={editingRow.roomType} onChange={handleInputChange}/>
+                    <TextField required id="standard-required" label="Season" name="season" value={editingRow.season} onChange={handleInputChange}/>
+                  </TableCell>}
+                  {editingRow._id !== row._id && <TableCell align="center">{row.fromDate}</TableCell>}
+                  {editingRow._id === row._id && <TableCell align="center">
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                      <KeyboardDatePicker
+                        required
+                        disableToolbar
+                        variant="inline"
+                        format="MM/dd/yyyy"
+                        margin="normal"
+                        id="date-picker-inline"
+                        label="Start date"
+                        name="fromDate"
+                        value={editingRow.fromDate}
+                        onChange={handleFromDateChange}
+                        KeyboardButtonProps={{
+                          'aria-label': 'change date',
+                        }}
+                      />
+                    </MuiPickersUtilsProvider>
+                  </TableCell>}
+                  {editingRow._id !== row._id && <TableCell align="center">{row.toDate}</TableCell>}
+                  {editingRow._id === row._id && <TableCell align="center">
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                      <KeyboardDatePicker
+                        required
+                        disableToolbar
+                        variant="inline"
+                        format="MM/dd/yyyy"
+                        margin="normal"
+                        id="date-picker-inline"
+                        label="End date"
+                        name="toDate"
+                        value={editingRow.toDate}
+                        onChange={handleToDateChange}
+                        KeyboardButtonProps={{
+                          'aria-label': 'change date',
+                        }}
+                      />
+                    </MuiPickersUtilsProvider>
                   </TableCell>}
                   {editingRow._id !== row._id && <TableCell align="center"><EditOutlinedIcon style={{cursor:"pointer"}} onClick={()=>handleEdit(row)}/></TableCell>}
                   {editingRow._id === row._id && <TableCell align="center">
@@ -180,4 +289,4 @@ const Rooms = ({ onClose }) => {
   );
 };
 
-export default Rooms;
+export default SeasonMaster;

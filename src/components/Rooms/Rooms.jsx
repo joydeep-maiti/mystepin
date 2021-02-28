@@ -98,10 +98,14 @@ const RoomCategory = ({ onClose }) => {
     setLoading(true);
     const res = await roomService.addRoom(newDoc);
     setLoading(false);
-    if(res){
+    if(res.status===201){
       setNewDoc({})
       setLoading(true);
       fetchData()
+    }else {
+      console.log(res)
+      setNewDoc({})
+      alert("Bad Request")
     }
 
   }

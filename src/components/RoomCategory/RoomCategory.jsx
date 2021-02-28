@@ -81,12 +81,15 @@ const Rooms = ({ onClose }) => {
     setLoading(true);
     const res = await roomTypeService.addRoomType(roomType);
     setLoading(false);
-    if(res){
+    if(res.status===201){
       setNewRoomType({})
       setLoading(true);
       fetchData()
+    }else {
+      console.log(res)
+      setNewRoomType({})
+      alert("Bad Request")
     }
-
   }
 
   const handleUpdate = async () => {

@@ -19,7 +19,7 @@ const Calendar = props => {
     view
   } = props;
 
-  console.log("props",props)
+  // console.log("props",props)
 
   const [title, setTitle] = useState("");
   const [rows, setRows] = useState([]);
@@ -83,11 +83,13 @@ const Calendar = props => {
         }
 
         booking.rooms.forEach(bookedRoom => {
-          const { roomNumber } = allRooms.find(room => {
+          const res = allRooms.find(room => {
             return room._id === bookedRoom._id;
           });
-
-          setBookingObjByRoom(roomNumber, checkIn, checkOut, booking, color);
+          if(res){
+            const { roomNumber } = res
+            setBookingObjByRoom(roomNumber, checkIn, checkOut, booking, color);
+          }
         });
       });
 

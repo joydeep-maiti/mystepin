@@ -15,9 +15,7 @@ async function addRoomType(data) {
       `${http.baseUrl}/roomcategory`,
       data
     );
-    if(response.status === 201)
-      return true
-    return false
+    return response
   } catch (error) {
     console.log(error);
     return false

@@ -30,9 +30,7 @@ async function updateSeason(data) {
       `${http.baseUrl}/season`,
       data
     );
-    if(response.status === 200)
-      return true
-    return false
+    return response
   } catch (error) {
     console.log(error);
     return false

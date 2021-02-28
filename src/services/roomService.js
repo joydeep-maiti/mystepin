@@ -32,9 +32,7 @@ async function addRoom(data) {
       `${http.baseUrl}/rooms`,
       data
     );
-    if(response.status === 201)
-      return true
-    return false
+    return response
   } catch (error) {
     console.log(error);
     return false

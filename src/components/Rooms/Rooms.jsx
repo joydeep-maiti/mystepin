@@ -114,8 +114,6 @@ const RoomCategory = ({ onClose }) => {
               <TableRow>
                 <TableCell>Sl No.</TableCell>
                 <TableCell align="center">Room Number</TableCell>
-                <TableCell align="center">Floor</TableCell>
-                <TableCell align="center">Rate</TableCell>
                 <TableCell align="center">Room Type</TableCell>
                 <TableCell align="center">Edit</TableCell>
                 <TableCell align="center">Delete</TableCell>
@@ -128,8 +126,6 @@ const RoomCategory = ({ onClose }) => {
                     {i+1}
                   </TableCell>
                   <TableCell align="center">{row.roomNumber}</TableCell>
-                  <TableCell align="center">{row.Floor}</TableCell>
-                  <TableCell align="center">{row.roomRate}</TableCell>
                   <TableCell align="center">{row.roomType}</TableCell>
                   <TableCell align="center"><EditOutlinedIcon/></TableCell>
                   <TableCell align="center"><DeleteOutlineOutlinedIcon/></TableCell>

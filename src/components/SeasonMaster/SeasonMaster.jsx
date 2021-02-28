@@ -33,6 +33,7 @@ import {
   KeyboardTimePicker,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
+import moment from "moment";
 
 const useStyles = makeStyles(theme => ({
   formGroup: {
@@ -233,7 +234,7 @@ const SeasonMaster = ({ onClose }) => {
                   {editingRow._id === row._id && <TableCell align="center">
                     <TextField required id="standard-required" label="Season" name="season" value={editingRow.season} onChange={handleInputChange}/>
                   </TableCell>}
-                  {editingRow._id !== row._id && <TableCell align="center">{row.fromDate}</TableCell>}
+                  {editingRow._id !== row._id && <TableCell align="center">{moment(row.fromDate).format("MMMM Do YYYY, h:mm:ss a")}</TableCell>}
                   {editingRow._id === row._id && <TableCell align="center">
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                       <KeyboardDatePicker
@@ -253,7 +254,7 @@ const SeasonMaster = ({ onClose }) => {
                       />
                     </MuiPickersUtilsProvider>
                   </TableCell>}
-                  {editingRow._id !== row._id && <TableCell align="center">{row.toDate}</TableCell>}
+                  {editingRow._id !== row._id && <TableCell align="center">{moment(row.toDate).format("MMMM Do YYYY, h:mm:ss a")}</TableCell>}
                   {editingRow._id === row._id && <TableCell align="center">
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                       <KeyboardDatePicker

@@ -25,4 +25,49 @@ async function getAvailableRooms(checkIn, checkOut, bookingId = null) {
   }
 }
 
-export default { getRooms, getAvailableRooms };
+
+async function addRoom(data) {
+  try {
+    const response = await http.post(
+      `${http.baseUrl}/rooms`,
+      data
+    );
+    if(response.status === 201)
+      return true
+    return false
+  } catch (error) {
+    console.log(error);
+    return false
+  }
+}
+
+async function updateRoom(data) {
+  try {
+    const response = await http.patch(
+      `${http.baseUrl}/rooms`,
+      data
+    );
+    if(response.status === 200)
+      return true
+    return false
+  } catch (error) {
+    console.log(error);
+    return false
+  }
+}
+
+async function deleteRoom(data) {
+  try {
+    const response = await http.delete(
+      `${http.baseUrl}/rooms/${data._id}`
+    );
+    if(response.status === 200)
+      return true
+    return false
+  } catch (error) {
+    console.log(error);
+    return false
+  }
+}
+
+export default { getRooms, getAvailableRooms, addRoom, updateRoom, deleteRoom};

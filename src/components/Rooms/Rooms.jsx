@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import roomService from "../../services/roomService";
+import roomTypeService from "../../services/roomTypeService";
 
 import Loader from "../../common/Loader/Loader";
 import {
@@ -25,14 +26,16 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
+import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
 
-const roomTypes = [
-  { label: "AC", value: "AC" },
-  { label: "Non AC", value: "Non AC" },
-  { label: "Deluxe", value: "Deluxe" },
-  { label: "Suite", value: "Suite" },
-  { label: "Dormitory", value: "Dormitory" }
-];
+// const roomTypes = [
+//   { label: "AC", value: "AC" },
+//   { label: "Non AC", value: "Non AC" },
+//   { label: "Deluxe", value: "Deluxe" },
+//   { label: "Suite", value: "Suite" },
+//   { label: "Dormitory", value: "Dormitory" }
+// ];
 
 const useStyles = makeStyles(theme => ({
   formGroup: {
@@ -67,11 +70,15 @@ const useStyles = makeStyles(theme => ({
 const RoomCategory = ({ onClose }) => {
   const classes = useStyles();
   const [rooms, setRooms] = useState([]);
+  const [roomTypes, setRoomTypes] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [newDoc, setNewDoc] = useState({});
+  const [editingRow, setEditingRow] = useState({});
 
   useEffect(() => {
     setLoading(true);
     fetchData();
+    fetchRoomTypes();
   }, []);
 
   const fetchData = async () => {
@@ -80,13 +87,74 @@ const RoomCategory = ({ onClose }) => {
     setLoading(false);
   };
 
+  const fetchRoomTypes = async () => {
+    const rooms = await roomTypeService.getRoomsTypes();
+    setRoomTypes(rooms);
+    setLoading(false);
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const res = await roomService.addRoom(newDoc);
+    setLoading(false);
+    if(res){
+      setNewDoc({})
+      setLoading(true);
+      fetchData()
+    }
+
+  }
+
+  const handleInput = (e) => {
+    setNewDoc({
+      ...newDoc,
+      [e.target.name]:e.target.value
+    })
+  }
+
+  const handleEdit = (row) => {
+    setEditingRow(row)
+  }
+
+  const handleUndo = () => {
+    setEditingRow({})
+  }
+
+  const handleUpdate = async () => {
+    setLoading(true);
+    const res = await roomService.updateRoom(editingRow);
+    setLoading(false);
+    if(res){
+      setEditingRow({})
+      setLoading(true);
+      fetchData()
+    }
+  }
+
+  const handleDelete = async (row) => {
+    setLoading(true);
+    const res = await roomService.deleteRoom(row);
+    setLoading(false);
+    if(res){
+      setLoading(true);
+      fetchData()
+    }
+  }
+
+  const handleInputChange = (e) => {
+    setEditingRow({
+      ...editingRow,
+      [e.target.name]:e.target.value
+    })
+  }
+
   return (
     <React.Fragment>
       <DialogTitle>Rooms</DialogTitle>
-      {loading && <Loader color="primary" />}
       <DialogContent className={classes.roomsDiv}>
-        <form className={classes.formGroup} noValidate autoComplete="off">
-          <TextField required id="standard-required" label="Room Number" name="roomNumber"/>
+        <form className={classes.formGroup} noValidate autoComplete="off" onSubmit={handleFormSubmit}>
+          <TextField required id="standard-required" label="Room Number" name="roomNumber" onChange={handleInput}/>
           {/* <TextField required id="standard-required" label="Floor" name="Floor"/> */}
           {/* <TextField required id="standard-required" label="Rate" name="roomRate"/> */}
           <FormControl className={classes.formControl}>
@@ -96,18 +164,19 @@ const RoomCategory = ({ onClose }) => {
               id="demo-simple-select"
               required
               name="roomType"
-              // value={age}
-              // onChange={handleChange}
-            >
-              {roomTypes.map(el=><MenuItem value={el.value}>{el.label}</MenuItem>)}
+              value={newDoc.roomType}
+              onChange={handleInput}
+              >
+              {roomTypes.map(el=><MenuItem value={el.roomType}>{el.roomType}</MenuItem>)}
             </Select>
           </FormControl>
           <Button 
-          // type="submit" 
-          variant="contained" color="primary">
+            type="submit" 
+            variant="contained" color="primary">
             ADD
           </Button>
         </form>
+        {loading && <Loader color="primary" />}
         <TableContainer className={classes.table} component={Paper}>
           <Table className={classes.table} size="small" stickyHeader aria-label="sticky table">
             <TableHead>
@@ -125,10 +194,32 @@ const RoomCategory = ({ onClose }) => {
                   <TableCell component="th" scope="row">
                     {i+1}
                   </TableCell>
-                  <TableCell align="center">{row.roomNumber}</TableCell>
-                  <TableCell align="center">{row.roomType}</TableCell>
-                  <TableCell align="center"><EditOutlinedIcon/></TableCell>
-                  <TableCell align="center"><DeleteOutlineOutlinedIcon/></TableCell>
+                  {editingRow._id !== row._id && <TableCell align="center">{row.roomNumber}</TableCell>}
+                  {editingRow._id === row._id && <TableCell align="center">
+                    <TextField required id="standard-required" label="Room Number" name="roomNumber" value={editingRow.roomNumber} onChange={handleInputChange}/>
+                  </TableCell>}
+                  {editingRow._id !== row._id && <TableCell align="center">{row.roomType}</TableCell>}
+                  {editingRow._id === row._id && <TableCell align="center">
+                  <FormControl style={{width:"100%"}}>
+                    <InputLabel id="demo-simple-select-label">Room Type</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      required
+                      name="roomType"
+                      value={newDoc.roomType}
+                      onChange={handleInputChange}
+                      >
+                      {roomTypes.map(el=><MenuItem value={el.roomType}>{el.roomType}</MenuItem>)}
+                    </Select>
+                  </FormControl>
+                  </TableCell>}
+                  {editingRow._id !== row._id && <TableCell align="center"><EditOutlinedIcon style={{cursor:"pointer"}} onClick={()=>handleEdit(row)}/></TableCell>}
+                  {editingRow._id === row._id && <TableCell align="center">
+                    <ReplayOutlinedIcon style={{cursor:"pointer"}} onClick={handleUndo}/>
+                    <SaveOutlinedIcon style={{cursor:"pointer"}} onClick={handleUpdate}/>
+                  </TableCell>}
+                  <TableCell align="center"><DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(row)}/></TableCell>
                 </TableRow>
               ))}
             </TableBody>

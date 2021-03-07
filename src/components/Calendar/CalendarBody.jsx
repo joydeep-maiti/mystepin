@@ -56,6 +56,11 @@ const useStyles = makeStyles(theme => ({
   },
   roomPop: {
     position:"absolute",
+    bottom:"26px",
+    fontWeight: 600
+  },
+  roomTypePop: {
+    position:"absolute",
     bottom:"6px",
     fontWeight: 600
   }
@@ -167,6 +172,14 @@ const getStandardCell = (...argument) => {
             content={arg.room.roomNumber}
             popoverContent={
               arg.room.roomNumber
+            }
+          />
+        </div>}
+        {arg.view=="day" && <div className={arg.classes.roomTypePop}>
+          <Popover
+            content={arg.room.roomType}
+            popoverContent={
+              arg.room.roomType
             }
           />
         </div>}

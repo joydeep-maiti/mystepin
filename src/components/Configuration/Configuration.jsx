@@ -16,20 +16,6 @@ import RoomCategory from "../RoomCategory/RoomCategory";
 import SeasonMaster from "../SeasonMaster/SeasonMaster";
 import RateMaster from "../RateMaster/RateMaster";
 
-const rateData = {
-  _id:"604490bd794f4b0b55171a7d",
-  roomType:"Non AC",
-  planType:"AP",
-  extraRate:500,
-  rate:1000,
-  seasonId:"5d3edd4c1c9d4400006bc08f",
-  seasonDetails: [{
-    season:"Diwali"
-  }]
-}
-
-
-
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 

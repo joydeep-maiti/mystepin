@@ -160,6 +160,7 @@ const Dashboard = props => {
 
   const handleDateChange = (date) => {
     // console.log("mmd",moment(date).toDate())
+    setView('day')
     setCurrentDateObj(utils.getDateObj(utils.getDate(date)));
     setCurrentDate(utils.getDate(date));
   };

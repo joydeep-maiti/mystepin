@@ -14,6 +14,21 @@ import Taxes from "../Taxes/Taxes";
 import Rooms from "../Rooms/Rooms";
 import RoomCategory from "../RoomCategory/RoomCategory";
 import SeasonMaster from "../SeasonMaster/SeasonMaster";
+import RateMaster from "../RateMaster/RateMaster";
+
+const rateData = {
+  _id:"604490bd794f4b0b55171a7d",
+  roomType:"Non AC",
+  planType:"AP",
+  extraRate:500,
+  rate:1000,
+  seasonId:"5d3edd4c1c9d4400006bc08f",
+  seasonDetails: [{
+    season:"Diwali"
+  }]
+}
+
+
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -61,8 +76,8 @@ const useStyles = makeStyles(theme => ({
   span: {
     color: "#f50057"
   },
-  tabDiv:{
-    padding:"20px"
+  tabDiv: {
+    padding: "20px"
   }
 }));
 
@@ -97,16 +112,16 @@ const Configuration = () => {
         </Tabs>
       </AppBar>
       <TabPanel className={classes.tabDiv} value={value} index={0}>
-        <Taxes/>
+        <Taxes />
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={1}>
-        <Rooms/>
+        <Rooms />
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={2}>
         <RoomCategory />
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={3}>
-      Rate Master
+        <RateMaster />
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={4}>
         <SeasonMaster />

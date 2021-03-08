@@ -23,6 +23,13 @@ const roomTypes = [
   { label: "Dormitory", value: "Dormitory" }
 ];
 
+const proofType=[
+  {label:"Aadhar" ,value:"Aadhar"},
+  {label:"Passport" ,value:"Passport"},
+  {label:"Pancard" ,value:"Pancard"},
+  {label:"Voter_Id" ,value:"Voter_Id"}
+];
+
 const BookingFormLayout = ({
   location,
   history,
@@ -47,6 +54,8 @@ const BookingFormLayout = ({
     contactNumber: "",
     rooms: [],
     roomCharges: "",
+    Idproof:"",
+    proofs:[proofType],
     advance: "",
     bookingDate: null,
     status: {
@@ -205,7 +214,7 @@ const BookingFormLayout = ({
       setData(updatedData);
       setAvailableRooms(availableRooms);
       setOpenDatePicker(newOpenDatePicker);
-    }, 10);
+    });
   };
 
   const handleDatePicker = id => {
@@ -235,6 +244,19 @@ const BookingFormLayout = ({
     setErrors(newErrors);
   };
 
+  const handleSelectChange1=(event,index)=>{
+    let newErrors = { ...errors };
+    if (newErrors.proofs)
+      newErrors.proofs = newErrors.proofs.filter(error => error.index !== index);
+console.log(event.target.value);
+const proofs=event.target.value;
+console.log(proofs)
+    setData({ ...data, proofs });
+    setErrors(newErrors);
+    // console.log(newErrors);
+    console.log(proofs);
+   }
+
   const handleFormSubmit = event => {
     event.preventDefault();
     const errors = checkForErrors();
@@ -247,6 +269,7 @@ const BookingFormLayout = ({
     };
     if (!isEdit) {
       bookingData["bookingDate"] = utils.getDate();
+      console.log(bookingData);
       createBooking(bookingData);
     } else {
       updateBooking(bookingData);
@@ -326,6 +349,7 @@ const BookingFormLayout = ({
               onDatePickerChange={handleDatePickerChange}
               onInputChange={handleInputChange}
               onSelectChange={handleSelectChange}
+              onSelectChange1={handleSelectChange1}
               onFormSubmit={handleFormSubmit}
               onAddRoom={handleAddRoom}
               onDeleteRoom={handleDeleteRoom}
@@ -333,6 +357,7 @@ const BookingFormLayout = ({
               availableRooms={availableRooms}
               errors={errors}
               options={roomTypes}
+              options1={proofType}
               shouldDisable={shouldDisable}
               onBack={handleBack}
               openDatePicker={openDatePicker}

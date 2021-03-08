@@ -44,7 +44,10 @@ export default {
     rooms: Joi.array()
       .items(roomsSchema)
       .unique()
+      .required(),
+      Idproof: Joi.string()
       .required()
+      .label("ID_Proof"),
   },
   billingFormSchema: {
     cash: Joi.number(),

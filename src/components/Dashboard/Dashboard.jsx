@@ -334,8 +334,8 @@ const Dashboard = props => {
                       <FormControl component="fieldset" className={classes.formControl}>
                         {/* <FormLabel component="legend">View</FormLabel> */}
                         <RadioGroup aria-label="view" style={{ flexDirection: "row" }} name="view" value={view} onChange={handleViewChange}>
-                          <FormControlLabel value="day" control={<Radio />} label="Day View" />
-                          <FormControlLabel value="month" control={<Radio />} label="Month view" />
+                          <FormControlLabel value="day" control={<Radio style={{color:"#0088bc"}}/>} label="Day View" />
+                          <FormControlLabel value="month" control={<Radio style={{color:"#0088bc"}} />} label="Month view" />
                           <MuiPickersUtilsProvider utils={DateFnsUtils} 
                           style={{ marginLeft: "1rem"}}>
                           <KeyboardDatePicker

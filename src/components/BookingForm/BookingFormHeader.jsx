@@ -29,8 +29,8 @@ const BookingFormHeader = props => {
   return (
     <div className={classes.formHeader}>
       <AppBar position="static">
-        <Toolbar variant="dense">
-          <Typography variant="h6" className={classes.formTitle}>
+        <Toolbar variant="dense" style={{background:"#0088bc"}}>
+          <Typography variant="h6" className={classes.formTitle} >
             Booking
           </Typography>
           <Tooltip title="Edit">

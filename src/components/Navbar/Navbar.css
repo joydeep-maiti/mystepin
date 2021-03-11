@@ -1,3 +1,14 @@
-.bg-color{
-    background-color: red;
+.nav-style{
+    background-color:#ff8b00;
+}
+
+.nav-style Button{
+    height: 65px;
+    margin-right: 10px;
+    font-weight: bold;
+    
+}
+
+.nav-style Button:hover{
+    background-color: #d83f1f;
 }

@@ -35,14 +35,14 @@ const HeaderNavbar = ({
   return (
     <div className={classes.root}>
       <AppBar position="static">
-        <Toolbar className="bg-color">
+        <Toolbar className="nav-style">
           <Typography variant="h6" className={classes.title}>
             <div onClick={onRedirectFromNavbar} className={classes.stepIn}>
               StepInn
             </div>
           </Typography>
           <Button
-            className={classes.buttonTaxes}
+            className="button-bg"
             color="inherit"
             onClick={() => props.history.push("/config")}
           >

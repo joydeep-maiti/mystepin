@@ -12,7 +12,7 @@ import "./CalendarHeader.scss";
 const useStyles = makeStyles(theme => ({
   root: {},
   appBar: {
-    backgroundColor: "#9674AF"
+    backgroundColor: "#0088bc"
   },
   menuButton: {
     marginRight: theme.spacing(2)

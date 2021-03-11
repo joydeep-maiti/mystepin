@@ -354,8 +354,10 @@ const Dashboard = props => {
                           </MuiPickersUtilsProvider>
                         </RadioGroup>
                       </FormControl>
-                      <h4 style={{ marginTop: "40px",paddingRight:'10px'}}>{`Occupied Rooms : ${occupiedRooms.length}`}</h4>
-                      <h4 style={{ marginTop: "40px",color:"#0088bc"}}>{`Booked Rooms : ${bookedRooms.length}`}</h4>
+                      <div style={{marginRight:"100px"}}>
+                      <h4 style={{ marginTop: "40px"}}>{`Occupied Rooms : ${occupiedRooms.length}`}</h4>
+                      <h4 style={{color:"#0088bc"}}>{`Booked Rooms : ${bookedRooms.length}`}</h4>
+                      </div>
                     </div>
                   </div>
                   <Calendar

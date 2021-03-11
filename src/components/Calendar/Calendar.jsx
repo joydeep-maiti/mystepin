@@ -4,8 +4,6 @@ import CalendarBody from "./CalendarBody";
 // import Dialog from "./../../common/Dialog/Dialog";
 import utils from "./../../utils/utils";
 import moment from "moment";
-
-
 import "./Calendar.scss";
 
 
@@ -20,15 +18,10 @@ const Calendar = props => {
   } = props;
 
   // console.log("props",props)
-
   const [title, setTitle] = useState("");
   const [rows, setRows] = useState([]);
-
-
   let tempRows = [];
-  
-
-  useEffect(() => {
+   useEffect(() => {
     console.log("props",props)
     const title = getTitle(currentDate);
     setTitle(title);

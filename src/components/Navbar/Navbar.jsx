@@ -4,10 +4,13 @@ import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
 import POSMenu from "../POS/POSMenu";
 import { withRouter } from "react-router-dom";
 import './Navbar.css'
+import BuildIcon from '@material-ui/icons/Build';
+import RefreshIcon from '@material-ui/icons/Refresh';
 const useStyles = makeStyles(theme => ({
   stepIn: {
     display: "inline-block",
-    cursor: "pointer"
+    cursor: "pointer",
+    fontWeight:'bold'
   },
   root: {
     position: "fixed",
@@ -46,12 +49,14 @@ const HeaderNavbar = ({
             color="inherit"
             onClick={() => props.history.push("/config")}
           >
+            <BuildIcon/>
             Configuration
           </Button>
           {path === "/" && (
             <React.Fragment>
               <POSMenu showPOSDialog={showPOSDialog} />
               <Button color="inherit" onClick={onRefresh}>
+                <RefreshIcon/>
                 Refresh
               </Button>
             </React.Fragment>

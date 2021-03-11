@@ -17,13 +17,14 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 20,
-    maxWidth:"500px"
+    maxWidth:"500px",
+    backgroundColor: 'white'
   },
   inputItems: {
     width: "70%"
   },
   span: {
-    color: "#f50057"
+    color: "#56B1EE"
   }
 }));
 
@@ -46,7 +47,7 @@ const Taxes = ({ onClose }) => {
   return (
     <React.Fragment>
       <DialogTitle>Tax Slabs</DialogTitle>
-      {loading && <Loader color="primary" />}
+      {loading && <Loader color="#56B1EE" />}
       <DialogContent>
         {taxSlabs.map(taxInfo => (
           <div key={taxInfo._id} className={classes.formGroup}>

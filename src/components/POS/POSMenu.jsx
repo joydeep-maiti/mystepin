@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-
+import ReceiptIcon from '@material-ui/icons/Receipt';
 import { Menu, MenuItem, Button } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
@@ -35,6 +35,7 @@ const POSMenu = ({ showPOSDialog }) => {
         color="inherit"
         onClick={event => handleOpenPOSMenu(event)}
       >
+        <ReceiptIcon/>
         POS
       </Button>
       <Menu

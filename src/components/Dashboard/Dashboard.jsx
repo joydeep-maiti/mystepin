@@ -50,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
     width: "65%",
     marginLeft: "auto",
     marginRight: "50px"
+    
   }
 }));
 
@@ -275,7 +276,7 @@ const Dashboard = props => {
           )}
         </Dialog>
 
-        <div className="subContainer">
+        <div className="subContainer"  >
           <Switch>
             <Route
               path={["/booking/newBooking", "/booking/viewBooking"]}
@@ -316,8 +317,8 @@ const Dashboard = props => {
               exact
               render={props => (
                 <>
-                <div>
-                  <div className={classes.selectDiv}>
+                <div style={{backgroundColor:'#F3DB6F'}}>
+                  <div className={classes.selectDiv} >
                     {/* <FormControl className={classes.formControl}>
                       <InputLabel id="demo-simple-select-label">View</InputLabel>
                       <Select

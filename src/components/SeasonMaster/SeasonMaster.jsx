@@ -51,7 +51,7 @@ const useStyles = makeStyles(theme => ({
     width: "70%"
   },
   span: {
-    color: "#f50057"
+    color: "#56B1EE"
   },
   table: {
     // maxWidth: 650,

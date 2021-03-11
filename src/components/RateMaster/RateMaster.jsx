@@ -64,7 +64,7 @@ const useStyles = makeStyles(theme => ({
     width: "70%"
   },
   span: {
-    color: "#f50057"
+    color: "#56B1EE"
   },
   table: {
     // maxWidth: 650,
@@ -269,11 +269,11 @@ const RateMaster = ({ onClose }) => {
 
           <Button 
           type="submit" 
-          variant="contained" color="primary">
+          variant="contained" color="#56B1EE">
             ADD
           </Button>
         </form>
-        {loading && <Loader color="primary" />}
+        {loading && <Loader color="#56B1EE" />}
         <TableContainer className={classes.table} component={Paper}>
           <Table className={classes.table} size="small" stickyHeader aria-label="sticky table">
             <TableHead>

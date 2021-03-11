@@ -74,7 +74,7 @@ const Calendar = props => {
     bookings &&
       bookings.forEach(booking => {
         let { checkIn, checkOut, months } = booking;
-        const color = "#f1d1d0";
+        const color = "#F3DB6F";
         // const color = utils.generateRandomColor();
         if (months.length > 1) {
           const updatedValue = getUpdatedValues(booking, dateObj);
@@ -259,7 +259,8 @@ const Calendar = props => {
   };
 
   return (
-    <div className="calendar__container">
+  
+  <div className="calendar__container" style={{backgroundColor:'#F3DB6F'}}>
       <CalendarHeader
         title={title}
         onChange={handleChange}

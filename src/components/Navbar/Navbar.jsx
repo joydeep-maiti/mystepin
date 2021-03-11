@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
 import POSMenu from "../POS/POSMenu";
 import { withRouter } from "react-router-dom";
-
+import './Navbar.css'
 const useStyles = makeStyles(theme => ({
   stepIn: {
     display: "inline-block",
@@ -35,7 +35,7 @@ const HeaderNavbar = ({
   return (
     <div className={classes.root}>
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar className="bg-color">
           <Typography variant="h6" className={classes.title}>
             <div onClick={onRedirectFromNavbar} className={classes.stepIn}>
               StepInn

@@ -182,7 +182,7 @@ const RoomCategory = ({ onClose }) => {
             ADD
           </Button>
         </form>
-        {loading && <Loader color="inherit" />}
+        {loading && <Loader color="#56B1EE" />}
         <TableContainer className={classes.table} component={Paper}>
           <Table className={classes.table} size="small" stickyHeader aria-label="sticky table">
             <TableHead>

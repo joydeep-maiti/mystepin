@@ -142,11 +142,13 @@ const Rooms = ({ onClose }) => {
           <TextField required id="standard-required" label="Room Type" name="roomType" onChange={handleInput}/>
           <Button 
           type="submit" 
-          variant="contained" color="primary">
+          variant="contained" 
+          style={{backgroundColor:"#56B1EE",color:'white'}}          
+          >
             ADD
           </Button>
         </form>
-        {loading && <Loader color="primary" />}
+        {loading && <Loader color="#56B1EE" />}
         <TableContainer className={classes.table} component={Paper}>
           <Table className={classes.table} size="small" stickyHeader aria-label="sticky table">
             <TableHead>

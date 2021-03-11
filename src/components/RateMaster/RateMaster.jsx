@@ -266,7 +266,6 @@ const RateMaster = ({ onClose }) => {
           </FormControl>
           <TextField type="number" required id="standard-required" label="Rate" name="rate" onChange={handleInput}/>
           <TextField type="number" required id="standard-required" label="Extra Rate" name="extraRate" onChange={handleInput}/>
-
           <Button 
           type="submit" 
           variant="contained" color="#56B1EE">

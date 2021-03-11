@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
     width: "70%"
   },
   span: {
-    color: "#56B1EE"
+    color: "#0088bc"
   }
 }));
 
@@ -47,7 +47,7 @@ const Taxes = ({ onClose }) => {
   return (
     <React.Fragment>
       <DialogTitle>Tax Slabs</DialogTitle>
-      {loading && <Loader color="#56B1EE" />}
+      {loading && <Loader color="#0088bc" />}
       <DialogContent>
         {taxSlabs.map(taxInfo => (
           <div key={taxInfo._id} className={classes.formGroup}>

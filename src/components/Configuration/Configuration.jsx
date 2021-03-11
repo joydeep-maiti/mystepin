@@ -63,7 +63,7 @@ const useStyles = makeStyles(theme => ({
     color: "#f50057"
   },
   tabDiv: {
-    padding: "20px"
+    padding: '0px 20px'
   }
 }));
 

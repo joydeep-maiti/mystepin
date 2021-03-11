@@ -317,7 +317,7 @@ const Dashboard = props => {
               exact
               render={props => (
                 <>
-                  <div style={{ backgroundColor: '#F3DB6F' }}>
+                  <div style={{ backgroundColor: '#D6EAF8' }}>
                     <div className={classes.selectDiv} >
                       {/* <FormControl className={classes.formControl}>
                       <InputLabel id="demo-simple-select-label">View</InputLabel>
@@ -336,24 +336,26 @@ const Dashboard = props => {
                         <RadioGroup aria-label="view" style={{ flexDirection: "row" }} name="view" value={view} onChange={handleViewChange}>
                           <FormControlLabel value="day" control={<Radio />} label="Day View" />
                           <FormControlLabel value="month" control={<Radio />} label="Month view" />
-                          <MuiPickersUtilsProvider utils={DateFnsUtils} style={{ marginLeft: "1rem" }}>
-                            <KeyboardDatePicker
+                          <MuiPickersUtilsProvider utils={DateFnsUtils} 
+                          style={{ marginLeft: "1rem"}}>
+                          <KeyboardDatePicker
                               disableToolbar
                               format="MM/dd/yyyy"
                               margin="normal"
                               id="date-picker-dialog"
                               label="Date picker inline"
-                              value={currentDate}
+                              value={currentDate}              
                               onChange={handleDateChange}
                               KeyboardButtonProps={{
                                 'aria-label': 'change date',
                               }}
-                              style={{ marginLeft: "0.5rem" }}
+                              style={{ marginLeft: "0.5rem",width:'130px'}}
                             />
                           </MuiPickersUtilsProvider>
                         </RadioGroup>
                       </FormControl>
-                      <h4 style={{ marginTop: "40px", paddingRight: "20px" }}>{`Occupied Rooms : ${occupiedRooms.length},  Booked Rooms : ${bookedRooms.length}`}</h4>
+                      <h4 style={{ marginTop: "40px",paddingRight:'10px'}}>{`Occupied Rooms : ${occupiedRooms.length}`}</h4>
+                      <h4 style={{ marginTop: "40px",color:"#0088bc"}}>{`Booked Rooms : ${bookedRooms.length}`}</h4>
                     </div>
                   </div>
                   <Calendar

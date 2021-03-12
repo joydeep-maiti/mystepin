@@ -1,0 +1,14 @@
+.nav-style{
+    background-color:#0088bc;
+}
+
+.nav-style Button{
+    height: 65px;
+    margin-right: 10px;
+    font-weight: bold;
+    
+}
+
+.nav-style Button:hover{
+    background-color: #9674AF;
+}

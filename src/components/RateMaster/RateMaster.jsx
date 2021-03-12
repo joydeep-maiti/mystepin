@@ -64,10 +64,10 @@ const useStyles = makeStyles(theme => ({
     width: "70%"
   },
   span: {
-    color: "#f50057"
+    color: "#0088bc"
   },
   table: {
-    // maxWidth: 650,
+    maxWidth: 1400,
     maxHeight: "70vh"
   },
   roomsDiv:{
@@ -266,19 +266,18 @@ const RateMaster = ({ onClose }) => {
           </FormControl>
           <TextField type="number" required id="standard-required" label="Rate" name="rate" onChange={handleInput}/>
           <TextField type="number" required id="standard-required" label="Extra Rate" name="extraRate" onChange={handleInput}/>
-
           <Button 
           type="submit" 
-          variant="contained" color="primary">
+          variant="contained" color="#0088bc">
             ADD
           </Button>
         </form>
-        {loading && <Loader color="primary" />}
+        {loading && <Loader color="#0088bc" />}
         <TableContainer className={classes.table} component={Paper}>
           <Table className={classes.table} size="small" stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                <TableCell>Sl No.</TableCell>
+                <TableCell>ID</TableCell>
                 <TableCell align="center">Room Type</TableCell>
                 <TableCell align="center">Plan Type</TableCell>
                 <TableCell align="center">Season</TableCell>

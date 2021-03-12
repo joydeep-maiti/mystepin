@@ -46,8 +46,9 @@ const useStyles = makeStyles(theme => ({
   tableCell: {
     padding: 0,
     textAlign: "center",
-    borderRight: "1px solid #9e9e9e",
-    borderBottom: "1px solid #9e9e9e",
+    fontSize:"50px",
+    borderRight: "2px solid #9e9e9e",
+    borderBottom: "2px solid #9e9e9e",
     // width: "9%",
     "&:last-child": {
       padding: 0
@@ -57,11 +58,13 @@ const useStyles = makeStyles(theme => ({
   roomPop: {
     position:"absolute",
     bottom:"26px",
+    fontSize:"50px",
     fontWeight: 600
   },
   roomTypePop: {
     position:"absolute",
     bottom:"6px",
+    fontSize:"50px",
     fontWeight: 600
   }
 }));

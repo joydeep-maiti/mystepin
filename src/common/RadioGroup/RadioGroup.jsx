@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { FormControl, FormLabel, FormControlLabel } from "@material-ui/core";
-import { Radio, RadioGroup } from "@material-ui/core";
+import {Radio , RadioGroup } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
@@ -32,7 +32,7 @@ const CustomRadioGroup = props => {
             <FormControlLabel
               key={radio.value}
               value={radio.value}
-              control={<Radio />}
+              control={<Radio/>}
               label={radio.label}
             />
           ))}

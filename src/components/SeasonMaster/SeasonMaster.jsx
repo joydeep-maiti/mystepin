@@ -51,10 +51,10 @@ const useStyles = makeStyles(theme => ({
     width: "70%"
   },
   span: {
-    color: "#f50057"
+    color: "#0088bc"
   },
   table: {
-    // maxWidth: 650,
+    maxWidth:1400,
     maxHeight: "70vh"
   },
   roomsDiv:{
@@ -211,16 +211,17 @@ const SeasonMaster = ({ onClose }) => {
           </MuiPickersUtilsProvider>
           <Button 
           type="submit" 
-          variant="contained" color="primary">
+          variant="contained" 
+          style={{backgroundColor:"#0088bc",color:'white'}} >
             ADD
           </Button>
         </form>
-        {loading && <Loader color="primary" />}
+        {loading && <Loader color="#0088bc" />}
         <TableContainer className={classes.table} component={Paper}>
           <Table className={classes.table} size="small" stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                <TableCell>Sl No.</TableCell>
+                <TableCell>ID</TableCell>
                 <TableCell align="center">Season</TableCell>
                 <TableCell align="center">Start Date</TableCell>
                 <TableCell align="center">End Date</TableCell>

@@ -3,16 +3,20 @@ import { makeStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
 import POSMenu from "../POS/POSMenu";
 import { withRouter } from "react-router-dom";
-
+import './Navbar.css'
+import BuildIcon from '@material-ui/icons/Build';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import LocalHotelSharpIcon from '@material-ui/icons/LocalHotelSharp';
 const useStyles = makeStyles(theme => ({
   stepIn: {
     display: "inline-block",
-    cursor: "pointer"
+    cursor: "pointer",
+    fontWeight:'bold'
   },
   root: {
     position: "fixed",
     width: "100%",
-    zIndex: "1000"
+    zIndex: "1000",
   },
   title: {
     flexGrow: 1
@@ -35,23 +39,26 @@ const HeaderNavbar = ({
   return (
     <div className={classes.root}>
       <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" className={classes.title}>
+        <Toolbar className="nav-style">
+        < LocalHotelSharpIcon  style={{paddingRight:"10px",fontSize:"45px"}}/>
+          <Typography variant="h6" className={classes.title}>             
             <div onClick={onRedirectFromNavbar} className={classes.stepIn}>
               StepInn
             </div>
           </Typography>
           <Button
-            className={classes.buttonTaxes}
+            className="button-bg"
             color="inherit"
             onClick={() => props.history.push("/config")}
           >
+            <BuildIcon/>
             Configuration
           </Button>
           {path === "/" && (
             <React.Fragment>
               <POSMenu showPOSDialog={showPOSDialog} />
               <Button color="inherit" onClick={onRefresh}>
+                <RefreshIcon/>
                 Refresh
               </Button>
             </React.Fragment>

@@ -39,17 +39,18 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     marginTop: "20px",
     minWidth: 200,
-    display:"flex"
+    display: "flex"
   },
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
-  selectDiv:{
+  selectDiv: {
     display: "flex",
     justifyContent: "space-between",
     width: "65%",
     marginLeft: "auto",
     marginRight: "50px"
+
   }
 }));
 
@@ -113,7 +114,7 @@ const Dashboard = props => {
   };
 
   useEffect(() => {
-    
+
     let rooms = [];
     let bookedRooms = [];
     const filteredBookings = allBookings.filter(
@@ -121,15 +122,15 @@ const Dashboard = props => {
     );
     filteredBookings.forEach(booking => {
       // debugger
-      if(view==="day"){
+      if (view === "day") {
         const dates = utils.daysBetweenDates(booking.checkIn, booking.checkOut);
         const today = dates.find(el => moment(el).isSame(currentDate, 'day'))
-        if(today){
+        if (today) {
           booking.rooms.forEach(room => {
             rooms.push({ room, booking });
           });
         }
-      }else{
+      } else {
         booking.rooms.forEach(room => {
           rooms.push({ room, booking });
         });
@@ -138,22 +139,22 @@ const Dashboard = props => {
 
     allBookings.forEach(booking => {
       // debugger
-      if(view==="day"){
+      if (view === "day") {
         const dates = utils.daysBetweenDates(booking.checkIn, booking.checkOut);
         const today = dates.find(el => moment(el).isSame(currentDate, 'day'))
         // const today = moment(currentDate).isBetween(moment(booking.checkIn).subtract(1, 'd'), moment(booking.checkOut));
-        if(today){
+        if (today) {
           booking.rooms.forEach(room => {
             bookedRooms.push({ room, booking });
           });
         }
-      }else{
+      } else {
         booking.rooms.forEach(room => {
           bookedRooms.push({ room, booking });
         });
       }
     });
-    
+
     setOccupiedRooms(rooms);
     setBookedRooms(bookedRooms);
   }, [allBookings]);
@@ -270,12 +271,12 @@ const Dashboard = props => {
               allBookings={allBookings}
               title={posDialogTitle}
               onClose={() => handleDialog(dialog.contentOf)}
-              // onSnackbarEvent={handleSnackbarEvent}
+            // onSnackbarEvent={handleSnackbarEvent}
             />
           )}
         </Dialog>
 
-        <div className="subContainer">
+        <div className="subContainer"  >
           <Switch>
             <Route
               path={["/booking/newBooking", "/booking/viewBooking"]}
@@ -316,9 +317,9 @@ const Dashboard = props => {
               exact
               render={props => (
                 <>
-                <div>
-                  <div className={classes.selectDiv}>
-                    {/* <FormControl className={classes.formControl}>
+                  <div style={{ backgroundColor: '#D6EAF8' }}>
+                    <div className={classes.selectDiv} >
+                      {/* <FormControl className={classes.formControl}>
                       <InputLabel id="demo-simple-select-label">View</InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
@@ -330,44 +331,48 @@ const Dashboard = props => {
                         <MenuItem value="month">Month</MenuItem>
                       </Select>
                     </FormControl> */}
-                    <FormControl component="fieldset" className={classes.formControl}>
-                      {/* <FormLabel component="legend">View</FormLabel> */}
-                      <RadioGroup aria-label="view" style={{flexDirection:"row"}} name="view" value={view} onChange={handleViewChange}>
-                        <FormControlLabel value="day" control={<Radio />} label="Day View" />
-                        <FormControlLabel value="month" control={<Radio />} label="Month view" />
-                      <MuiPickersUtilsProvider  utils={DateFnsUtils} style={{marginLeft:"1rem"}}>
-                        <KeyboardDatePicker
-                          disableToolbar
-                          format="MM/dd/yyyy"
-                          margin="normal"
-                          id="date-picker-dialog"
-                          label="Date picker inline"
-                          value={currentDate}
-                          onChange={handleDateChange}
-                          KeyboardButtonProps={{
-                            'aria-label': 'change date',
-                          }}
-                          style={{marginLeft:"1rem"}}
-                          />
-                      </MuiPickersUtilsProvider>
-                          </RadioGroup>
-                    </FormControl>
-                    <h4 style={{marginTop:"20px", paddingRight:"20px"}}>{`Occupied Rooms: ${occupiedRooms.length},  Booked Rooms: ${bookedRooms.length}`}</h4>
+                      <FormControl component="fieldset" className={classes.formControl}>
+                        {/* <FormLabel component="legend">View</FormLabel> */}
+                        <RadioGroup aria-label="view" style={{ flexDirection: "row" }} name="view" value={view} onChange={handleViewChange}>
+                          <FormControlLabel value="day" control={<Radio style={{color:"#0088bc"}}/>} label="Day View" />
+                          <FormControlLabel value="month" control={<Radio style={{color:"#0088bc"}} />} label="Month view" />
+                          <MuiPickersUtilsProvider utils={DateFnsUtils} 
+                          style={{ marginLeft: "1rem"}}>
+                          <KeyboardDatePicker
+                              disableToolbar
+                              format="MM/dd/yyyy"
+                              margin="normal"
+                              id="date-picker-dialog"
+                              label="Date picker inline"
+                              value={currentDate}              
+                              onChange={handleDateChange}
+                              KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                              }}
+                              style={{ marginLeft: "0.5rem",width:'130px'}}
+                            />
+                          </MuiPickersUtilsProvider>
+                        </RadioGroup>
+                      </FormControl>
+                      <div style={{marginRight:"100px"}}>
+                      <h4 style={{ marginTop: "40px"}}>{`Occupied Rooms : ${occupiedRooms.length}`}</h4>
+                      <h4 style={{color:"#0088bc"}}>{`Booked Rooms : ${bookedRooms.length}`}</h4>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <Calendar
-                  allRooms={allRooms}
-                  currentDate={currentDate}
-                  currentDateObj={currentDateObj}
-                  onFormRedirect={handleFormRedirect}
-                  allBookings={allBookings}
-                  loading={loading}
-                  onLoading={handleLoading}
-                  setBookings={setBookings}
-                  setDateObj={setDateObj}
-                  {...props}
-                  view={view}
-                />
+                  <Calendar
+                    allRooms={allRooms}
+                    currentDate={currentDate}
+                    currentDateObj={currentDateObj}
+                    onFormRedirect={handleFormRedirect}
+                    allBookings={allBookings}
+                    loading={loading}
+                    onLoading={handleLoading}
+                    setBookings={setBookings}
+                    setDateObj={setDateObj}
+                    {...props}
+                    view={view}
+                  />
                 </>
               )}
             />

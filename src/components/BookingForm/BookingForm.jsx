@@ -199,8 +199,8 @@ getInputArgObj("Idproof", "Id_proof", "text", shouldDisable)
             id="panel1a-header"
             className={classes.panelHeader}
           >
-            <div className={classes.expansionPanelSummary}>
-              <Typography className={classes.panelLabel}>Room</Typography>
+            <div className={classes.expansionPanelSummary} >
+              <Typography className={classes.panelLabel} >Room</Typography>
               <Fab
                 size="small"
                 color="primary"

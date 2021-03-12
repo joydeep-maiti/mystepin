@@ -4,8 +4,6 @@ import CalendarBody from "./CalendarBody";
 // import Dialog from "./../../common/Dialog/Dialog";
 import utils from "./../../utils/utils";
 import moment from "moment";
-
-
 import "./Calendar.scss";
 
 
@@ -20,15 +18,10 @@ const Calendar = props => {
   } = props;
 
   // console.log("props",props)
-
   const [title, setTitle] = useState("");
   const [rows, setRows] = useState([]);
-
-
   let tempRows = [];
-  
-
-  useEffect(() => {
+   useEffect(() => {
     console.log("props",props)
     const title = getTitle(currentDate);
     setTitle(title);
@@ -74,7 +67,7 @@ const Calendar = props => {
     bookings &&
       bookings.forEach(booking => {
         let { checkIn, checkOut, months } = booking;
-        const color = "#f1d1d0";
+        const color = "#D6EAF8";
         // const color = utils.generateRandomColor();
         if (months.length > 1) {
           const updatedValue = getUpdatedValues(booking, dateObj);
@@ -259,7 +252,8 @@ const Calendar = props => {
   };
 
   return (
-    <div className="calendar__container">
+  
+  <div className="calendar__container" style={{backgroundColor:'#D6EAF8'}}>
       <CalendarHeader
         title={title}
         onChange={handleChange}

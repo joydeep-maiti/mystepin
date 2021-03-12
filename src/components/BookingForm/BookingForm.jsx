@@ -23,12 +23,14 @@ const BookingForm = props => {
     onInputChange: inputfun,
     onDatePickerChange: datefun,
     onSelectChange: selectfun,
+    onSelectChange1: selectfun1,
     onAddRoom,
     onDeleteRoom,
     availableRooms,
     data,
     errors,
     options,
+    options1,
     onBack,
     shouldDisable,
     openDatePicker,
@@ -164,6 +166,29 @@ const BookingForm = props => {
           getInputArgObj("advance", "Advance", "number", shouldDisable)
         )}
       </div>
+      <div className="form-group">
+      
+      
+     
+                
+      {FormUtils.renderproof({
+        id: "proofType",
+        label: "proof Type",
+        value: options1.value,
+        onChange: event => selectfun1(event),
+        options1,
+        
+        
+        disabled: shouldDisable
+      })}
+{FormUtils.renderInput(
+getInputArgObj("Idproof", "Id_proof", "text", shouldDisable)
+)}
+
+
+
+</div>
+
       <div className={classes.panel}>
         <ExpansionPanel
           expanded={expanded === "panel1"}

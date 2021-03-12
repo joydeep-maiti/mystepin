@@ -4,6 +4,7 @@ import { Button } from "@material-ui/core";
 
 import Input from "../common/Input/Input";
 import Select from "../common/Select/Select";
+import Select1 from "../common/Select/Select1";
 import DatePicker from "../common/DatePicker/DatePicker";
 import RadioGroup from "../common/RadioGroup/RadioGroup";
 
@@ -67,6 +68,7 @@ const renderDatepicker = args => <DatePicker name={args.id} {...args} />;
           options: array  => [{value: any, label: string}]
 */
 const renderSelect = args => <Select name={args.id} {...args} />;
+const renderproof = args => <Select1 name={args.id} {...args} />;
 
 /*
   renderButton
@@ -106,5 +108,6 @@ export default {
   renderSelect,
   renderDatepicker,
   renderButton,
-  renderRadioGroup
+  renderRadioGroup,
+  renderproof
 };

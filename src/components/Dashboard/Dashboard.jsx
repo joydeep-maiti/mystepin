@@ -122,14 +122,22 @@ const Dashboard = props => {
     );
     filteredBookings.forEach(booking => {
       // debugger
+      let { checkIn, checkOut, months } = booking;
       if (view === "day") {
-        const dates = utils.daysBetweenDates(booking.checkIn, booking.checkOut);
+        if (months.length > 1) {
+          const updatedValue = getUpdatedValues(booking, currentDateObj);
+          checkIn = updatedValue.checkIn;
+          checkOut = updatedValue.checkOut;
+        }
+        const dates = utils.daysBetweenDates(checkIn, checkOut);
         const today = dates.find(el => moment(el).isSame(currentDate, 'day'))
         if (today) {
+          // console.log("setOccupiedRooms", booking)
           booking.rooms.forEach(room => {
             rooms.push({ room, booking });
           });
         }
+        // console.log("checkIn, checkOut",checkIn, checkOut,)
       } else {
         booking.rooms.forEach(room => {
           rooms.push({ room, booking });
@@ -158,6 +166,25 @@ const Dashboard = props => {
     setOccupiedRooms(rooms);
     setBookedRooms(bookedRooms);
   }, [allBookings]);
+
+  const getUpdatedValues = (booking, dateObj) => {
+    let { checkIn, checkOut, months } = booking;
+    const { month, year, days } = dateObj;
+    const index = months.findIndex(month => month.month === dateObj.month);
+
+    if (index === 0) {
+      checkIn = utils.getDate(checkIn);
+      checkOut = new Date(`${month + 1}/${days}/${year}`);
+    } else if (index === months.length - 1) {
+      checkIn = new Date(`${month + 1}/1/${year}`);
+      checkOut = utils.getDate(checkOut);
+    } else {
+      checkIn = new Date(`${month + 1}/1/${year}`);
+      checkOut = new Date(`${month + 1}/${days}/${year}`);
+    }
+
+    return { checkIn, checkOut };
+  };
 
   const handleDateChange = (date) => {
     // console.log("mmd",moment(date).toDate())

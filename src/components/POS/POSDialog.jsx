@@ -5,6 +5,9 @@ import POSForm from "./POSForm";
 import { DialogTitle } from "@material-ui/core";
 
 const POSDialog = ({ allBookings, onClose, title, onSnackbarEvent }) => {
+
+  // console.log("POSDialog",allBookings,title)
+
   return (
     <React.Fragment>
       <DialogTitle>POS-{title}</DialogTitle>

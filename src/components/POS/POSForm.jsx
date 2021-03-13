@@ -32,7 +32,7 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
   const handleSnackbarEvent = useContext(SnackBarContext);
 
   useEffect(() => {
-    debugger
+    
     let POSData = [];
     const filteredBookings = allBookings.filter(
       booking => booking.status.checkedIn && !booking.status.checkedOut
@@ -114,7 +114,7 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
     );
     const options = filteredArray.map(item => ({
       label: `${item.booking.firstName} ${item.booking.lastName}`,
-      value: item.booking.bookingId
+      value: item.booking._id
     }));
 
     setBookingOptions(options);
@@ -128,11 +128,12 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
 
     const bookingId = input.value;
     const filteredObj = posData.find(
-      item => item.booking.bookingId === bookingId
+      item => item.booking._id === bookingId
     );
     const minDate = utils.getDate(filteredObj.booking.checkIn);
 
-    setData({ ...data, date: minDate, bookingId: bookingId });
+    setData({ ...data, date: minDate, _id: bookingId });
+    console.log("bookingId",bookingId)
     setMinDate(minDate);
     setErrors(updatedErrors);
   };
@@ -149,9 +150,9 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
     const errors = checkForErrors();
     if (errors) return;
 
-    const { bookingId, date, amount, remarks } = data;
+    const { _id, date, amount, remarks } = data;
     const booking = {
-      ...allBookings.find(booking => booking.bookingId === bookingId)
+      ...allBookings.find(booking => booking._id === _id)
     };
 
     if (booking.pos) {
@@ -194,7 +195,7 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
             id: "bookingId",
             label: "Booking Id",
             name: "bookingId",
-            value: data.bookingId,
+            value: data._id,
             onChange: event => setBookingId(event),
             options: bookingOptions,
             error: errors.bookingId,

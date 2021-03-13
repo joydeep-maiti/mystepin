@@ -42,6 +42,23 @@ const BillingForm = props => {
     payment
   } = props;
 
+  console.log("booking",booking)
+
+  const [postotal, setPosTotal] = React.useState(0)
+
+  React.useEffect(()=>{
+    if(!booking.pos) 
+      return
+    let expense = 0
+    Object.keys(booking.pos).forEach(el=>{
+      debugger
+      booking.pos[el].forEach(e =>{
+        expense += Number(e.amount)
+      })
+    })
+    setPosTotal(expense)
+  },[booking])
+
   const renderInputItems = (label, value, inputId) => {
     return (
       <div className={classes.formGroup}>
@@ -120,7 +137,7 @@ const BillingForm = props => {
         <div>
           {renderInputItems("Room Charges", booking.roomCharges, "roomCharges")}
           {renderInputItems("Advance", booking.advance, "advance")}
-          {renderInputItems("Misllaneous", "0", "misllaneous")}
+          {renderInputItems("Misllaneous", postotal, "misllaneous")}
           {renderInputItems("Balance", booking.balance, "balance")}
         </div>
         {/* <Divider className={classes.divider} /> */}

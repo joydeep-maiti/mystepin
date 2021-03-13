@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import SnackBarContext from "./../../context/snackBarContext";
 import { DialogActions, DialogContent, Button } from "@material-ui/core";
 
+import POSList from "./POSList";
 import bookingService from "../../services/bookingService";
 import FormUtils from "../../utils/formUtils";
 import utils from "../../utils/utils";
@@ -25,6 +26,7 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
   const [openDatePicker, setOpenDatePicker] = useState(false);
   const [minDate, setMinDate] = useState(utils.getDate());
   const [posData, setPosData] = useState([]);
+  const [pos, setPos] = useState({});
   const [bookingOptions, setBookingOptions] = useState([]);
   const [roomOptions, setRoomOptions] = useState([]);
   const [disable] = useState(false);
@@ -133,7 +135,8 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
     const minDate = utils.getDate(filteredObj.booking.checkIn);
 
     setData({ ...data, date: minDate, _id: bookingId });
-    console.log("bookingId",bookingId)
+    setPos(filteredObj.booking.pos)
+    // console.log("bookingId",bookingId)
     setMinDate(minDate);
     setErrors(updatedErrors);
   };
@@ -226,6 +229,9 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
           Save
         </Button>
       </DialogActions>
+      <POSList 
+        pos={pos[title]}
+      />
     </form>
   );
 };

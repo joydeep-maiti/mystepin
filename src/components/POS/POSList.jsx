@@ -9,6 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 import TableContainer from '@material-ui/core/TableContainer';
 import Paper from '@material-ui/core/Paper';
 import moment from "moment";
+import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 
 const POSList = (props) => {
 
@@ -24,6 +25,16 @@ const POSList = (props) => {
     return(<></>)
   }
 
+  const handleDelete = async (row) => {
+    // setLoading(true);
+    // const res = await roomService.deleteRoom(row);
+    // setLoading(false);
+    // if(res){
+    //   setLoading(true);
+    //   fetchData()
+    // }
+  }
+
   return (
     <DialogContent>
       POS List
@@ -34,6 +45,7 @@ const POSList = (props) => {
                   <TableCell align="center">Date</TableCell>
                   <TableCell align="center">Amount</TableCell>
                   <TableCell align="center">Remarks</TableCell>
+                  <TableCell align="center">Delete</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -41,9 +53,10 @@ const POSList = (props) => {
                 pos && pos.map(el => {
                   return(
                     <TableRow>
-                      <TableCell align="center">{moment(el.date).format("Do MMMM YYYY, h:mm a")}</TableCell>
+                      <TableCell align="center">{moment(el.date).format("Do MMMM YYYY")}</TableCell>
                       <TableCell align="center">{el.amount}</TableCell>
                       <TableCell align="center">{el.remarks}</TableCell>
+                      <TableCell align="center"><DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(el)}/></TableCell>
                     </TableRow>
                   )
                 })

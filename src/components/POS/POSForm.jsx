@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import SnackBarContext from "./../../context/snackBarContext";
-import { DialogActions, DialogContent, Button } from "@material-ui/core";
+import { DialogTitle,DialogActions, DialogContent, Button } from "@material-ui/core";
 
 import POSList from "./POSList";
 import bookingService from "../../services/bookingService";
@@ -27,6 +27,7 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
   const [minDate, setMinDate] = useState(utils.getDate());
   const [posData, setPosData] = useState([]);
   const [pos, setPos] = useState({});
+  const [guest, setGuest] = useState("");
   const [bookingOptions, setBookingOptions] = useState([]);
   const [roomOptions, setRoomOptions] = useState([]);
   const [disable] = useState(false);
@@ -114,42 +115,48 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
     const filteredArray = posData.filter(
       data => data.room.roomNumber === roomNo
     );
+    console.log("filteredArray",filteredArray)
     const options = filteredArray.map(item => ({
       label: `${item.booking.firstName} ${item.booking.lastName}`,
       value: item.booking._id
     }));
+    console.log("options",options)
 
     setBookingOptions(options);
-    setData({ ...data, roomNumber: roomNo });
+    setBookingId(options[0])
+    setData({ ...data, roomNumber: roomNo, _id: options[0].value });
     setErrors(updatedErrors);
   };
 
-  const setBookingId = ({ target: input }) => {
-    let updatedErrors = { ...errors };
-    delete updatedErrors[input.name];
+  const setBookingId = (option) => {
+    // let updatedErrors = { ...errors };
+    // delete updatedErrors[input.name];
 
-    const bookingId = input.value;
+    const bookingId = option.value;
     const filteredObj = posData.find(
       item => item.booking._id === bookingId
     );
     const minDate = utils.getDate(filteredObj.booking.checkIn);
 
-    setData({ ...data, date: minDate, _id: bookingId });
+    setData({ ...data, date: minDate, _id: option.value});
+    setGuest(option.label)
     setPos(filteredObj.booking.pos)
-    // console.log("bookingId",bookingId)
+    console.log("bookingId",data)
     setMinDate(minDate);
-    setErrors(updatedErrors);
+    // setErrors(updatedErrors);
   };
 
   const checkForErrors = () => {
     let errors = FormUtils.validate(data, schema);
     errors = errors || {};
+    console.log("errors, data",data,errors)
     setErrors(errors);
     return Object.keys(errors).length;
   };
 
   const onFormSubmit = async event => {
     event.preventDefault();
+    // console.log("in")
     const errors = checkForErrors();
     if (errors) return;
 
@@ -182,6 +189,8 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
 
   return (
     <form onSubmit={event => onFormSubmit(event)}>
+      
+      
       <DialogContent>
         <div className="form-group">
           {FormUtils.renderSelect({
@@ -194,15 +203,25 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
             error: errors.roomNumber,
             disabled: disable
           })}
-          {FormUtils.renderSelect({
+          {/* {FormUtils.renderInput({
             id: "bookingId",
             label: "Booking Id",
             name: "bookingId",
             value: data._id,
-            onChange: event => setBookingId(event),
-            options: bookingOptions,
+            // onChange: event => setBookingId(event),
+            // options: bookingOptions,
             error: errors.bookingId,
-            disabled: disable
+            disabled: true
+          })} */}
+          {FormUtils.renderInput({
+            id:"bookingId",
+            label:"Guest Name",
+            name: "bookingId",
+            type:"text",
+            value:guest,
+            // onChange: event => handleInputChange(event, id),
+            error: errors["id"],
+            disabled: true
           })}
         </div>
         <div className="form-group">

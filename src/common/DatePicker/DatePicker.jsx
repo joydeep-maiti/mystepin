@@ -10,12 +10,12 @@ const CustomDatePicker = ({ label, onChange, error, ...props }) => {
 
   return (
     <MuiPickersUtilsProvider utils={MomentUtils}>
-      <DateTimePicker
+      <DatePicker
         error={error && true}
         className={classes.root}
         disableToolbar
         variant="inline"
-        format="DD/MM/YYYY,HH:MM"
+        format="DD/MM/YYYY"
         margin="normal"
         id={label}
         label={label}

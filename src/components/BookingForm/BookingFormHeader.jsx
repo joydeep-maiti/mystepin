@@ -44,7 +44,6 @@ const BookingFormHeader = props => {
               <EditIcon />
             </IconButton>
           </Tooltip>
-
           {!status.checkedIn && (
             <Tooltip title="Cancel">
               <IconButton
@@ -58,6 +57,7 @@ const BookingFormHeader = props => {
               </IconButton>
             </Tooltip>
           )}
+          
           {!status.checkedIn && moment().toDate() >= moment(checkIn).toDate() && (
             <Tooltip title="Check In">
               <IconButton
@@ -67,7 +67,7 @@ const BookingFormHeader = props => {
                 color="inherit"
                 onClick={onCheckIn}
               >
-                <HotelIcon />
+                <HotelIcon/>
               </IconButton>
             </Tooltip>
           )}

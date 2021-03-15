@@ -268,7 +268,9 @@ const RateMaster = ({ onClose }) => {
           <TextField type="number" required id="standard-required" label="Extra Rate" name="extraRate" onChange={handleInput}/>
           <Button 
           type="submit" 
-          variant="contained" color="#0088bc">
+          variant="contained"
+          style={{backgroundColor:"#0088bc",color:'white'}}
+          >
             ADD
           </Button>
         </form>

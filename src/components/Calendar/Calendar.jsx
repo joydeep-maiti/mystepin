@@ -16,13 +16,12 @@ const Calendar = props => {
     currentDate,
     view
   } = props;
-
-  // console.log("props",props)
+   //console.log("props",props)
   const [title, setTitle] = useState("");
   const [rows, setRows] = useState([]);
   let tempRows = [];
    useEffect(() => {
-    console.log("props",props)
+    //console.log("props",props)
     const title = getTitle(currentDate);
     setTitle(title);
     props.onLoading(true);
@@ -67,16 +66,23 @@ const Calendar = props => {
     bookings &&
       bookings.forEach(booking => {
         let { checkIn, checkOut, months } = booking;
-        const color = "#D6EAF8";
-        // const color = utils.generateRandomColor();
+         let color="";
+         color= "#D6EAF8";
+        
+        
+
+       
+
+        //const color = utils.generateRandomColor();
         if (months.length > 1) {
           const updatedValue = getUpdatedValues(booking, dateObj);
           checkIn = updatedValue.checkIn;
-          checkOut = updatedValue.checkOut;
-        }
-
+          checkOut = updatedValue.checkOut;        
+         }        
         booking.rooms.forEach(bookedRoom => {
-          const res = allRooms.find(room => {
+          
+          const res = allRooms.find(room => {          
+            
             return room._id === bookedRoom._id;
           });
           if(res){
@@ -142,14 +148,13 @@ const Calendar = props => {
           ...rowsArray[rowIndex][dateNumber],
           booking,
           color
-        };
+        }; 
       });
     }
     
 
     tempRows = [...rowsArray];
   };
-
   const getTitle = date => {
     if(view === "day"){
       return `${moment(date)
@@ -236,7 +241,7 @@ const Calendar = props => {
   };
 
   const handleChange = value => {
-    console.log("value",value)
+        //console.log("value",value)
     let prevDate = new Date(dateObj.year, dateObj.month);
     let newDate = moment(prevDate).add(value, "M");
     let newDateObj = utils.getDateObj(newDate);
@@ -249,6 +254,7 @@ const Calendar = props => {
     props.setDateObj(newDateObj, newDate);
     props.onLoading(true);
     props.setBookings(newDateObj);
+
   };
 
   return (

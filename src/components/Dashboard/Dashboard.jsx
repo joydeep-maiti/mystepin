@@ -245,6 +245,7 @@ const Dashboard = props => {
   //Change color with Booking length
 
   let bookingcolor= bookedRooms.length > 0 ?"#0088bc":"#444";
+  let occupiedcolor=occupiedRooms.length > 0?'#1A5276':"#444";
 
   return (
     <SnackBarContext.Provider value={handleSnackbarEvent}>
@@ -359,7 +360,7 @@ const Dashboard = props => {
                         </RadioGroup>
                       </FormControl>
                       <div style={{marginRight:"100px"}}>
-                      <h4 style={{ marginTop: "40px",color:'#444'}}>{`Occupied Rooms : ${occupiedRooms.length}`}</h4>
+                      <h4 style={{ marginTop: "40px",color:occupiedcolor}}>{`Occupied Rooms : ${occupiedRooms.length}`}</h4>
                       <h4 style={{color:bookingcolor}}>{`Booked Rooms : ${bookedRooms.length}`}</h4>
                       </div>
                     </div>

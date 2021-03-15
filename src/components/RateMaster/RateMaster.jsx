@@ -218,6 +218,12 @@ const RateMaster = ({ onClose }) => {
       toDate:date
     })
   };
+  //Tables Color
+  const tablestyles={
+    color:'#0088bc',
+    fontWeight:"bold"
+   }
+
 
 
   return (
@@ -279,14 +285,14 @@ const RateMaster = ({ onClose }) => {
           <Table className={classes.table} size="small" stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell align="center">Room Type</TableCell>
-                <TableCell align="center">Plan Type</TableCell>
-                <TableCell align="center">Season</TableCell>
-                <TableCell align="center">Rate</TableCell>
-                <TableCell align="center">Extra Rate/Person</TableCell>
-                <TableCell align="center">Edit</TableCell>
-                <TableCell align="center">Delete</TableCell>
+                <TableCell style={tablestyles}>ID</TableCell>
+                <TableCell align="center" style={tablestyles}>Room Type</TableCell>
+                <TableCell align="center" style={tablestyles}>Plan Type</TableCell>
+                <TableCell align="center" style={tablestyles}>Season</TableCell>
+                <TableCell align="center" style={tablestyles}>Rate</TableCell>
+                <TableCell align="center" style={tablestyles}>Extra Rate/Person</TableCell>
+                <TableCell align="center" style={tablestyles}>Edit</TableCell>
+                <TableCell align="center" style={tablestyles}>Delete</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

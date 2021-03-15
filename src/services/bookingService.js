@@ -6,15 +6,16 @@ async function getBookings(monthObj) {
       `${http.baseUrl}/bookings/filterByMonth`,
       monthObj
     );
-
     return bookings;
   } catch (error) {
+    
     console.log(error);
   }
 }
 
 async function addBooking(booking) {
   try {
+
     return await http.post(`${http.baseUrl}/bookings/insert`, booking);
   } catch (error) {
     console.log(error);

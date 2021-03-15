@@ -62,18 +62,23 @@ const Calendar = props => {
 
   const showBookings = (dateObj, bookings, allRooms) => {
     tempRows = getTableRows(allRooms, dateObj);
-
+    console.log(bookings);
     bookings &&
       bookings.forEach(booking => {
-        let { checkIn, checkOut, months } = booking;
+        let { checkIn, checkOut, months , status} = booking;
+
+        
+        //Changing Color according to Booking && Checkedin
          let color="";
          color= "#D6EAF8";
-        
-        
 
-       
-
-        //const color = utils.generateRandomColor();
+         if(status.checkedIn){
+          color='#1A5276'
+         }
+         if(status.checkedOut){
+           color='white';
+         }
+          //const color = utils.generateRandomColor();
         if (months.length > 1) {
           const updatedValue = getUpdatedValues(booking, dateObj);
           checkIn = updatedValue.checkIn;

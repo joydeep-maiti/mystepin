@@ -152,7 +152,11 @@ const RoomCategory = ({ onClose }) => {
       [e.target.name]:e.target.value
     })
   }
-
+  //Styles to Table Headers
+  const tablestyles={
+   color:'#0088bc',
+   fontWeight:"bold"
+  }
   return (
     <React.Fragment>
       <DialogTitle>Rooms</DialogTitle>
@@ -187,11 +191,11 @@ const RoomCategory = ({ onClose }) => {
           <Table className={classes.table} size="small" stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell align="center">Room Number</TableCell>
-                <TableCell align="center">Room Type</TableCell>
-                <TableCell align="center">Edit</TableCell>
-                <TableCell align="center">Delete</TableCell>
+                <TableCell style={tablestyles}>ID</TableCell>
+                <TableCell align="center" style={tablestyles}>Room Number</TableCell>
+                <TableCell align="center" style={tablestyles}>Room Type</TableCell>
+                <TableCell align="center" style={tablestyles}>Edit</TableCell>
+                <TableCell align="center" style={tablestyles}>Delete</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

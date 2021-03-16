@@ -249,7 +249,7 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
         </Button>
       </DialogActions>
       <POSList 
-        pos={pos[title]}
+        pos={pos?pos[title]:null}
       />
     </form>
   );

@@ -169,6 +169,11 @@ const SeasonMaster = ({ onClose }) => {
       toDate:date
     })
   };
+  //Tables Color
+  const tablestyles={
+    color:'#0088bc',
+    fontWeight:"bold"
+   }
 
 
   return (
@@ -221,12 +226,12 @@ const SeasonMaster = ({ onClose }) => {
           <Table className={classes.table} size="small" stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell align="center">Season</TableCell>
-                <TableCell align="center">Start Date</TableCell>
-                <TableCell align="center">End Date</TableCell>
-                <TableCell align="center">Edit</TableCell>
-                <TableCell align="center">Delete</TableCell>
+                <TableCell style={tablestyles}>ID</TableCell>
+                <TableCell align="center" style={tablestyles}>Season</TableCell>
+                <TableCell align="center" style={tablestyles}>Start Date</TableCell>
+                <TableCell align="center" style={tablestyles}>End Date</TableCell>
+                <TableCell align="center" style={tablestyles}>Edit</TableCell>
+                <TableCell align="center" style={tablestyles}>Delete</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

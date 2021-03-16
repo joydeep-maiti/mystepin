@@ -134,6 +134,12 @@ const Rooms = ({ onClose }) => {
     setEditingRow({})
   }
 
+  //Tables Color
+  const tablestyles={
+    color:'#0088bc',
+    fontWeight:"bold"
+   }
+
   return (
     <React.Fragment>
       <DialogTitle>Room Type</DialogTitle>
@@ -153,10 +159,10 @@ const Rooms = ({ onClose }) => {
           <Table className={classes.table} size="small" stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell align="center">Room Type</TableCell>
-                <TableCell align="center">Edit</TableCell>
-                <TableCell align="center">Delete</TableCell>
+                <TableCell style={tablestyles}>ID</TableCell>
+                <TableCell align="center" style={tablestyles}>Room Type</TableCell>
+                <TableCell align="center" style={tablestyles}>Edit</TableCell>
+                <TableCell align="center" style={tablestyles}>Delete</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

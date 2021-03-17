@@ -182,7 +182,7 @@ const BookingForm = props => {
         disabled: shouldDisable
       })}
 {FormUtils.renderInput(
-getInputArgObj("Idproof", "Id_proof", "text", shouldDisable)
+getInputArgObj("Idproof", "ID Proof Number", "text", shouldDisable)
 )}
 
 

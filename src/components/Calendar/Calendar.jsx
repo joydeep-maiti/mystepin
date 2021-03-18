@@ -73,7 +73,7 @@ const Calendar = props => {
          color= "#D6EAF8";
 
          if(status.checkedIn){
-          color='#1A5276'
+          color='#F2D1D6'
          }
          if(status.checkedOut){
            color='white';

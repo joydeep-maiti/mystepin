@@ -173,7 +173,7 @@ const BookingForm = props => {
                 
       {FormUtils.renderproof({
         id: "proofType",
-        label: "proof Type",
+        label: "Proof Type",
         value: options1.value,
         onChange: event => selectfun1(event),
         options1,
@@ -182,9 +182,8 @@ const BookingForm = props => {
         disabled: shouldDisable
       })}
 {FormUtils.renderInput(
-getInputArgObj("Idproof", "Id_proof", "text", shouldDisable)
+getInputArgObj("Idproof", "ID Proof Number", "text", shouldDisable)
 )}
-
 
 
 </div>

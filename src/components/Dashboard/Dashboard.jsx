@@ -367,6 +367,7 @@ const Dashboard = props => {
                         {/* <FormLabel component="legend">View</FormLabel> */}
                         <RadioGroup aria-label="view" style={{ flexDirection: "row" }} name="view" value={view} onChange={handleViewChange}>
                           <FormControlLabel value="day" control={<Radio style={{color:"#0088bc"}}/>} label="Day View" />
+                          <FormControlLabel value="week" control={<Radio style={{color:"#0088bc"}}/>} label="Week View" />
                           <FormControlLabel value="month" control={<Radio style={{color:"#0088bc"}} />} label="Month view" />
                           <MuiPickersUtilsProvider utils={DateFnsUtils} 
                           style={{ marginLeft: "1rem"}}>
@@ -381,7 +382,7 @@ const Dashboard = props => {
                               KeyboardButtonProps={{
                                 'aria-label': 'change date',
                               }}
-                              style={{ marginLeft: "0.5rem",width:'130px'}}
+                              style={{ marginLeft: "0.5rem",width:'150px'}}
                             />
                           </MuiPickersUtilsProvider>
                         </RadioGroup>

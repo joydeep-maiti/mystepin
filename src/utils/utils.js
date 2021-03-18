@@ -53,7 +53,7 @@ export function generateRandomColor() {
     "#" +
       Math.random()
         .toString(16)
-        .slice(2, 8)
+        .slice(2, 8)  
         .toUpperCase()
   ).replace(/[^0-9a-f]/gi, "");
 

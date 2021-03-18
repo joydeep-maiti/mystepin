@@ -25,13 +25,15 @@ export default {
       .required()
       .label("Check Out"),
     adults: Joi.number()
+      .max(999)
       .required()
       .label("Adults"),
     children: Joi.number()
+      .max(99)
       .required()
       .label("Children"),
     contactNumber: Joi.number()
-      .min(1000000000)
+      .min(5000000000)
       .max(9999999999)
       .required()
       .label("Contact Number"),

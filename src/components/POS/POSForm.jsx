@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import SnackBarContext from "./../../context/snackBarContext";
 import { DialogTitle,DialogActions, DialogContent, Button } from "@material-ui/core";
+import moment from "moment";
 
 import POSList from "./POSList";
 import bookingService from "../../services/bookingService";
@@ -41,20 +42,54 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
       booking => booking.status.checkedIn && !booking.status.checkedOut
     );
     filteredBookings.forEach(booking => {
-      booking.rooms.forEach(room => {
-        POSData.push({ room, booking });
-      });
+      let { checkIn, checkOut, months } = booking;
+      if (months.length > 1) {
+        const updatedValue = getUpdatedValues(booking, utils.getDateObj(new Date()));
+        checkIn = updatedValue.checkIn;
+        checkOut = updatedValue.checkOut;
+      }
+      const dates = utils.daysBetweenDates(checkIn, checkOut);
+      const today = dates.find(el => moment(el).isSame(new Date(), 'day'))
+      if (today) {
+        // console.log("setOccupiedRooms", booking)
+        booking.rooms.forEach(room => {
+          POSData.push({ room, booking });
+        });
+      }
+      // booking.rooms.forEach(room => {
+      //   POSData.push({ room, booking });
+      // });
     });
     setPosData(POSData);
   }, [allBookings]);
 
   useEffect(() => {
+    console.log("posData",posData)
     const options = posData.map(data => ({
       label: data.room.roomNumber,
       value: data.room.roomNumber
     }));
     setRoomOptions(options);
   }, [posData]);
+
+  const getUpdatedValues = (booking, dateObj) => {
+    let { checkIn, checkOut, months } = booking;
+    const { month, year, days } = dateObj;
+    const index = months.findIndex(month => month.month === dateObj.month);
+
+    if (index === 0) {
+      checkIn = utils.getDate(checkIn);
+      checkOut = new Date(`${month + 1}/${days}/${year}`);
+    } else if (index === months.length - 1) {
+      checkIn = new Date(`${month + 1}/1/${year}`);
+      checkOut = utils.getDate(checkOut);
+    } else {
+      checkIn = new Date(`${month + 1}/1/${year}`);
+      checkOut = new Date(`${month + 1}/${days}/${year}`);
+    }
+
+    return { checkIn, checkOut };
+  };
 
   const getInputArgObj = (id, label, type, shouldDisable) => {
     return {
@@ -187,6 +222,23 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
     handleSnackbarEvent(snakbarObj);
   };
 
+  const handlePosDelete = async (obj) => {
+    let index = pos[title].findIndex(e => e.date === obj.date)
+    let temp = JSON.parse(JSON.stringify(pos))
+    temp[title].splice(index,1)
+    // console.log("pos",pos, temp)
+    setPos(temp)
+    const { _id, date, amount, remarks } = data;
+    const booking = {
+      ...allBookings.find(booking => booking._id === _id)
+    };
+    booking.pos = temp
+    const response = await bookingService.updateBooking(booking);
+    if (response.status === 200) openSnackBar("Updated Successfully", success);
+    else openSnackBar("Error Occurred", error);
+    onClose();
+  };
+
   return (
     <form onSubmit={event => onFormSubmit(event)}>
       
@@ -240,17 +292,19 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
           )}
         </div>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="secondary">
+      <DialogActions style={{paddingRight:"2rem"}}>
+        <Button onClick={onClose} color="secondary" variant="contained">
           Close
         </Button>
-        <Button onClick={onFormSubmit} color="primary">
+        <Button onClick={onFormSubmit} color="primary" variant="contained">
           Save
         </Button>
       </DialogActions>
-      <POSList 
-        pos={pos?pos[title]:null}
-      />
+      {pos && <POSList 
+        pos={pos[title]}
+        title={title}
+        handlePosDelete={handlePosDelete}
+      />}
     </form>
   );
 };

@@ -145,7 +145,11 @@ const Dashboard = props => {
       }
     });
 
-    allBookings.forEach(booking => {
+    const filteredForBookings = allBookings.filter(
+      booking => !booking.status.checkedIn
+    );
+
+    filteredForBookings.forEach(booking => {
       // debugger
       if (view === "day") {
         const dates = utils.daysBetweenDates(booking.checkIn, booking.checkOut);

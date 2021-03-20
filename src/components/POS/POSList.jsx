@@ -21,23 +21,18 @@ const POSList = (props) => {
     setPos(props.pos)
   },[props.pos])
 
-  if(!pos){
+  if(!pos || pos.length===0 ){
     return(<></>)
   }
 
-  const handleDelete = async (row) => {
-    // setLoading(true);
-    // const res = await roomService.deleteRoom(row);
-    // setLoading(false);
-    // if(res){
-    //   setLoading(true);
-    //   fetchData()
-    // }
+  const handleDelete = (el) => {
+    console.log("el",el)
+    props.handlePosDelete(el);
   }
 
   return (
     <DialogContent>
-      POS List
+       {"POS-"+props.title+" Transaction"}
       <TableContainer component={Paper} style={{marginTop:"0.7rem"}}>
         <Table size="small" stickyHeader aria-label="sticky table">
               <TableHead>

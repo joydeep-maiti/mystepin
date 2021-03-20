@@ -112,6 +112,7 @@ const SeasonMaster = ({ onClose }) => {
   }
 
   const handleDelete = async (row) => {
+    return
     setLoading(true);
     const res = await seasonService.deleteSeason(row);
     setLoading(false);

@@ -32,7 +32,7 @@ const POSList = (props) => {
 
   return (
     <DialogContent>
-       {"POS-"+props.title+" Transaction"}
+       <div>{"POS-"+props.title+" Transaction"}</div>
       <TableContainer component={Paper} style={{marginTop:"0.7rem"}}>
         <Table size="small" stickyHeader aria-label="sticky table">
               <TableHead>

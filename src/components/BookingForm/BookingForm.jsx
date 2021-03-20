@@ -8,11 +8,14 @@ import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import Button from '@material-ui/core/Button';
 
 import FormUtils from "../../utils/formUtils";
 import utils from "../../utils/utils";
 import useStyles from "./BookingFormStyle";
 import "./BookingForm.scss";
+
 
 const BookingForm = props => {
   const classes = useStyles();
@@ -31,11 +34,14 @@ const BookingForm = props => {
     errors,
     options,
     options1,
+    onFileSelect,
     onBack,
     shouldDisable,
     openDatePicker,
-    handleDatePicker
+    handleDatePicker,
+    enableFileUpload
   } = props;
+  console.log("props",props)
 
   // const roomOptions = availableRooms.map(room => {
   //   return { label: room.roomNumber, value: room.roomNumber };
@@ -167,26 +173,55 @@ const BookingForm = props => {
         )}
       </div>
       <div className="form-group">
-      
-      
-     
-                
-      {FormUtils.renderproof({
-        id: "proofType",
-        label: "Proof Type",
-        value: options1.value,
-        onChange: event => selectfun1(event),
-        options1,
-        
-        
-        disabled: shouldDisable
-      })}
-{FormUtils.renderInput(
-getInputArgObj("Idproof", "ID Proof Number", "text", shouldDisable)
-)}
+        {FormUtils.renderproof({
+          id: "proofType",
+          label: "Proof Type",
+          value: options1.value,
+          onChange: event => selectfun1(event),
+          options1,
+          disabled: shouldDisable
+        })}
 
+        {FormUtils.renderInput(
+        getInputArgObj("Idproof", "ID Proof Number", "text", shouldDisable)
+        )}
+      </div>
+      <div className="form-group">
+        <div>
+          {/* <label htmlFor="proofImage">
+            Upload Proof Image  
+          </label> */}
+          <input
+            accept="image/*"
+            className={classes.input}
+            id="proofImage"
+            type="file"
+            onChange={onFileSelect}
+            disabled= {shouldDisable && !enableFileUpload}
+            style={{display:"none"}}
+          />
+          <label htmlFor="proofImage">
+            <Button variant="contained" color="primary" component="span" startIcon={<CloudUploadIcon />} disabled= {shouldDisable && !enableFileUpload}>
+              Id Proof
+            </Button> 
+          </label>
+          {/* <label htmlFor="proofImage">
+          <Button
+            variant="contained"
+            color="default"
+            className={classes.uploadButton}
+            startIcon={<CloudUploadIcon />}
+          >style={{display:"none"}}
+            Upload Proof Image
+          </Button>
+            
+          </label> */}
+        </div>
 
-</div>
+        <div>
+          <img src={data["idProofImage"]} width="300px" />
+        </div>
+      </div>
 
       <div className={classes.panel}>
         <ExpansionPanel

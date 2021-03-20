@@ -104,6 +104,7 @@ const Rooms = ({ onClose }) => {
   }
 
   const handleDelete = async (row) => {
+    return
     setLoading(true);
     const res = await roomTypeService.deleteRoomType(row);
     setLoading(false);

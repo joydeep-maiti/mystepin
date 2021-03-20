@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import seasonService from "../../services/seasonService";
 import roomTypeService from "../../services/roomTypeService";
+import ratemasterService from "../../services/ratemasterService";
 
 import Loader from "../../common/Loader/Loader";
 import {
@@ -80,17 +81,7 @@ const useStyles = makeStyles(theme => ({
 
 const RateMaster = ({ onClose }) => {
   const classes = useStyles();
-  const [rooms, setRooms] = useState([{
-    _id:"604490bd794f4b0b55171a7d",
-    roomType:"Non AC",
-    planType:"AP",
-    extraRate:500,
-    rate:1000,
-    seasonId:"5d3edd4c1c9d4400006bc08f",
-    seasonDetails: [{
-      season:"Diwali"
-    }]
-  }]);
+  const [rooms, setRooms] = useState([]);
   const [newDoc, setNewDoc] = useState({});
   const [editingRow, setEditingRow] = useState({});
   const [loading, setLoading] = useState(false);
@@ -99,18 +90,19 @@ const RateMaster = ({ onClose }) => {
   const [planTypes, setPlanTypes] = useState([
     {planType:"AP"},
     {planType:"CP"},
+    {planType:"EP"},
     {planType:"MAP"},
   ]);
 
   useEffect(() => {
     setLoading(true);
-    // fetchData();
+    fetchData();
     fetchRoomTypes();
     fetchSeasons()
   }, []);
 
   const fetchData = async () => {
-    const rooms = await seasonService.getSeason();
+    const rooms = await ratemasterService.getRate();
     setRooms(rooms);
     setLoading(false);
   };
@@ -131,9 +123,8 @@ const RateMaster = ({ onClose }) => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    return
     setLoading(true);
-    const res = await seasonService.addSeason(newDoc);
+    const res = await ratemasterService.addRate(newDoc);
     setLoading(false);
     if(res.status===201){
       setNewDoc({})
@@ -148,9 +139,8 @@ const RateMaster = ({ onClose }) => {
   }
 
   const handleUpdate = async () => {
-    return
     setLoading(true);
-    const res = await seasonService.updateSeason(editingRow);
+    const res = await ratemasterService.updateRate(editingRow);
     setLoading(false);
     if(res){
       setEditingRow({})
@@ -162,7 +152,7 @@ const RateMaster = ({ onClose }) => {
   const handleDelete = async (row) => {
     return
     setLoading(true);
-    const res = await seasonService.deleteSeason(row);
+    const res = await ratemasterService.deleteRate(row);
     setLoading(false);
     if(res){
       setLoading(true);
@@ -172,6 +162,7 @@ const RateMaster = ({ onClose }) => {
 
   const handleInput = (e) => {
     setNewDoc({
+      ...newDoc,
       [e.target.name]:e.target.value
     })
   }
@@ -250,7 +241,7 @@ const RateMaster = ({ onClose }) => {
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               required
-              name="roomType"
+              name="planType"
               value={newDoc.planType}
               onChange={handleInput}
               >
@@ -303,7 +294,7 @@ const RateMaster = ({ onClose }) => {
                   </TableCell>
                   <TableCell align="center">{row.roomType}</TableCell>
                   <TableCell align="center">{row.planType}</TableCell>
-                  <TableCell align="center">{row.seasonDetails[0].season}</TableCell>
+                  <TableCell align="center">{row.seasondetails.season}</TableCell>
                   {editingRow._id !== row._id && <TableCell align="center">{row.rate}</TableCell>}
                   {editingRow._id === row._id && <TableCell align="center">
                     <TextField required id="standard-required" label="Rate" name="rate" value={editingRow.rate} onChange={handleInputChange}/>

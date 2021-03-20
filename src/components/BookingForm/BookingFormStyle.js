@@ -38,5 +38,8 @@ export default makeStyles(theme => ({
     width: "100%",
     marginRight: 8,
     marginLeft: 8
-  }
+  },
+  uploadButton: {
+    margin: theme.spacing(1),
+  },
 }));

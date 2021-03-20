@@ -26,8 +26,10 @@ const roomTypes = [
 const proofType=[
   {label:"Aadhar" ,value:"Aadhar"},
   {label:"Passport" ,value:"Passport"},
-  {label:"Pancard" ,value:"Pancard"},
-  {label:"Voter_Id" ,value:"Voter_Id"}
+  {label:"PAN" ,value:"PAN"},
+  {label:"Voter Id" ,value:"Voter Id"},
+  {label:"Driving License" ,value:"Driving License"},
+  {label:"Others" ,value:"Others"},
 ];
 
 const BookingFormLayout = ({
@@ -75,6 +77,7 @@ const BookingFormLayout = ({
   const [isEdit, setIsEdit] = useState(false);
   const [shouldDisable, setShouldDisable] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [enableFileUpload, setEnableFileUpload] = useState(false);
 
   useEffect(() => {
     const { pathname } = location;
@@ -316,6 +319,11 @@ console.log(proofs)
   };
 
   const handleCheckIn = () => {
+    if(!data.idProofImage){
+      alert("Please Upload Id Proof first in order to check in")
+      setEnableFileUpload(true)
+      return
+    }
     const updatedData = { ...data };
     updatedData.checkedInTime = utils.getTime();
     updatedData.status = { ...updatedData.status, checkedIn: true };
@@ -327,6 +335,23 @@ console.log(proofs)
   const handleCheckOut = () => {
     onCheckOutRedirect(data);
   };
+
+  const onChangeHandler = async (event) =>{
+      console.log(event.target.files[0])
+      let reader = new FileReader();
+      reader.onloadend = async function() {
+        console.log('RESULT', reader.result)
+        const temp = {
+          ...data,
+          idProofImage: reader.result
+        }
+        setData(temp)
+        // const { status } = await bookingService.testBooking(data)
+      }
+      if(event.target.files[0]){
+        reader.readAsDataURL(event.target.files[0]);
+      }
+  }
 
   return (
     <React.Fragment>
@@ -358,10 +383,12 @@ console.log(proofs)
               errors={errors}
               options={roomTypes}
               options1={proofType}
+              onFileSelect={onChangeHandler}
               shouldDisable={shouldDisable}
               onBack={handleBack}
               openDatePicker={openDatePicker}
               handleDatePicker={handleDatePicker}
+              enableFileUpload={enableFileUpload}
             />
           }
           maxWidth={700}

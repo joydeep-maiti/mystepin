@@ -1,18 +1,18 @@
 import http from "./httpService";
 
-async function getSeason() {
+async function getRate() {
   try {
-    const { data: rooms } = await http.get(`${http.baseUrl}/season`);
+    const { data: rooms } = await http.get(`${http.baseUrl}/rateMaster`);
     return rooms;
   } catch (error) {
     console.log(error);
   }
 }
 
-async function addSeason(data) {
+async function addRate(data) {
   try {
     const response = await http.post(
-      `${http.baseUrl}/season`,
+      `${http.baseUrl}/rateMaster`,
       data
     );
     return response
@@ -22,10 +22,10 @@ async function addSeason(data) {
   }
 }
 
-async function updateSeason(data) {
+async function updateRate(data) {
   try {
     const response = await http.patch(
-      `${http.baseUrl}/season`,
+      `${http.baseUrl}/rateMaster`,
       data
     );
     if(response.status === 200)
@@ -37,10 +37,10 @@ async function updateSeason(data) {
   }
 }
 
-async function deleteSeason(data) {
+async function deleteRate(data) {
   try {
     const response = await http.delete(
-      `${http.baseUrl}/season/${data._id}`
+      `${http.baseUrl}/rateMaster/${data._id}`
     );
     if(response.status === 200)
       return true
@@ -51,4 +51,4 @@ async function deleteSeason(data) {
   }
 }
 
-export default { getSeason, addSeason, updateSeason, deleteSeason };
+export default { getRate, addRate, updateRate, deleteRate };

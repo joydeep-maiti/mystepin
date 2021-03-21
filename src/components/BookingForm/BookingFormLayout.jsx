@@ -189,6 +189,7 @@ const BookingFormLayout = ({
   };
 
   const handleDatePickerChange = async (event, id) => {
+    // debugger
     const updatedData = { ...data };
     let updatedRooms = [...updatedData.rooms];
     updatedData[id] = utils.getDate(event);

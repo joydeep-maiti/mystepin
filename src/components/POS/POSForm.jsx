@@ -212,9 +212,12 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
     }
 
     const response = await bookingService.updateBooking(booking);
-    if (response.status === 200) openSnackBar("Updated Successfully", success);
+    if (response.status === 200){
+      openSnackBar("Updated Successfully", success);
+      setPos(booking.pos)
+    } 
     else openSnackBar("Error Occurred", error);
-    onClose();
+    // onClose();
   };
 
   const openSnackBar = (message, variant) => {
@@ -234,9 +237,12 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
     };
     booking.pos = temp
     const response = await bookingService.updateBooking(booking);
-    if (response.status === 200) openSnackBar("Updated Successfully", success);
+    if (response.status === 200) {
+      openSnackBar("Updated Successfully", success);
+      setPos(booking.pos)
+    }
     else openSnackBar("Error Occurred", error);
-    onClose();
+    // onClose();
   };
 
   return (

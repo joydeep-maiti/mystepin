@@ -26,6 +26,10 @@ const BookingFormHeader = props => {
     checkOut
   } = props;
 
+
+
+  console.log("_____________moment().toDate(), moment(checkOut).toDate()",moment().toDate(), moment(moment(checkOut).toDate()).startOf('date').toString())
+
   return (
     <div className={classes.formHeader}>
       <AppBar position="static">
@@ -58,7 +62,7 @@ const BookingFormHeader = props => {
             </Tooltip>
           )}
           
-          {!status.checkedIn && moment().toDate() >= moment(checkIn).toDate() && (
+          {!status.checkedIn && moment().toDate() >= moment(checkIn).startOf('date').toDate() && (
             <Tooltip title="Check In">
               <IconButton
                 aria-label="account of current user"
@@ -71,7 +75,7 @@ const BookingFormHeader = props => {
               </IconButton>
             </Tooltip>
           )}
-          {status.checkedIn && moment().toDate() >= moment(checkOut).toDate() && (
+          {status.checkedIn && moment().toDate() >= moment(checkOut).startOf('date').toDate() && (
             <Tooltip title="Check Out">
               <IconButton
                 aria-label="account of current user"

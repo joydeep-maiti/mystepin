@@ -114,7 +114,7 @@ const renderTableRows = (tableRows, classes, dateObj, view, presentDate) => {
   return (
     <React.Fragment>
       {tableRows.map((row, index) => (
-        <TableRow key={`row_${index}`} style={view==="day"?{height:"4rem"}:{height:"2rem"}}>
+        <TableRow key={`row_${index}`} style={view==="day"?{height:"4rem"}:{height:"unset", lineHeight:"1rem"}}>
           {renderTableColumns(row, classes, dateObj, view, presentDate)}
         </TableRow>
       ))}
@@ -139,7 +139,7 @@ const getStandardCell = (...argument) => {
     width: arg.view=="day"?"9%":"unset",
     pointerEvents: "",
     backgroundColor: arg.color,
-    
+    lineHeight:"1rem"
   };
   const buttonBasedStyle = {
     pointerEvents: arg.booking && "all",

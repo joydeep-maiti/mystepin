@@ -88,14 +88,25 @@ const BookingFormLayout = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const setViewBookingData = () => {
+  const setViewBookingData = async () => {
     const booking = { ...selectedBooking };
+    fetchProofId()
     setData(booking);
     setShouldDisable(!isEdit);
     setAvailableRooms(booking.rooms);
     setStartDate(booking.checkIn);
     setEndDate(booking.checkOut);
   };
+
+  const fetchProofId = async()=> {
+    const booking = { ...selectedBooking };
+    const res = await bookingService.getProofId(selectedBooking._id)
+    if(res.status===200){
+      console.log("-----res",res.data)
+      booking.idProofImage = res.data.idProofImage
+    }
+    setData(booking)
+  }
 
   const setNewBookingData = async () => {
     const newData = { ...data };

@@ -21,9 +21,9 @@ async function addBooking(booking) {
   }
 }
 
-async function testBooking(booking) {
+async function getProofId(id) {
   try {
-    return await http.post("http://localhost:5000/season", booking);
+    return await http.get(`${http.baseUrl}/booking/idproof/${id}`);
   } catch (error) {
     console.log(error);
   }
@@ -37,4 +37,4 @@ async function updateBooking(booking) {
   }
 }
 
-export default { getBookings, addBooking, updateBooking, testBooking };
+export default { getBookings, addBooking, updateBooking, getProofId };

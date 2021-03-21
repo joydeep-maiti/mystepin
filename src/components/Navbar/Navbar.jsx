@@ -7,6 +7,8 @@ import './Navbar.css'
 import BuildIcon from '@material-ui/icons/Build';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import LocalHotelSharpIcon from '@material-ui/icons/LocalHotelSharp';
+import AssessmentIcon from '@material-ui/icons/Assessment';
+
 const useStyles = makeStyles(theme => ({
   stepIn: {
     display: "inline-block",
@@ -53,6 +55,14 @@ const HeaderNavbar = ({
           >
             <BuildIcon/>
             Configuration
+          </Button>
+          <Button
+            className="button-bg"
+            color="inherit"
+            onClick={() => props.history.push("/config")}
+          >
+            <AssessmentIcon/>
+            Reports
           </Button>
           {path === "/" && (
             <React.Fragment>

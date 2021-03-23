@@ -79,7 +79,7 @@ const Configuration = () => {
 
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root} style={{backgroundColor:'#D6EAF8',height:"100vh"}}>
       <AppBar position="static" color="default">
         <Tabs
           value={value}

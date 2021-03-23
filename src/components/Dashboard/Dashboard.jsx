@@ -276,7 +276,7 @@ const Dashboard = props => {
   //Change color with Booking length
 
   let bookingcolor= bookedRooms.length > 0 ?"#0088bc":"#444";
-  let occupiedcolor=occupiedRooms.length > 0?'#1A5276':"#444";
+  let occupiedcolor=occupiedRooms.length > 0?'#a22a52':"#444";
 
   return (
     <SnackBarContext.Provider value={handleSnackbarEvent}>

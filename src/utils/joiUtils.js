@@ -28,27 +28,24 @@ export default {
       .max(999)
       .required()
       .label("Adults"),
-    children: Joi.number()
+    children: Joi.string()
       .max(99)
       .required()
       .label("Children"),
-    contactNumber: Joi.number()
-      .min(5000000000)
-      .max(9999999999)
+    contactNumber: Joi.string()
+      .length(10)
       .required()
       .label("Contact Number"),
     roomCharges: Joi.number()
       .required()
       .label("Room Charges"),
     advance: Joi.number()
-      .required()
       .label("Advance"),
     rooms: Joi.array()
       .items(roomsSchema)
       .unique()
       .required(),
       Idproof: Joi.string()
-      .required()
       .label("ID_Proof"),
   },
   billingFormSchema: {

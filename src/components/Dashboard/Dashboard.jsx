@@ -27,14 +27,13 @@ import Configuration from "../Configuration/Configuration";
 import POSDialog from "../POS/POSDialog";
 import Snackbar from "../../common/Snackbar/Snackbar";
 import Dialog from "./../../common/Dialog/Dialog";
-
 import roomService from "../../services/roomService";
 import bookingService from "../../services/bookingService";
 import SnackBarContext from "./../../context/snackBarContext";
 import constants from "../../utils/constants";
 import utils from "../../utils/utils";
 import "./Dashboard.scss";
-
+import ReportComponent from '../ReportComponent/ReportComponent'
 const useStyles = makeStyles((theme) => ({
   formControl: {
     marginTop: "20px",
@@ -347,6 +346,10 @@ const Dashboard = props => {
             <Route
               path="/config"
               component={Configuration}
+            />
+            <Route
+                 path='/reports'
+                component={ReportComponent}
             />
             <Route
               path="/"

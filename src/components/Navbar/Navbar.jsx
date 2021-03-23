@@ -59,7 +59,7 @@ const HeaderNavbar = ({
           <Button
             className="button-bg"
             color="inherit"
-            onClick={() => props.history.push("/config")}
+            onClick={() => props.history.push("/reports")}
           >
             <AssessmentIcon/>
             Reports

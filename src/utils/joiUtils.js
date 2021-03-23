@@ -28,7 +28,7 @@ export default {
       .max(999)
       .required()
       .label("Adults"),
-    children: Joi.string()
+    children: Joi.number()
       .max(99)
       .required()
       .label("Children"),

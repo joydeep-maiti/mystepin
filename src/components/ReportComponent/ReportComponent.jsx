@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from "react";
-import taxService from "../../services/taxService";
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import Loader from "../../common/Loader/Loader";
-import {
-  makeStyles
-} from "@material-ui/core";
-
-import Taxes from "../Taxes/Taxes";
-import Rooms from "../Rooms/Rooms";
-import RoomCategory from "../RoomCategory/RoomCategory";
-import SeasonMaster from "../SeasonMaster/SeasonMaster";
-import RateMaster from "../RateMaster/RateMaster";
+import { makeStyles} from "@material-ui/core";
+import BillingDetails from "../BillingDetails/BillingDetails";
+import BillingTab from '../BookingTab/BookingTab';
+import PoSSales from '../POSSales/POSSales';
+import Agent from '../Agent/Agent';
+import Occupancy from '../Occupancy/Occupancy';
+import CollectionReport from '../CollectionReport/CollectionReport';
+import GuestDetails from '../GuestDetails/GuestDetails';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -67,7 +64,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Configuration = () => {
+const ReportComponent = () => {
   const classes = useStyles();
   const [taxSlabs, setTaxSlabs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -90,30 +87,38 @@ const Configuration = () => {
           scrollButtons="auto"
           aria-label="scrollable auto tabs example"
         >
-          <Tab label="Taxes" {...a11yProps(0)} />
-          <Tab label="Rooms" {...a11yProps(1)} />
-          <Tab label="Room Category" {...a11yProps(2)} />
-          <Tab label="Rate Master" {...a11yProps(3)} />
-          <Tab label="Season Master" {...a11yProps(4)} />
+          <Tab label="Billing Details" {...a11yProps(0)} />
+          <Tab label="Booking" {...a11yProps(1)} />
+          <Tab label="POS Sales" {...a11yProps(2)} />
+          <Tab label="Agent" {...a11yProps(3)} />
+          <Tab label="Occupancy" {...a11yProps(4)} />
+          <Tab label="Collection Report" {...a11yProps(5)} />
+          <Tab label="Guest Details" {...a11yProps(6)} />
         </Tabs>
       </AppBar>
       <TabPanel className={classes.tabDiv} value={value} index={0}>
-        <Taxes />
+        <BillingDetails/>
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={1}>
-        <Rooms />
+        <BillingTab />
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={2}>
-        <RoomCategory />
+        <PoSSales/>
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={3}>
-        <RateMaster />
+        <Agent/>
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={4}>
-        <SeasonMaster />
+        <Occupancy/>
+      </TabPanel>
+      <TabPanel className={classes.tabDiv} value={value} index={5}>
+        <CollectionReport/>
+      </TabPanel>
+      <TabPanel className={classes.tabDiv} value={value} index={6}>
+       <GuestDetails/>
       </TabPanel>
     </div>
   );
 };
 
-export default Configuration;
+export default ReportComponent;

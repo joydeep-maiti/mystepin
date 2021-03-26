@@ -58,6 +58,7 @@ const BookingFormLayout = ({
     roomCharges: "",
     Idproof:"",
     proofs:[proofType],
+    planType:"AP",
     advance: "",
     bookingDate: null,
     status: {

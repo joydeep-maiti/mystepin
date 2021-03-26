@@ -1,7 +1,7 @@
 import React from "react";
 import { Typography } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
-
+import Input from "../../common/Input/Input";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
@@ -10,12 +10,23 @@ import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Button from '@material-ui/core/Button';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import InputLabel from '@material-ui/core/InputLabel';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import FormControl from '@material-ui/core/FormControl';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
+import moment from 'moment'
 
 import FormUtils from "../../utils/formUtils";
 import utils from "../../utils/utils";
 import useStyles from "./BookingFormStyle";
 import "./BookingForm.scss";
-
+import ratemasterService from "../../services/ratemasterService";
+import Loader from "../../common/Loader/Loader";
 
 const BookingForm = props => {
   const classes = useStyles();
@@ -43,6 +54,16 @@ const BookingForm = props => {
   } = props;
   console.log("props",props)
 
+  const [loading, setLoading] = React.useState(false);
+  const [openPriceModal, setOpenPriceModal] = React.useState(false)
+  const [dayWiseRates, setDayWiseRates] = React.useState([])
+  const [formattedRates, setFormattedRates] = React.useState({})
+  const [planTypes, setPlanTypes] = React.useState([
+    {planType:"AP"},
+    {planType:"CP"},
+    {planType:"EP"},
+    {planType:"MAP"},
+  ]);
   // const roomOptions = availableRooms.map(room => {
   //   return { label: room.roomNumber, value: room.roomNumber };
   // });
@@ -53,6 +74,52 @@ const BookingForm = props => {
   //     return room;
   //   })
   // );
+
+  React.useEffect(()=>{
+    fetchRates()
+  },[data["checkIn"],data["checkOut"]])
+
+  React.useEffect(()=>{
+    formatRates()
+  },[dayWiseRates,data.planType])
+
+  const fetchRates = async()=>{
+    if(!data["checkIn"] || !data["checkOut"])
+      return
+    setLoading(true);
+    const dayRates = await ratemasterService.getDayWiseRate(data["checkIn"],data["checkOut"]);
+    if(dayRates){
+      setDayWiseRates(dayRates)
+    }
+    console.log("----------------dayRates",dayRates)
+    setLoading(false);
+  }
+
+  const formatRates = ()=>{
+    const rates = {}
+    dayWiseRates.forEach(el=>{
+      if(el.planType === data.planType && !rates[el.roomType]){
+        rates[el.roomType] = []
+        rates[el.roomType].push(el)
+      }else if(el.planType === data.planType && rates[el.roomType]){
+        rates[el.roomType].push(el)
+      }
+    })
+    // .sort((a,b) => moment(a.date).isBefore(b.date))
+    Object.keys(rates).forEach(el=>{
+      // debugger
+      let arr = rates[el]
+      rates[el] = arr.sort((a,b) => {
+        if(a.date > b.date ){
+          return 1;
+        }
+        return -1;
+      })
+    })
+    // console.log
+    setFormattedRates(rates)
+    
+  }
 
   const handleChange = panel => (event, isExpanded) => {
     // setExpanded(isExpanded ? panel : false);
@@ -95,6 +162,13 @@ const BookingForm = props => {
     });
   };
 
+  const getPlanOptions = () => {
+
+    return planTypes.map(plan => {
+      return { label: plan.planType, value: plan.planType};
+    });
+  };
+
   const checkRoomError = index => {
     if (errors.rooms && errors.rooms.length > 0) {
       const err = errors.rooms.find(error => error.index === index);
@@ -104,8 +178,11 @@ const BookingForm = props => {
     return null;
   };
 
+  console.log("*******formattedRates",formattedRates)
+
   return (
     <form onSubmit={event => onFormSubmit(event)}>
+      {loading && <Loader color="#0088bc" />}
       <div className="form-group">
         {FormUtils.renderInput(
           getInputArgObj("firstName", "First Name", "text", shouldDisable)
@@ -164,10 +241,22 @@ const BookingForm = props => {
         )}
         
       </div>
-      <div className="form-group">
+      <div className="form-group" style={{position:"relative"}}>
+        {FormUtils.renderSelect({
+          id: "planType",
+          label: "Plan Type",
+          value: data.planType,
+          onChange: event => selectfun(event),
+          options: getPlanOptions(),
+          disabled: shouldDisable
+        })}
         {FormUtils.renderInput(
           getInputArgObj("roomCharges", "Room Charges", "number", shouldDisable)
         )}
+        <IconButton color="primary" aria-label="Price breakup" style={{position:"absolute",left:"56%", top:"20px"}} onClick={()=>setOpenPriceModal(true)}>
+          <InfoOutlinedIcon />
+        </IconButton>
+        
         {FormUtils.renderInput(
           getInputArgObj("advance", "Advance", "number", shouldDisable)
         )}
@@ -307,6 +396,60 @@ const BookingForm = props => {
           disabled: Object.keys(errors).length || shouldDisable ? true : false
         })}
       </div>
+      <Dialog onClose={()=>setOpenPriceModal(false)} aria-labelledby="simple-dialog-title" open={openPriceModal} maxWidth="md" fullWidth={true}>
+        <DialogTitle id="simple-dialog-title" style={{textAlign:"center"}}>Date Wise Price Breakup</DialogTitle>
+          <DialogContent>
+            {Object.keys(formattedRates).map(element => {
+              return (
+                <React.Fragment>
+                  <p>{element}</p>
+                  <div style={{overflowX:"auto"}}>
+                  <table className={classes.pricebreaktable}>
+                    <tr className={classes.pricebreaktableTr}>
+                    {formattedRates[element].map(rate => {
+                      
+                      return(
+                        <th className={classes.pricebreaktableTh}>{moment(rate.date).format('Do MMMM YYYY')}</th>
+                      )
+                    })}
+                    </tr>
+                    <tr>
+                      {formattedRates[element].map(rate => {
+                        return(
+                          <td className={classes.pricebreaktableTd}>Rate: {rate.rate}</td>
+                        )
+                      })}
+                    </tr>
+                    <tr>
+                      {formattedRates[element].map(rate => {
+                        return(
+                          <td className={classes.pricebreaktableTd}>Extra Rate: {rate.extraRate}</td>
+                        )
+                      })}
+                    </tr>
+                  </table>
+                  </div>
+                </React.Fragment>
+              )
+            })}
+            {/* <div>
+              {
+               dayWiseRates.map(rate => {
+                if(rate.planType === data.planType){
+                  return(
+                    <div>
+                      <div>{moment(rate.date).format('Do MMMM YYYY')}</div>
+                      <div>{rate.roomType}</div>
+                      <div>{rate.rate}</div>
+                      <div>{rate.extraRate}</div>
+                    </div>
+                  )
+                }
+               }) 
+              }
+            </div> */}
+          </DialogContent>
+      </Dialog>
     </form>
   );
 };

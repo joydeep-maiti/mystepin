@@ -9,6 +9,20 @@ async function getRate() {
   }
 }
 
+async function getDayWiseRate(from, to) {
+  try {
+    const { data: rooms } = await http.get(`${http.baseUrl}/rate`,{
+      params: {
+        fromDate:from,
+        toDate:to
+      }
+    });
+    return rooms;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 async function addRate(data) {
   try {
     const response = await http.post(
@@ -51,4 +65,4 @@ async function deleteRate(data) {
   }
 }
 
-export default { getRate, addRate, updateRate, deleteRate };
+export default { getRate, addRate, updateRate, deleteRate , getDayWiseRate};

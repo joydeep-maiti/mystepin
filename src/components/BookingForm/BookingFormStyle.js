@@ -42,4 +42,22 @@ export default makeStyles(theme => ({
   uploadButton: {
     margin: theme.spacing(1),
   },
+  pricebreaktable: {
+    minWidth:"100%",
+    width:"max-content",
+    textAlign:"center",
+    border:"1px solid cadetblue"
+  },
+  pricebreaktableTr : {
+    background:"aliceblue"
+  },
+  pricebreaktableTh: {
+    padding:"5px",
+    fontSize:"15px",
+    fontWeight: 400
+  },
+  pricebreaktableTd: {
+    fontSize:"14px",
+    fontWeight: 300
+  }
 }));

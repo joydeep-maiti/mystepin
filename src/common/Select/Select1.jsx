@@ -3,12 +3,14 @@ import { TextField, MenuItem } from "@material-ui/core";
 
 import styles from "./SelectStyle";
 
-const Select1 = ({ options1, onChange, error, ...props }) => {
+const Select1 = ({ options1, onChange, error, value, ...props }) => {
   const classes = styles();
+  console.log("---------ProofType Value",value)
   return (
     <TextField
       error={error && true}
       select
+      value={value}
       onChange={event => onChange(event)}
       className={classes.input}
       SelectProps={{

@@ -50,7 +50,8 @@ const BookingForm = props => {
     shouldDisable,
     openDatePicker,
     handleDatePicker,
-    enableFileUpload
+    enableFileUpload,
+    onSetPrice
   } = props;
   console.log("props",props)
 
@@ -82,6 +83,12 @@ const BookingForm = props => {
   React.useEffect(()=>{
     formatRates()
   },[dayWiseRates,data.planType])
+
+  React.useEffect(()=>{
+    calculateBookingPrice(formattedRates,data.rooms)
+  },[data.rooms])
+
+
 
   const fetchRates = async()=>{
     if(!data["checkIn"] || !data["checkOut"])
@@ -118,8 +125,24 @@ const BookingForm = props => {
     })
     // console.log
     setFormattedRates(rates)
+    calculateBookingPrice(rates,data.rooms)
     
   }
+
+  const calculateBookingPrice = (rates, rooms) => {
+    console.log("--------shouldDisable",shouldDisable)
+    if(shouldDisable)
+      return
+    let price = 0
+    console.log("rates, rooms",rates, rooms)
+    rooms.forEach(room=>{
+      rates[room.roomType] && rates[room.roomType].forEach(dayrate=>{
+        price += parseInt(dayrate.rate)
+      })
+    })
+    console.log("Final Price",price)
+    onSetPrice(price)
+  };
 
   const handleChange = panel => (event, isExpanded) => {
     // setExpanded(isExpanded ? panel : false);
@@ -245,8 +268,9 @@ const BookingForm = props => {
         {FormUtils.renderSelect({
           id: "planType",
           label: "Plan Type",
+          name:"planType",
           value: data.planType,
-          onChange: event => selectfun(event),
+          onChange: event => selectfun1(event),
           options: getPlanOptions(),
           disabled: shouldDisable
         })}
@@ -264,8 +288,9 @@ const BookingForm = props => {
       <div className="form-group">
         {FormUtils.renderproof({
           id: "proofType",
+          name: "proofType",
           label: "Proof Type",
-          value: options1.value,
+          value: data.proofs,
           onChange: event => selectfun1(event),
           options1,
           disabled: shouldDisable
@@ -398,11 +423,11 @@ const BookingForm = props => {
       </div>
       <Dialog onClose={()=>setOpenPriceModal(false)} aria-labelledby="simple-dialog-title" open={openPriceModal} maxWidth="md" fullWidth={true}>
         <DialogTitle id="simple-dialog-title" style={{textAlign:"center"}}>Date Wise Price Breakup</DialogTitle>
-          <DialogContent>
+          <DialogContent style={{maxHeight:"500px",overflowY:"auto"}}>
             {Object.keys(formattedRates).map(element => {
               return (
                 <React.Fragment>
-                  <p>{element}</p>
+                  <p>{element}-{data.planType}</p>
                   <div style={{overflowX:"auto"}}>
                   <table className={classes.pricebreaktable}>
                     <tr className={classes.pricebreaktableTr}>

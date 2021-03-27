@@ -262,15 +262,22 @@ const BookingFormLayout = ({
 
   const handleSelectChange1=(event,index)=>{
     let newErrors = { ...errors };
-    if (newErrors.proofs)
-      newErrors.proofs = newErrors.proofs.filter(error => error.index !== index);
-console.log(event.target.value);
-const proofs=event.target.value;
-console.log(proofs)
-    setData({ ...data, proofs });
+    console.log("event",event.target.value);
+    if(event.target.name === "proofType"){
+      if (newErrors.proofs)
+        newErrors.proofs = newErrors.proofs.filter(error => error.index !== index);
+      console.log(event.target.value);
+      const proofs=event.target.value;
+      console.log(proofs)
+      setData({ ...data, proofs });
+      
+    }else if(event.target.name === "planType"){
+      console.log(event.target.value);
+      setData({...data, planType:event.target.value})
+    }
     setErrors(newErrors);
     // console.log(newErrors);
-    console.log(proofs);
+    // console.log(proofs);
    }
 
   const handleFormSubmit = event => {
@@ -306,7 +313,7 @@ console.log(proofs)
     let newErrors = { ...errors };
     if (newErrors.rooms)
       newErrors.rooms = newErrors.rooms.filter(error => error.index !== index);
-    if (newErrors.rooms.length === 0) delete newErrors.rooms;
+    if (newErrors.rooms && newErrors.rooms.length === 0) delete newErrors.rooms;
 
     let rooms = [...data.rooms];
     rooms = rooms.filter((room, i) => i !== index);
@@ -396,6 +403,7 @@ console.log(proofs)
               errors={errors}
               options={roomTypes}
               options1={proofType}
+              onSetPrice={(price) => setData({...data,roomCharges:price})}
               onFileSelect={onChangeHandler}
               shouldDisable={shouldDisable}
               onBack={handleBack}

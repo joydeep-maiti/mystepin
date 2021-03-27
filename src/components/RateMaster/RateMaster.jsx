@@ -277,9 +277,9 @@ const RateMaster = ({ onClose }) => {
             <TableHead>
               <TableRow>
                 <TableCell style={tablestyles}>ID</TableCell>
+                <TableCell align="center" style={tablestyles}>Season</TableCell>
                 <TableCell align="center" style={tablestyles}>Room Type</TableCell>
                 <TableCell align="center" style={tablestyles}>Plan Type</TableCell>
-                <TableCell align="center" style={tablestyles}>Season</TableCell>
                 <TableCell align="center" style={tablestyles}>Rate</TableCell>
                 <TableCell align="center" style={tablestyles}>Extra Rate/Person</TableCell>
                 <TableCell align="center" style={tablestyles}>Edit</TableCell>
@@ -292,9 +292,9 @@ const RateMaster = ({ onClose }) => {
                   <TableCell component="th" scope="row">
                     {i+1}
                   </TableCell>
+                  <TableCell align="center">{row.seasondetails.season}</TableCell>
                   <TableCell align="center">{row.roomType}</TableCell>
                   <TableCell align="center">{row.planType}</TableCell>
-                  <TableCell align="center">{row.seasondetails.season}</TableCell>
                   {editingRow._id !== row._id && <TableCell align="center">{row.rate}</TableCell>}
                   {editingRow._id === row._id && <TableCell align="center">
                     <TextField required id="standard-required" label="Rate" name="rate" value={editingRow.rate} onChange={handleInputChange}/>

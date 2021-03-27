@@ -447,6 +447,7 @@ const BookingForm = props => {
           <CloseIcon onClick={()=>setOpenPriceModal(false)} style={{cursor:"pointer", float:"right"}}/>
         </DialogTitle>
           <DialogContent style={{maxHeight:"500px",overflowY:"auto"}}>
+            <span style={{float:"right"}}>Nights Stay - {" "+data.nights}</span>
             {Object.keys(formattedRates).map(element => {
               return (
                 <React.Fragment>
@@ -454,10 +455,9 @@ const BookingForm = props => {
                   <div style={{overflowX:"auto"}}>
                   <table className={classes.pricebreaktable}>
                     <tr className={classes.pricebreaktableTr}>
-                    {formattedRates[element].map(rate => {
-                      
+                    {formattedRates[element].map(rate => {                      
                       return(
-                        <th className={classes.pricebreaktableTh}>{moment(rate.date).format('Do MMMM YYYY')}</th>
+                        <th className={classes.pricebreaktableTh}>{moment(rate.date).format('D.MMM.YYYY')}</th>
                       )
                     })}
                     </tr>

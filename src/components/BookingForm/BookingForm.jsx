@@ -20,6 +20,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import moment from 'moment'
+import CloseIcon from '@material-ui/icons/Close';
 
 import FormUtils from "../../utils/formUtils";
 import utils from "../../utils/utils";
@@ -422,7 +423,13 @@ const BookingForm = props => {
         })}
       </div>
       <Dialog onClose={()=>setOpenPriceModal(false)} aria-labelledby="simple-dialog-title" open={openPriceModal} maxWidth="md" fullWidth={true}>
-        <DialogTitle id="simple-dialog-title" style={{textAlign:"center"}}>Date Wise Price Breakup</DialogTitle>
+        {/* <div style={{textAlign:"right", padding:"0.5rem"}}>
+          <CloseIcon onClick={()=>setOpenPriceModal(false)} style={{cursor:"pointer"}}/>
+        </div> */}
+        <DialogTitle id="simple-dialog-title" style={{textAlign:"center"}}>
+          Date Wise Price Breakup
+          <CloseIcon onClick={()=>setOpenPriceModal(false)} style={{cursor:"pointer", float:"right"}}/>
+        </DialogTitle>
           <DialogContent style={{maxHeight:"500px",overflowY:"auto"}}>
             {Object.keys(formattedRates).map(element => {
               return (

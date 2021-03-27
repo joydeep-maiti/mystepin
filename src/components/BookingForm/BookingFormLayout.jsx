@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import utils from "../../utils/utils";
-
+import roomTypeService from "../../services/roomTypeService";
 import Card from "../../common/Card/Card";
 import BookingForm from "../BookingForm/BookingForm";
 import BookingFormHeader from "./BookingFormHeader";
 import LoaderDialog from "../../common/LoaderDialog/LoaderDialog";
 
+import moment from 'moment'
 import FormUtils from "../../utils/formUtils";
 import constants from "../../utils/constants";
 import schemas from "../../utils/joiUtils";
@@ -15,13 +16,13 @@ import bookingService from "../../services/bookingService";
 
 const schema = schemas.bookingFormSchema;
 const { success, error } = constants.snackbarVariants;
-const roomTypes = [
-  { label: "AC", value: "AC" },
-  { label: "Non AC", value: "Non AC" },
-  { label: "Deluxe", value: "Deluxe" },
-  { label: "Suite", value: "Suite" },
-  { label: "Dormitory", value: "Dormitory" }
-];
+// const roomTypes = [
+//   { label: "AC", value: "AC" },
+//   { label: "Non AC", value: "Non AC" },
+//   { label: "Deluxe", value: "Deluxe" },
+//   { label: "Suite", value: "Suite" },
+//   { label: "Dormitory", value: "Dormitory" }
+// ];
 
 const proofType=[
   {label:"Aadhar" ,value:"Aadhar"},
@@ -51,6 +52,7 @@ const BookingFormLayout = ({
     checkOut: utils.getDate(),
     checkedInTime: "",
     checkedOutTime: "",
+    nights:0,
     adults: "",
     children: 0,
     contactNumber: "",
@@ -68,10 +70,9 @@ const BookingFormLayout = ({
     }
   });
   const [errors, setErrors] = useState({});
-  const [openDatePicker, setOpenDatePicker] = useState({
-    checkIn: false,
-    checkOut: false
-  });
+  const [openDatePickerCheckIn, setOpenDatePickerCheckIn] = useState(false);
+  const [openDatePickerCheckOut, setOpenDatePickerCheckOut] = useState(false);
+  const [roomTypes, setRoomTypes] = useState([]);
   const [availableRooms, setAvailableRooms] = useState([]);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -86,6 +87,7 @@ const BookingFormLayout = ({
       if (pathname === "/booking/viewBooking") setViewBookingData();
       else if (pathname === "/booking/newBooking") setNewBookingData();
     } else history.replace("/");
+    fetchRoomTypes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -97,6 +99,13 @@ const BookingFormLayout = ({
     setAvailableRooms(booking.rooms);
     setStartDate(booking.checkIn);
     setEndDate(booking.checkOut);
+  };
+
+  const fetchRoomTypes = async () => {
+    setLoading(true);
+    const rooms = await roomTypeService.getRoomsTypes();
+    setRoomTypes(rooms);
+    setLoading(false);
   };
 
   const fetchProofId = async()=> {
@@ -202,11 +211,22 @@ const BookingFormLayout = ({
 
   const handleDatePickerChange = async (event, id) => {
     // debugger
+    if(id === "checkIn")
+      setOpenDatePickerCheckIn(false)
+    else
+      setOpenDatePickerCheckOut(false)
     const updatedData = { ...data };
     let updatedRooms = [...updatedData.rooms];
     updatedData[id] = utils.getDate(event);
-    const newOpenDatePicker = { ...openDatePicker };
-    newOpenDatePicker[id] = false;
+    if(updatedData["checkIn"] > updatedData["checkOut"]){
+      setData(updatedData);
+      return
+    }
+    let duration = new Date(updatedData["checkOut"]).getTime() - new Date(updatedData["checkIn"]).getTime()
+    console.log("days",moment.duration(duration).days())
+    console.log("asDays",moment.duration(duration).asDays())
+    let durationInDays = moment.duration(duration).days()+1;
+    updatedData.nights = durationInDays
     if (id === "checkIn") data["checkOut"] = data[id];
 
     let availableRooms = await getAvailableRooms(
@@ -229,15 +249,21 @@ const BookingFormLayout = ({
     setTimeout(() => {
       setData(updatedData);
       setAvailableRooms(availableRooms);
-      setOpenDatePicker(newOpenDatePicker);
+      // setOpenDatePicker(newOpenDatePicker);
     });
   };
 
   const handleDatePicker = id => {
-    setOpenDatePicker({ ...openDatePicker, [id]: true });
+    return
+    // setOpenDatePicker({ ...openDatePicker, [id]: true });
+    if(id === "checkIn")
+      setOpenDatePickerCheckIn(true)
+    else
+      setOpenDatePickerCheckOut(true)
   };
 
-  const handleSelectChange = (event, index) => {
+  const handleSelectChange = async (event, index) => {
+    debugger
     let newErrors = { ...errors };
     if (newErrors.rooms)
       newErrors.rooms = newErrors.rooms.filter(error => error.index !== index);
@@ -245,6 +271,23 @@ const BookingFormLayout = ({
     const { name, value } = event.target;
     const rooms = [...data.rooms];
     let room = {};
+
+    let availableRooms = await getAvailableRooms(
+      data.checkIn,
+      data.checkOut,
+      data._id
+    );
+
+    if (
+      utils.getFormattedDate(data.checkIn) ===
+        utils.getFormattedDate(startDate) &&
+      utils.getFormattedDate(data.checkOut) ===
+        utils.getFormattedDate(endDate)
+    ) {
+      availableRooms = [...availableRooms, ...selectedBooking.rooms];
+    }
+
+    setAvailableRooms(availableRooms)
 
     if (name === "roomType")
       room = availableRooms.find(room => room.roomType === value);
@@ -407,7 +450,8 @@ const BookingFormLayout = ({
               onFileSelect={onChangeHandler}
               shouldDisable={shouldDisable}
               onBack={handleBack}
-              openDatePicker={openDatePicker}
+              openDatePickerCheckIn={openDatePickerCheckIn}
+              openDatePickerCheckOut={openDatePickerCheckOut}
               handleDatePicker={handleDatePicker}
               enableFileUpload={enableFileUpload}
             />

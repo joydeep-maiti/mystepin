@@ -19,7 +19,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import moment from 'moment'
+import moment from 'moment';
 import CloseIcon from '@material-ui/icons/Close';
 
 import FormUtils from "../../utils/formUtils";
@@ -49,7 +49,8 @@ const BookingForm = props => {
     onFileSelect,
     onBack,
     shouldDisable,
-    openDatePicker,
+    openDatePickerCheckIn,
+    openDatePickerCheckOut,
     handleDatePicker,
     enableFileUpload,
     onSetPrice
@@ -78,6 +79,9 @@ const BookingForm = props => {
   // );
 
   React.useEffect(()=>{
+    if(data["checkIn"] > data["checkOut"]){
+      return
+    }
     fetchRates()
   },[data["checkIn"],data["checkOut"]])
 
@@ -161,7 +165,7 @@ const BookingForm = props => {
     };
   };
 
-  const getDateArgObj = (id, label, type, minDate, shouldDisable) => {
+  const getDateArgObj = (id, label, type, minDate, shouldDisable, open) => {
     return {
       id,
       label,
@@ -171,7 +175,7 @@ const BookingForm = props => {
       error: errors[id],
       minDate,
       disabled: shouldDisable,
-      open: openDatePicker[id]
+      // open: open
     };
   };
 
@@ -190,6 +194,13 @@ const BookingForm = props => {
 
     return planTypes.map(plan => {
       return { label: plan.planType, value: plan.planType};
+    });
+  };
+
+  const getRoomTypeOptions = (roomtypes) => {
+
+    return roomtypes.map(room => {
+      return { label: room.roomType, value: room.roomType};
     });
   };
 
@@ -239,7 +250,8 @@ const BookingForm = props => {
               "Check In",
               "text",
               utils.getDate(),
-              shouldDisable
+              shouldDisable,
+              // openDatePickerCheckIn
             )
           )}
         </div>
@@ -253,12 +265,16 @@ const BookingForm = props => {
               "Check Out",
               "text",
               data.checkIn,
-              shouldDisable
+              shouldDisable,
+              // openDatePickerCheckOut
             )
           )}
         </div>
         {FormUtils.renderInput(
           getInputArgObj("adults", "Adults", "number", shouldDisable)
+        )}
+        {FormUtils.renderInput(
+          getInputArgObj("nights", "Nights Stay", "number", true)
         )}
         {FormUtils.renderInput(
           getInputArgObj("children", "Children", "number", shouldDisable)
@@ -276,7 +292,7 @@ const BookingForm = props => {
           disabled: shouldDisable
         })}
         {FormUtils.renderInput(
-          getInputArgObj("roomCharges", "Room Charges", "number", shouldDisable)
+          getInputArgObj("roomCharges", "Total Room Charge", "number", shouldDisable)
         )}
         <IconButton color="primary" aria-label="Price breakup" style={{position:"absolute",left:"56%", top:"20px"}} onClick={()=>setOpenPriceModal(true)}>
           <InfoOutlinedIcon />
@@ -371,7 +387,7 @@ const BookingForm = props => {
                     label: "Room Type",
                     value: room.roomType,
                     onChange: event => selectfun(event, index),
-                    options,
+                    options:getRoomTypeOptions(options),
                     error,
                     disabled: shouldDisable
                   })}

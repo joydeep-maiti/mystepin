@@ -127,7 +127,7 @@ const RateMaster = ({ onClose }) => {
     const res = await ratemasterService.addRate(newDoc);
     setLoading(false);
     if(res.status===201){
-      setNewDoc({})
+      // setNewDoc({})
       setLoading(true);
       fetchData()
     }else {

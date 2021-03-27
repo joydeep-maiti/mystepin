@@ -89,7 +89,7 @@ const SeasonMaster = ({ onClose }) => {
     const res = await seasonService.addSeason(newDoc);
     setLoading(false);
     if(res.status===201){
-      setNewDoc({})
+      // setNewDoc({})
       setLoading(true);
       fetchData()
     }else {

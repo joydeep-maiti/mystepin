@@ -271,10 +271,10 @@ const BookingForm = props => {
           )}
         </div>
         {FormUtils.renderInput(
-          getInputArgObj("adults", "Adults", "number", shouldDisable)
+          getInputArgObj("nights", "Nights Stay", "number", true)
         )}
         {FormUtils.renderInput(
-          getInputArgObj("nights", "Nights Stay", "number", true)
+          getInputArgObj("adults", "Adults", "number", shouldDisable)
         )}
         {FormUtils.renderInput(
           getInputArgObj("children", "Children", "number", shouldDisable)

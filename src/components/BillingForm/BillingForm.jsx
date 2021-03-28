@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core";
 import { Typography } from "@material-ui/core";
 import Checkbox from "./../../common/Checkbox/Checkbox";
 import FormUtils from "../../utils/formUtils";
+import taxService from "../../services/taxService";
 
 const useStyles = makeStyles(theme => ({
   formGroup: {
@@ -39,25 +40,76 @@ const BillingForm = props => {
     data,
     errors,
     booking,
-    payment
+    payment,
+    onChangeData
   } = props;
 
   console.log("booking",booking)
 
   const [postotal, setPosTotal] = React.useState(0)
+  const [roomChargesTotal, setRoomChargesTotal] = React.useState(0)
+  const [roomChargesTotalWithTax, setRoomChargesTotalWithTax] = React.useState(0)
+  const [tax, setTax] = React.useState(0)
+  const [slab, setSlab] = React.useState(0)
+  const [balance, setBalance] = React.useState(0)
+  const [taxSlabs, setTaxSlabs] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+  // const [postotal, setPosTotal] = React.useState(0)
+  // const [postotal, setPosTotal] = React.useState(0)
 
   React.useEffect(()=>{
     if(!booking.pos) 
       return
     let expense = 0
     Object.keys(booking.pos).forEach(el=>{
-      debugger
+      // debugger
       booking.pos[el].forEach(e =>{
         expense += Number(e.amount)
       })
     })
     setPosTotal(expense)
+    setRoomChargesTotal(Number(booking.roomCharges)+Number(expense))
+    setBalance(Number(booking.roomCharges)+Number(expense)-Number(booking.advance))
+    
   },[booking])
+
+  React.useEffect(()=>{
+    fetchTaxes()
+  },[])
+
+  React.useEffect(()=>{
+    onChangeData({
+      balance: balance
+    })
+  },[balance])
+  
+  React.useEffect(()=>{
+    let balance = data.taxStatus==="withTax"?Number(roomChargesTotalWithTax)-Number(booking.advance):Number(roomChargesTotal)-Number(booking.advance)
+    setBalance(balance)
+  },[roomChargesTotal,roomChargesTotalWithTax,data.taxStatus])
+
+  React.useEffect(()=>{
+    if(roomChargesTotal){
+      // debugger
+      const slab = taxSlabs.filter(el => roomChargesTotal>el.greaterThan && roomChargesTotal<= (el.lessThanAndEqual || 9999999999))
+      if(slab.length>0){
+        let tax = roomChargesTotal*(slab[0].taxPercent/100)
+        let chargesWithTax = roomChargesTotal + tax
+        setRoomChargesTotalWithTax(chargesWithTax)
+        // setBalance(Number(chargesWithTax)-Number(booking.advance))
+        setTax(tax)
+        setSlab(slab[0].taxPercent+"%")
+      }
+    }
+  },[taxSlabs,roomChargesTotal])
+
+
+  const fetchTaxes = async () => {
+    setLoading(true)
+    const taxSlabs = await taxService.getTaxSlabs();
+    setTaxSlabs(taxSlabs);
+    setLoading(false);
+  };
 
   const renderInputItems = (label, value, inputId) => {
     return (
@@ -136,9 +188,11 @@ const BillingForm = props => {
         </div>
         <div>
           {renderInputItems("Room Charges", booking.roomCharges, "roomCharges")}
-          {renderInputItems("Advance", booking.advance, "advance")}
           {renderInputItems("Misllaneous", postotal, "misllaneous")}
-          {renderInputItems("Balance", booking.balance, "balance")}
+          {renderInputItems("Tax", data.taxStatus==="withTax"?tax:0, "tax")}
+          {renderInputItems("Total Charges", data.taxStatus==="withTax"?roomChargesTotalWithTax:roomChargesTotal, "totalRoomCharges")}
+          {renderInputItems("Advance", booking.advance, "advance")}
+          {renderInputItems("Balance",  balance, "balance")}
         </div>
         {/* <Divider className={classes.divider} /> */}
         <div className={classes.paymentMethods}>

@@ -31,7 +31,7 @@ const BillingFormLayout = props => {
     cash: "",
     card: "",
     wallet: "",
-    taxStatus: "withoutTax"
+    taxStatus: "withTax"
   });
   const [payment, setPayment] = useState({
     cash: { checked: false, disable: true },
@@ -78,21 +78,21 @@ const BillingFormLayout = props => {
         clonedPayment.cash = { disable: !checked, checked };
         clonedErrors.cash && !checked && delete clonedErrors.cash;
         if (!checked) clonedData.cash = "";
-        if (checked) clonedData.cash = selectedBooking.balance-(clonedData.card + clonedData.wallet)
+        if (checked) clonedData.cash = data.balance-(clonedData.card + clonedData.wallet)
         break;
 
       case "card":
         clonedPayment.card = { disable: !checked, checked };
         clonedErrors.card && !checked && delete clonedErrors.card;
         if (!checked) clonedData.card = "";
-        if (checked) clonedData.card = selectedBooking.balance-(clonedData.cash + clonedData.wallet)
+        if (checked) clonedData.card = data.balance-(clonedData.cash + clonedData.wallet)
         break;
 
       case "wallet":
         clonedPayment.wallet = { disable: !checked, checked };
         clonedErrors.wallet && !checked && delete clonedErrors.wallet;
         if (!checked) clonedData.wallet = "";
-        if (checked) clonedData.wallet = selectedBooking.balance-(clonedData.card + clonedData.cash)
+        if (checked) clonedData.wallet = data.balance-(clonedData.card + clonedData.cash)
         break;
 
       default:
@@ -185,7 +185,7 @@ const BillingFormLayout = props => {
     clonedData.taxPercent = taxPercent;
     clonedData.taxStatus = taxType;
 
-    setSelectedBooking(clonedSelectedBooking);
+    // setSelectedBooking(clonedSelectedBooking);
     setData(clonedData);
   };
 
@@ -222,6 +222,13 @@ const BillingFormLayout = props => {
     handleSnackbarEvent(snakbarObj);
   };
 
+  const handleChangeData = (temp) => {
+    setData({
+      ...data,
+      ...temp
+    })
+  };
+
   const cardContent = (
     <BillingForm
       onInputChange={handleInputChange}
@@ -232,6 +239,7 @@ const BillingFormLayout = props => {
       errors={errors}
       booking={selectedBooking}
       payment={payment}
+      onChangeData={handleChangeData}
     />
   );
 

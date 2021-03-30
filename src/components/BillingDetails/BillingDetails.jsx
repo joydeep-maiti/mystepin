@@ -1,11 +1,13 @@
-import React from 'react'
-import { makeStyles, Button,Grid,Container} from "@material-ui/core";
+import React,{useState,useEffect} from 'react'
+import { makeStyles, Button,InputLabel} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import DateFnsUtils from '@date-io/date-fns';
 import {MuiPickersUtilsProvider,KeyboardDatePicker} from '@material-ui/pickers';
+import './BillingDetails.css'
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
+    marginBottom:"5rem"
   },
   title: {
     flexGrow: 2
@@ -15,7 +17,19 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+
 const BillingDetails = () => {
+  const [billingCategory,setBillingCategory]=useState("");
+
+  useEffect(()=>{
+    
+       console.log(billingCategory) ;
+    
+
+  },[billingCategory])
+  
+
+
     const classes = useStyles();
     return (
         <div>
@@ -24,10 +38,8 @@ const BillingDetails = () => {
               Billing Details
             </Typography>
         </div>
-       < Container maxWidth='sm'>
-        <Grid 
-          alignItems="center"
-          justify="center">
+        <div className="container">   
+        <div className="formdates">  
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
          <KeyboardDatePicker
               disableToolbar
@@ -59,26 +71,27 @@ const BillingDetails = () => {
            style={{ marginLeft: "0.5rem",width:'150px'}}
                             />
             </MuiPickersUtilsProvider>
-
-            <div className={classes.buttons}> 
-            <Button 
-            type="submit" 
-            variant="contained"
-            style={{backgroundColor:"#0088bc",color:'white'}}
-            >
+            </div>  
+            <div className="billingselect">
+            <InputLabel id="label">Select Category to Generate Report on Billing </InputLabel>
+            <select name="billing" id="billingcategory" onChange={(e)=>{setBillingCategory(e.target.value)}}>
+            <option value=""></option>            
+            <option value="billingsummary">Billing Summary</option>
+            <option value="due">Due</option>
+            <option value="settlement">Settlement</option>
+            </select>
+            </div> 
+            <div className="buttoncontainer"> 
+            <Button type="submit"  className="button1">
             Back
           </Button>
-          <Button 
-            type="submit" 
-            variant="contained"
-            style={{backgroundColor:"#0088bc",color:'white',marginLeft:'5rem'}}
-            >
+          <Button  type="submit" className="button2">
             Generate
           </Button>
             </div>
-            </Grid>
-            </Container>
+          </div>
         </div>
+
     )
 }
 

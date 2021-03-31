@@ -20,7 +20,8 @@ const useStyles = makeStyles(theme => ({
     marginTop: 20
   },
   inputItems: {
-    width: "30%"
+    width: "40%",
+    display:"flex"
   },
   button: {
     textAlign: "right"
@@ -91,7 +92,7 @@ const BillingForm = props => {
       // debugger
       const slab = taxSlabs.filter(el => roomChargesTotal>el.greaterThan && roomChargesTotal<= (el.lessThanAndEqual || 9999999999))
       if(slab.length>0){
-        let tax = roomChargesTotal*(slab[0].taxPercent/100)
+        let tax = booking.roomCharges*(slab[0].taxPercent/100)
         let chargesWithTax = roomChargesTotal + tax
         setRoomChargesTotalWithTax(chargesWithTax)
         // setBalance(Number(chargesWithTax)-Number(booking.advance))
@@ -109,9 +110,36 @@ const BillingForm = props => {
     setLoading(false);
   };
 
+  // const renderInputItems = (label, value, inputId) => {
+  //   return (
+  //     <div className={classes.formGroup}>
+  //       <Typography
+  //         display={"block"}
+  //         nowrap={"true"}
+  //         className={classes.inputItems}
+  //       >
+  //         {label}
+  //       </Typography>
+  //       <Typography>:</Typography>
+  //       <div style={{ width: "50%" }}>
+  //         {FormUtils.renderInput({
+  //           id: inputId,
+  //           label: null,
+  //           type: "number",
+  //           value: value || "",
+  //           onChange: () => {},
+  //           error: null,
+  //           disabled: true
+  //         })}
+  //       </div>
+  //     </div>
+  //   );
+  // };
+
   const renderInputItems = (label, value, inputId) => {
     return (
-      <div className={classes.formGroup}>
+      // <React.Fragment>
+      <div style={{ width: "50%", display:"flex",alignItems:"center", marginBottom:"1rem" }}>
         <Typography
           display={"block"}
           nowrap={"true"}
@@ -132,6 +160,7 @@ const BillingForm = props => {
           })}
         </div>
       </div>
+      // </React.Fragment>
     );
   };
 
@@ -184,10 +213,10 @@ const BillingForm = props => {
             radioButtons
           })}
         </div>
-        <div>
+        <div style={{display:"flex", flexWrap:"wrap"}}>
           {renderInputItems("Room Charges", booking.roomCharges, "roomCharges")}
-          {renderInputItems("Misllaneous", postotal, "misllaneous")}
           {renderInputItems("Tax", data.taxStatus==="withTax"?tax:0, "tax")}
+          {renderInputItems("Misllaneous", postotal, "misllaneous")}
           {renderInputItems("Total Charges", data.taxStatus==="withTax"?roomChargesTotalWithTax:roomChargesTotal, "totalRoomCharges")}
           {renderInputItems("Advance", booking.advance, "advance")}
           {renderInputItems("Balance",  balance, "balance")}

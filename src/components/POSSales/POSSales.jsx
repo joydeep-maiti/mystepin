@@ -8,7 +8,8 @@ import './POSSales.css'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
+    marginBottom:"5rem"
   },
   title: {
     flexGrow: 2

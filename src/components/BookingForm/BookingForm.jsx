@@ -21,7 +21,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import moment from 'moment';
 import CloseIcon from '@material-ui/icons/Close';
-
 import FormUtils from "../../utils/formUtils";
 import utils from "../../utils/utils";
 import useStyles from "./BookingFormStyle";

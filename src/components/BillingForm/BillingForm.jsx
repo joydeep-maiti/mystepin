@@ -54,8 +54,6 @@ const BillingForm = props => {
   const [balance, setBalance] = React.useState(0)
   const [taxSlabs, setTaxSlabs] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
-  // const [postotal, setPosTotal] = React.useState(0)
-  // const [postotal, setPosTotal] = React.useState(0)
 
   React.useEffect(()=>{
     if(!booking.pos) 

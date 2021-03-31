@@ -61,13 +61,14 @@ const BillingFormLayout = props => {
       schema
     );
 
-    updatedState.errors = checkBalance(updatedState.data, updatedState.errors);
+    // updatedState.errors = checkBalance(updatedState.data, updatedState.errors);
 
     setData(updatedState.data);
     setErrors(updatedState.errors);
   };
 
   const handleCheckboxChange = (event, name) => {
+    // debugger
     const checked = event.currentTarget.checked;
     let clonedData = { ...data };
     let clonedPayment = { ...payment };
@@ -78,21 +79,21 @@ const BillingFormLayout = props => {
         clonedPayment.cash = { disable: !checked, checked };
         clonedErrors.cash && !checked && delete clonedErrors.cash;
         if (!checked) clonedData.cash = "";
-        if (checked) clonedData.cash = data.balance-(clonedData.card + clonedData.wallet)
+        if (checked) clonedData.cash = Number(data.balance)-(Number(clonedData.card) + Number(clonedData.wallet))
         break;
 
       case "card":
         clonedPayment.card = { disable: !checked, checked };
         clonedErrors.card && !checked && delete clonedErrors.card;
         if (!checked) clonedData.card = "";
-        if (checked) clonedData.card = data.balance-(clonedData.cash + clonedData.wallet)
+        if (checked) clonedData.card = Number(data.balance)-(Number(clonedData.cash) + Number(clonedData.wallet))
         break;
 
       case "wallet":
         clonedPayment.wallet = { disable: !checked, checked };
         clonedErrors.wallet && !checked && delete clonedErrors.wallet;
         if (!checked) clonedData.wallet = "";
-        if (checked) clonedData.wallet = data.balance-(clonedData.card + clonedData.cash)
+        if (checked) clonedData.wallet = Number(data.balance)-(Number(clonedData.card) + Number(clonedData.cash))
         break;
 
       default:
@@ -101,7 +102,7 @@ const BillingFormLayout = props => {
     }
     checked && delete clonedErrors.customError;
 
-    clonedErrors = checkBalance(clonedData, clonedErrors);
+    // clonedErrors = checkBalance(clonedData, clonedErrors);
 
     setPayment(clonedPayment);
     setErrors(clonedErrors);
@@ -121,10 +122,14 @@ const BillingFormLayout = props => {
       ((data.wallet && parseInt(data.wallet)) || 0);
 
     if (total !== parseInt(selectedBooking.balance))
-      errors.customError = "Total varies from balance";
-    else delete errors.customError;
+      return false
+    return true
+   
+    // if (total !== parseInt(selectedBooking.balance))
+    //   errors.customError = "Total varies from balance";
+    // else delete errors.customError;
 
-    return errors;
+    // return errors;
   };
 
   const handleFormSubmit = event => {
@@ -136,7 +141,11 @@ const BillingFormLayout = props => {
       delete errors.customError;
     else errors.customError = "Please select any payment mode";
 
-    errors = checkBalance(clonedData, errors);
+    if(!checkBalance(clonedData, errors)){
+      if(!window.confirm("Total varies from balance. Do you want to proceed?")){
+        return
+      }
+    }
 
     const clonedPayment = payment;
     if (errors.cash) {

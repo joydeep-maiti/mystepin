@@ -446,7 +446,7 @@ const BookingFormLayout = ({
               errors={errors}
               options={roomTypes}
               options1={proofType}
-              onSetPrice={(price) => setData({...data,roomCharges:price})}
+              onSetPrice={(price,roomWiseRatesForBooking) => setData({...data,roomCharges:price,roomWiseRatesForBooking})}
               onFileSelect={onChangeHandler}
               shouldDisable={shouldDisable}
               onBack={handleBack}

@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
+import { withRouter} from 'react-router-dom'
 import SnackBarContext from "../../context/snackBarContext";
 
 import BillingForm from "./BillingForm";
+import PreBillingForm from "./PreBillingForm";
 import BillingHeader from "./BillingFormHeader";
 import Card from "../../common/Card/Card";
 import LoaderDialog from "../../common/LoaderDialog/LoaderDialog";
@@ -26,12 +28,16 @@ const BillingFormLayout = props => {
   const [selectedBooking, setSelectedBooking] = useState({});
   const [taxSlabs, setTaxSlabs] = useState();
   const [roomCharges, setRoomCharges] = useState();
+  const [isBillingForm, setIsBillingForm] = useState(false);
 
   const [data, setData] = useState({
     cash: "",
     card: "",
     wallet: "",
-    taxStatus: "withTax"
+    taxStatus: "withTax",
+    totalRoomCharges:0,
+    tax:0
+
   });
   const [payment, setPayment] = useState({
     cash: { checked: false, disable: true },
@@ -178,10 +184,49 @@ const BillingFormLayout = props => {
     } else openSnackBar("Error Occurred", error);
   };
 
+  useEffect(()=>{
+    if (data.taxStatus === "withTax") implementTaxes();
+    else if (data.taxStatus === "withoutTax") removeTaxes();
+  },[selectedBooking])
+
   const implementTaxes = () => {
-    const obj = getUpdatedRoomCharges(roomCharges);
-    calculateRoomCharges(obj.roomCharges, obj.taxPercent, "withTax");
+    let total = 0
+    let tax = 0
+    selectedBooking && selectedBooking.roomWiseRatesForBooking && selectedBooking.roomWiseRatesForBooking.map(el=>{            
+      el.rates.map(rate=>{
+        const dayTotal = Number(rate.rate)+Number(rate.tax);
+        tax+=Number(rate.tax)
+        total+=dayTotal;
+      })
+    })
+    setData({
+      ...data,
+      totalRoomCharges: total,
+      tax,
+      taxStatus: "withTax",
+    })
   };
+
+  const removeTaxes = () => {
+    let total = 0
+    selectedBooking && selectedBooking.roomWiseRatesForBooking && selectedBooking.roomWiseRatesForBooking.map(el=>{            
+      el.rates.map(rate=>{
+        const dayTotal = Number(rate.rate);
+        total+=dayTotal;
+      })
+    })
+    setData({
+      ...data,
+      totalRoomCharges: total,
+      tax: 0,
+      taxStatus: "withoutTax",
+    })
+  };
+
+  // const implementTaxes = () => {
+  //   const obj = getUpdatedRoomCharges(roomCharges);
+  //   calculateRoomCharges(obj.roomCharges, obj.taxPercent, "withTax");
+  // };
 
   const calculateRoomCharges = (roomCharges, taxPercent, taxType) => {
     const clonedSelectedBooking = { ...selectedBooking };
@@ -222,9 +267,9 @@ const BillingFormLayout = props => {
     };
   };
 
-  const removeTaxes = () => {
-    calculateRoomCharges(roomCharges, null, "withoutTax");
-  };
+  // const removeTaxes = () => {
+  //   calculateRoomCharges(roomCharges, null, "withoutTax");
+  // };
 
   const openSnackBar = (message, variant) => {
     const snakbarObj = { open: true, message, variant, resetBookings: false };
@@ -238,26 +283,55 @@ const BillingFormLayout = props => {
     })
   };
 
-  const cardContent = (
-    <BillingForm
-      onInputChange={handleInputChange}
-      onCheckboxChange={handleCheckboxChange}
-      onRadioGroupChange={handleRadioGroupChange}
-      onFormSubmit={handleFormSubmit}
-      data={data}
-      errors={errors}
-      booking={selectedBooking}
-      payment={payment}
-      onChangeData={handleChangeData}
-    />
-  );
+  const handleContinue = () => {
+    setIsBillingForm(true)
+  };
+
+  const handleOnClose = () => {
+    // setIsBillingForm(true)
+    console.log("PROPS", props)
+    props.history.goBack()
+  };
+
+  const cardContent = ()=> {
+    if(isBillingForm){
+      return (
+        <BillingForm
+          onInputChange={handleInputChange}
+          onCheckboxChange={handleCheckboxChange}
+          onRadioGroupChange={handleRadioGroupChange}
+          onFormSubmit={handleFormSubmit}
+          data={data}
+          errors={errors}
+          booking={selectedBooking}
+          payment={payment}
+          onChangeData={handleChangeData}
+        />
+      );
+    }else {
+      return(
+        <PreBillingForm
+          onInputChange={handleInputChange}
+          onCheckboxChange={handleCheckboxChange}
+          onRadioGroupChange={handleRadioGroupChange}
+          onFormSubmit={handleContinue}
+          data={data}
+          errors={errors}
+          booking={selectedBooking}
+          payment={payment}
+          onChangeData={handleChangeData}
+          handleOnClose={handleOnClose}
+        />
+      );
+    }
+  }
 
   return (
     <React.Fragment>
       {loading && <LoaderDialog open={loading} />}
       <Card
         header={<BillingHeader />}
-        content={cardContent}
+        content={cardContent()}
         maxWidth={700}
         margin="80px auto"
       />
@@ -265,4 +339,4 @@ const BillingFormLayout = props => {
   );
 };
 
-export default BillingFormLayout;
+export default withRouter(BillingFormLayout);

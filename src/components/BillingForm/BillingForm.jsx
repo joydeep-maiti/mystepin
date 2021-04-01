@@ -46,19 +46,22 @@ const BillingForm = props => {
   } = props;
 
   console.log("booking",booking)
+  console.log("data",data)
 
   const [postotal, setPosTotal] = React.useState(0)
-  const [roomChargesTotal, setRoomChargesTotal] = React.useState(0)
-  const [roomChargesTotalWithTax, setRoomChargesTotalWithTax] = React.useState(0)
-  const [tax, setTax] = React.useState(0)
-  const [slab, setSlab] = React.useState(0)
+  // const [roomChargesTotal, setRoomChargesTotal] = React.useState(0)
+  // const [roomChargesTotalWithTax, setRoomChargesTotalWithTax] = React.useState(0)
+  // const [tax, setTax] = React.useState(0)
+  // const [slab, setSlab] = React.useState(0)
   const [balance, setBalance] = React.useState(0)
-  const [taxSlabs, setTaxSlabs] = React.useState([]);
+  // const [taxSlabs, setTaxSlabs] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
 
   React.useEffect(()=>{
-    if(!booking.pos) 
+    if(!booking.pos) {
+      setBalance(Number(data.totalRoomCharges)-Number(booking.advance))
       return
+    }
     let expense = 0
     Object.keys(booking.pos).forEach(el=>{
       // debugger
@@ -67,14 +70,13 @@ const BillingForm = props => {
       })
     })
     setPosTotal(expense)
-    setRoomChargesTotal(Number(booking.roomCharges)+Number(expense))
-    setBalance(Number(booking.roomCharges)+Number(expense)-Number(booking.advance))
+    setBalance(Number(data.totalRoomCharges)+Number(expense)-Number(booking.advance))
     
-  },[booking])
+  },[booking,data.totalRoomCharges])
 
-  React.useEffect(()=>{
-    fetchTaxes()
-  },[])
+  // React.useEffect(()=>{
+  //   fetchTaxes()
+  // },[])
 
   React.useEffect(()=>{
     onChangeData({
@@ -82,33 +84,33 @@ const BillingForm = props => {
     })
   },[balance])
   
-  React.useEffect(()=>{
-    let balance = data.taxStatus==="withTax"?Number(roomChargesTotalWithTax)-Number(booking.advance):Number(roomChargesTotal)-Number(booking.advance)
-    setBalance(balance)
-  },[roomChargesTotal,roomChargesTotalWithTax,data.taxStatus])
+  // React.useEffect(()=>{
+  //   let balance = data.taxStatus==="withTax"?Number(roomChargesTotalWithTax)-Number(booking.advance):Number(roomChargesTotal)-Number(booking.advance)
+  //   setBalance(balance)
+  // },[roomChargesTotal,roomChargesTotalWithTax,data.taxStatus])
 
-  React.useEffect(()=>{
-    if(roomChargesTotal){
-      // debugger
-      const slab = taxSlabs.filter(el => roomChargesTotal>el.greaterThan && roomChargesTotal<= (el.lessThanAndEqual || 9999999999))
-      if(slab.length>0){
-        let tax = booking.roomCharges*(slab[0].taxPercent/100)
-        let chargesWithTax = roomChargesTotal + tax
-        setRoomChargesTotalWithTax(chargesWithTax)
-        // setBalance(Number(chargesWithTax)-Number(booking.advance))
-        setTax(tax)
-        setSlab(slab[0].taxPercent+"%")
-      }
-    }
-  },[taxSlabs,roomChargesTotal])
+  // React.useEffect(()=>{
+  //   if(roomChargesTotal){
+  //     // debugger
+  //     const slab = taxSlabs.filter(el => roomChargesTotal>el.greaterThan && roomChargesTotal<= (el.lessThanAndEqual || 9999999999))
+  //     if(slab.length>0){
+  //       let tax = booking.roomCharges*(slab[0].taxPercent/100)
+  //       let chargesWithTax = roomChargesTotal + tax
+  //       setRoomChargesTotalWithTax(chargesWithTax)
+  //       // setBalance(Number(chargesWithTax)-Number(booking.advance))
+  //       setTax(tax)
+  //       setSlab(slab[0].taxPercent+"%")
+  //     }
+  //   }
+  // },[taxSlabs,roomChargesTotal])
 
 
-  const fetchTaxes = async () => {
-    setLoading(true)
-    const taxSlabs = await taxService.getTaxSlabs();
-    setTaxSlabs(taxSlabs);
-    setLoading(false);
-  };
+  // const fetchTaxes = async () => {
+  //   setLoading(true)
+  //   const taxSlabs = await taxService.getTaxSlabs();
+  //   setTaxSlabs(taxSlabs);
+  //   setLoading(false);
+  // };
 
   // const renderInputItems = (label, value, inputId) => {
   //   return (
@@ -195,15 +197,15 @@ const BillingForm = props => {
     );
   };
 
-  const radioButtons = [
-    { value: "withoutTax", label: "Without Tax" },
-    { value: "withTax", label: "With Tax" }
-  ];
+  // const radioButtons = [
+  //   { value: "withoutTax", label: "Without Tax" },
+  //   { value: "withTax", label: "With Tax" }
+  // ];
 
   return (
     booking && (
       <form onSubmit={event => onFormSubmit(event)}>
-        <div className={classes.radioGroup}>
+        {/* <div className={classes.radioGroup}>
           {FormUtils.renderRadioGroup({
             label: "",
             ariaLabel: "taxInfo",
@@ -212,12 +214,12 @@ const BillingForm = props => {
             onChange: onRadioGroupChange,
             radioButtons
           })}
-        </div>
+        </div> */}
         <div style={{display:"flex", flexWrap:"wrap"}}>
           {renderInputItems("Room Charges", booking.roomCharges, "roomCharges")}
-          {renderInputItems("Tax", data.taxStatus==="withTax"?tax:0, "tax")}
+          {renderInputItems("Tax", data.tax, "tax")}
           {renderInputItems("Misllaneous", postotal, "misllaneous")}
-          {renderInputItems("Total Charges", data.taxStatus==="withTax"?roomChargesTotalWithTax:roomChargesTotal, "totalRoomCharges")}
+          {renderInputItems("Total Charges", data.totalRoomCharges, "totalRoomCharges")}
           {renderInputItems("Advance", booking.advance, "advance")}
           {renderInputItems("Balance",  balance, "balance")}
         </div>

@@ -28,6 +28,7 @@ import useStyles from "./BookingFormStyle";
 import "./BookingForm.scss";
 import ratemasterService from "../../services/ratemasterService";
 import Loader from "../../common/Loader/Loader";
+import taxService from "../../services/taxService";
 
 const BookingForm = props => {
   const classes = useStyles();
@@ -67,6 +68,7 @@ const BookingForm = props => {
     {planType:"EP"},
     {planType:"MAP"},
   ]);
+  const [taxSlabs, setTaxSlabs] = React.useState([]);
   // const roomOptions = availableRooms.map(room => {
   //   return { label: room.roomNumber, value: room.roomNumber };
   // });
@@ -77,6 +79,10 @@ const BookingForm = props => {
   //     return room;
   //   })
   // );
+
+  React.useEffect(()=>{
+    fetchTaxes()
+  },[])
 
   React.useEffect(()=>{
     if(data["checkIn"] > data["checkOut"]){
@@ -93,7 +99,12 @@ const BookingForm = props => {
     calculateBookingPrice(formattedRates,data.rooms)
   },[data.rooms])
 
-
+  const fetchTaxes = async () => {
+    setLoading(true)
+    const taxSlabs = await taxService.getTaxSlabs();
+    setTaxSlabs(taxSlabs);
+    setLoading(false);
+  };
 
   const fetchRates = async()=>{
     if(!data["checkIn"] || !data["checkOut"])
@@ -136,17 +147,40 @@ const BookingForm = props => {
 
   const calculateBookingPrice = (rates, rooms) => {
     console.log("--------shouldDisable",shouldDisable)
+    // debugger
     if(shouldDisable)
       return
     let price = 0
     console.log("rates, rooms",rates, rooms)
+    const roomWiseRatesForBooking = []
     rooms.forEach(room=>{
+      const bookingRate = {
+        roomNumber:room.roomNumber,
+      }
+      const bookingRates = []
       rates[room.roomType] && rates[room.roomType].forEach(dayrate=>{
+        // debugger
         price += parseInt(dayrate.rate)
+        const slab = taxSlabs.filter(el => dayrate.rate>el.greaterThan && dayrate.rate<= (el.lessThanAndEqual || 9999999999))
+        let taxPercent;
+        let tax;
+        if(slab.length>0){
+          taxPercent = slab[0].taxPercent
+          tax = dayrate.rate*(slab[0].taxPercent/100)
+        }
+        bookingRates.push({
+          date: dayrate.date,
+          rate: dayrate.rate,
+          extra: dayrate.extraRate,
+          taxPercent,
+          tax
+        })
       })
+      bookingRate.rates = bookingRates
+      roomWiseRatesForBooking.push(bookingRate)
     })
-    console.log("Final Price",price)
-    onSetPrice(price)
+    console.log("Final Price",price, roomWiseRatesForBooking)
+    onSetPrice(price,roomWiseRatesForBooking)
   };
 
   const handleChange = panel => (event, isExpanded) => {

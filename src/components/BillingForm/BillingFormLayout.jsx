@@ -330,7 +330,7 @@ const BillingFormLayout = props => {
     <React.Fragment>
       {loading && <LoaderDialog open={loading} />}
       <Card
-        header={<BillingHeader />}
+        header={<BillingHeader title={isBillingForm?"Billing Form":"Room Rates"}/>}
         content={cardContent()}
         maxWidth={700}
         margin="80px auto"

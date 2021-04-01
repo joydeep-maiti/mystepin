@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const BillingFormHeader = () => {
+const BillingFormHeader = (props) => {
   const classes = useStyles();
 
   return (
@@ -24,7 +24,7 @@ const BillingFormHeader = () => {
       <AppBar position="static">
         <Toolbar variant="dense">
           <Typography variant="h6" className={classes.title}>
-            Billing Form
+            {props.title}
           </Typography>
         </Toolbar>
       </AppBar>

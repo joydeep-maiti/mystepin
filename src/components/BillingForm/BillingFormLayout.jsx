@@ -333,7 +333,7 @@ const BillingFormLayout = props => {
         header={<BillingHeader title={isBillingForm?"Billing Form":"Room Rates"}/>}
         content={cardContent()}
         maxWidth={700}
-        margin="80px auto"
+        margin="30px auto"
       />
     </React.Fragment>
   );

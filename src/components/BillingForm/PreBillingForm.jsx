@@ -148,7 +148,7 @@ const PreBillingForm = props => {
             radioButtons
           })}
         </div>
-        <div>
+        {/* <div>
           <table className={classes.pricetable}>
             <tr>
               <th>Date</th>
@@ -157,6 +157,18 @@ const PreBillingForm = props => {
               <th>Tax Rate</th>
               <th>Tax</th>
               <th>Total</th>
+            </tr>
+            </table>
+        </div> */}
+        <div style={{maxHeight:"25rem",overflowY:"auto"}}>
+          <table className={classes.pricetable}>
+            <tr style={{background:"antiquewhite", padding:"3px 5px"}}>
+              <th style={{position:"sticky", top:0,background:"antiquewhite", padding:"3px 5px"}}>Date</th>
+              <th style={{position:"sticky", top:0,background:"antiquewhite", padding:"3px 5px"}}>Room No.</th>
+              <th style={{position:"sticky", top:0,background:"antiquewhite", padding:"3px 5px"}}>Room Rate</th>
+              <th style={{position:"sticky", top:0,background:"antiquewhite", padding:"3px 5px"}}>Tax Rate</th>
+              <th style={{position:"sticky", top:0,background:"antiquewhite", padding:"3px 5px"}}>Tax</th>
+              <th style={{position:"sticky", top:0,background:"antiquewhite", padding:"3px 5px"}}>Total</th>
             </tr>
               {/* {
                 booking && booking.roomWiseRatesForBooking && booking.roomWiseRatesForBooking.map(el=>{
@@ -213,7 +225,7 @@ const PreBillingForm = props => {
                               <th style={{paddingBottom:".5rem", fontSize:"15px", fontWeight:600}}>{dayTotal}</th>
                             </tr>
                         }
-                        {
+                        {/* {
                           i === Object.keys(dayWiseRates).length-1 && index === dayWiseRates[date].length-1 &&
                             <tr>
                               <td></td>
@@ -223,7 +235,7 @@ const PreBillingForm = props => {
                               <th style={{paddingBottom:"1rem", fontSize:"18px", fontWeight:600}}>Total</th>
                               <th style={{paddingBottom:"1rem", fontSize:"18px", fontWeight:600}}>{data.totalRoomCharges}</th>
                             </tr>
-                        }
+                        } */}
                       </React.Fragment>
                     )
                   })
@@ -231,6 +243,10 @@ const PreBillingForm = props => {
                 })
               }
           </table>
+        </div>
+        <div style={{display:"flex", justifyContent:"flex-end"}}>
+          <h3 style={{margin:"8px 1rem"}}>Total</h3>
+          <h3 style={{margin:"8px 1rem"}}>{data.totalRoomCharges}</h3>
         </div>
         {errors.customError && (
           <div style={{ color: "#f44336" }}>

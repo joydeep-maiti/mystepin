@@ -28,7 +28,7 @@ const BillingDetails = () => {
   const [startingDateObj, setStartingDateObj] = useState();
   const [currentDateObj, setCurrentDateObj] = useState(utils.getDateObj(utils.getDate()));
   const [billingCategory,setBillingCategory]=useState("");
-  const [booking, setBooking] = useState([]);
+  const [bookings, setBookings] = useState([]);
 
   useEffect(()=>{
     
@@ -44,13 +44,15 @@ const BillingDetails = () => {
     setStartingDateObj(utils.getDateObj(utils.getDate(date)));
   };
   //Getting Booking Details
-  const setBookings = async (startdate,month) => {
-    const allBookings = await bookingService.getBookings(month);
-    if (allBookings.length > 0) {
-      setBooking(allBookings);
-    }     
-    console.log(booking);
-  };
+  // const getBookingsDetails = async (dateObjs) => {
+  //   dateObjs.forEach( async (dateObj)=>{
+  //     const booking = await bookingService.getBookings(dateObj.month);
+  //     if(booking !== null){
+  //       console.log(booking);
+  //       bookings.push(booking);
+  //     }
+  //   })   
+  // };
 
   //GenerateReport
   const generateReport=()=>{
@@ -64,8 +66,7 @@ const BillingDetails = () => {
         year : d.format('YYYY')
       })
     });
-    console.log(dateObjs);
-    setBookings(dates,dateObjs[0].month);
+    //getBookingsDetails(dateObjs);
     console.log("Generating Report");
   }
   //return method

@@ -1,11 +1,16 @@
-import React from 'react'
-import { makeStyles, Button,Grid,Container} from "@material-ui/core";
+import React,{useState,useEffect} from 'react'
+import { makeStyles, Button,InputLabel} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import DateFnsUtils from '@date-io/date-fns';
 import {MuiPickersUtilsProvider,KeyboardDatePicker} from '@material-ui/pickers';
+import './BillingDetails.css';
+import moment from "moment";
+import utils from "../../utils/utils";
+import bookingService from "../../services/bookingService";
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
+    marginBottom:"5rem"
   },
   title: {
     flexGrow: 2
@@ -15,8 +20,56 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+
 const BillingDetails = () => {
-    const classes = useStyles();
+  const classes = useStyles();
+  const [startingDate,setStartingDate]=useState(utils.getDate(moment().startOf('month')));
+  const [currentDate, setCurrentDate] = useState(utils.getDate());
+  const [startingDateObj, setStartingDateObj] = useState();
+  const [currentDateObj, setCurrentDateObj] = useState(utils.getDateObj(utils.getDate()));
+  const [billingCategory,setBillingCategory]=useState("");
+  const [bookings, setBookings] = useState([]);
+
+  useEffect(()=>{
+    
+  },[])
+  //Handle current date Change
+  const handleCurrentDateChange = (date) => {  
+    setCurrentDate(utils.getDate(date));
+    setCurrentDateObj(utils.getDateObj(utils.getDate(date)));
+  };
+  //Handle starting date Change
+  const handleStartingDateChange =(date)=>{
+    setStartingDate(utils.getDate(date));  
+    setStartingDateObj(utils.getDateObj(utils.getDate(date)));
+  };
+  //Getting Booking Details
+  // const getBookingsDetails = async (dateObjs) => {
+  //   dateObjs.forEach( async (dateObj)=>{
+  //     const booking = await bookingService.getBookings(dateObj.month);
+  //     if(booking !== null){
+  //       console.log(booking);
+  //       bookings.push(booking);
+  //     }
+  //   })   
+  // };
+
+  //GenerateReport
+  const generateReport=()=>{
+    const dates=utils.daysBetweenDates(startingDate,currentDate);
+    const dateObjs=[];
+    dates.map(date=>{
+      var d=moment(date);
+     dateObjs.push({
+        month: d.format('M'),
+        day  : d.format('D'),
+        year : d.format('YYYY')
+      })
+    });
+    //getBookingsDetails(dateObjs);
+    console.log("Generating Report");
+  }
+  //return method
     return (
         <div>
         <div className={classes.root}>
@@ -24,10 +77,8 @@ const BillingDetails = () => {
               Billing Details
             </Typography>
         </div>
-       < Container maxWidth='sm'>
-        <Grid 
-          alignItems="center"
-          justify="center">
+        <div className="container">   
+        <div className="formdates">  
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
          <KeyboardDatePicker
               disableToolbar
@@ -35,8 +86,8 @@ const BillingDetails = () => {
              margin="normal"
              id="date-picker-dialog"
             label="From"
-            //value={currentDate}              
-            //onChange={handleDateChange}
+            value={startingDate}              
+            onChange={handleStartingDateChange}
             KeyboardButtonProps={{
              'aria-label': 'change date',
             }}
@@ -51,34 +102,35 @@ const BillingDetails = () => {
              margin="normal"
              id="date-picker-dialog"
             label="To"
-            //value={currentDate}              
-            //onChange={handleDateChange}
+            value={currentDate}              
+            onChange={handleCurrentDateChange}
             KeyboardButtonProps={{
              'aria-label': 'change date',
             }}
            style={{ marginLeft: "0.5rem",width:'150px'}}
                             />
             </MuiPickersUtilsProvider>
-
-            <div className={classes.buttons}> 
-            <Button 
-            type="submit" 
-            variant="contained"
-            style={{backgroundColor:"#0088bc",color:'white'}}
-            >
+            </div>  
+            <div className="billingselect">
+            <InputLabel id="label">Select Category to Generate Report on Billing </InputLabel>
+            <select name="billing" id="billingcategory" onChange={(e)=>{setBillingCategory(e.target.value)}}>
+            <option value=""></option>            
+            <option value="billingsummary">Billing Summary</option>
+            <option value="due">Due</option>
+            <option value="settlement">Settlement</option>
+            </select>
+            </div> 
+            <div className="buttoncontainer"> 
+            <Button type="submit"  className="button1">
             Back
           </Button>
-          <Button 
-            type="submit" 
-            variant="contained"
-            style={{backgroundColor:"#0088bc",color:'white',marginLeft:'5rem'}}
-            >
+          <Button  type="submit" className="button2" onClick={generateReport}>
             Generate
           </Button>
             </div>
-            </Grid>
-            </Container>
+          </div>
         </div>
+
     )
 }
 

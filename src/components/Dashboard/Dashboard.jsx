@@ -194,6 +194,9 @@ const Dashboard = props => {
     setView('day')
     setCurrentDateObj(utils.getDateObj(utils.getDate(date)));
     setCurrentDate(utils.getDate(date));
+
+    console.log(currentDate);
+    console.log(currentDateObj);
   };
 
   const setDateObj = (dateObj, date) => {

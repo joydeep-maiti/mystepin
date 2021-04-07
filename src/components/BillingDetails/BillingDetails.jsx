@@ -6,7 +6,8 @@ import {MuiPickersUtilsProvider,KeyboardDatePicker} from '@material-ui/pickers';
 import './BillingDetails.css';
 import moment from "moment";
 import utils from "../../utils/utils";
-import bookingService from "../../services/bookingService";
+import FormUtils from "../../utils/formUtils";
+import billingService from '../../services/billingService'
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
@@ -25,10 +26,14 @@ const BillingDetails = () => {
   const classes = useStyles();
   const [startingDate,setStartingDate]=useState(utils.getDate(moment().startOf('month')));
   const [currentDate, setCurrentDate] = useState(utils.getDate());
-  const [startingDateObj, setStartingDateObj] = useState();
-  const [currentDateObj, setCurrentDateObj] = useState(utils.getDateObj(utils.getDate()));
-  const [billingCategory,setBillingCategory]=useState("");
   const [bookings, setBookings] = useState([]);
+  const [bookingCategory,setBookingCategory] = useState("");
+  const [shouldDisable, setShouldDisable] = useState(false);
+  const [billingTypes, setBillingTypes] = React.useState([
+    {billingType:"Billing Summary"},
+    {billingType:"Due"},
+    {billingType:"Settlement"},
+  ]);
 
   useEffect(()=>{
     
@@ -36,17 +41,28 @@ const BillingDetails = () => {
   //Handle current date Change
   const handleCurrentDateChange = (date) => {  
     setCurrentDate(utils.getDate(date));
-    setCurrentDateObj(utils.getDateObj(utils.getDate(date)));
+
   };
   //Handle starting date Change
   const handleStartingDateChange =(date)=>{
     setStartingDate(utils.getDate(date));  
-    setStartingDateObj(utils.getDateObj(utils.getDate(date)));
+
   };
+  //Get Plan Options
+  const getPlanOptions = () => {
+      return billingTypes.map(plan => {
+      return { label: plan.billingType, value: plan.billingType};
+    });
+  };
+  //Handle Select Change
+  const handleSelectChange=(event)=>{
+    setBookingCategory(event.target.value);
+    console.log("event",bookingCategory);
+    }
+
   //Getting Booking Details
-  // const getBookingsDetails = async (dateObjs) => {
-  //   dateObjs.forEach( async (dateObj)=>{
-  //     const booking = await bookingService.getBookings(dateObj.month);
+  // const getBookingsDetails => async (startingDate,currentDate)) => { 
+  //    const booking = await billingService.getBookings(startingDate,currentDate);
   //     if(booking !== null){
   //       console.log(booking);
   //       bookings.push(booking);
@@ -55,18 +71,20 @@ const BillingDetails = () => {
   // };
 
   //GenerateReport
+   // const dates=utils.daysBetweenDates(startingDate,currentDate);
+    // const dateObjs=[];
+    // dates.map(date=>{
+    //   var d=moment(date);
+    //  dateObjs.push({
+    //     month: d.format('M'),
+    //     day  : d.format('D'),
+    //     year : d.format('YYYY')
+    //   })
+    // });
   const generateReport=()=>{
-    const dates=utils.daysBetweenDates(startingDate,currentDate);
-    const dateObjs=[];
-    dates.map(date=>{
-      var d=moment(date);
-     dateObjs.push({
-        month: d.format('M'),
-        day  : d.format('D'),
-        year : d.format('YYYY')
-      })
-    });
-    //getBookingsDetails(dateObjs);
+    //getBookingsDetails(startingDate,currentDate);
+
+   
     console.log("Generating Report");
   }
   //return method
@@ -113,12 +131,14 @@ const BillingDetails = () => {
             </div>  
             <div className="billingselect">
             <InputLabel id="label">Select Category to Generate Report on Billing </InputLabel>
-            <select name="billing" id="billingcategory" onChange={(e)=>{setBillingCategory(e.target.value)}}>
-            <option value=""></option>            
-            <option value="billingsummary">Billing Summary</option>
-            <option value="due">Due</option>
-            <option value="settlement">Settlement</option>
-            </select>
+              {FormUtils.renderSelect({
+                id: "billingType",
+                label: "Plan Type",
+                name:"billingType",
+                onChange: event => handleSelectChange(event),
+                options: getPlanOptions(),
+                disabled: shouldDisable
+              })}
             </div> 
             <div className="buttoncontainer"> 
             <Button type="submit"  className="button1">

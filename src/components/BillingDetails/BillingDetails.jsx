@@ -113,7 +113,6 @@ const BillingDetails = () => {
         doc.text("To : "+currentDateString,700, 80);
         doc.setFontSize(12);
         doc.autoTable(content);
-        // doc.autoTable({ html: '#emiTable' })
         doc.save("hari.pdf")
 
   }

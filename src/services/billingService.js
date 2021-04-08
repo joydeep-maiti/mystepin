@@ -3,7 +3,7 @@ import http from "./httpService";
 async function getBookings(startdate,enddate) {
   try {
     const { data: bookings } = await http.post(
-      `${http.baseUrl}/bookingsbydate?fromDate:${startdate}&endDate:${enddate}`
+      `${http.baseUrl}/bookingsbydate?fromDate=${startdate}&toDate=${enddate}`
     );
     return bookings;
   } catch (error) {
@@ -11,4 +11,4 @@ async function getBookings(startdate,enddate) {
     console.log(error);
   }
 }
-export default getBookings;
+export default {getBookings};

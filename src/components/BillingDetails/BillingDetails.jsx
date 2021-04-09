@@ -11,7 +11,7 @@ import billingService from '../../services/billingService'
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import "jspdf-autotable";
-import {renderToString} from 'react-dom/server'
+
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
@@ -42,6 +42,7 @@ const BillingDetails = () => {
     {billingType:"Due"},
     {billingType:"Settlement"},
   ]);
+  
 
   useEffect(()=>{
     
@@ -72,19 +73,27 @@ const BillingDetails = () => {
     setBookingCategory(event.target.value);
     console.log("event",bookingCategory);
     }
-
   //Getting Booking Details
   const getBookingsDetails = async (startingDate,currentDate) => { 
-      console.log(startingDate,currentDate)
-     const booking = await billingService.getBookings(startingDate,currentDate);
-      console.log(booking)
-      if(booking !== null){
-       // console.log(booking);
-        bookings.push(booking);
-      }
-    }
 
-  const exporttoPDF = () =>{
+     const booking = await billingService.getBookings(startingDate,currentDate);
+     let a=201;
+     console.log(booking)
+      if(booking !== null){
+          booking.forEach(book=>{
+            let value=[`A/${a++}`,
+            book.firstName+" "+book.lastName,
+            utils.getDate(),""
+            ,"","","","","","","","",book.balance,
+            "",
+            "",
+            ""]
+             bookings.push(value);
+            })
+          }
+        }
+        
+        const exporttoPDF = () =>{
     const unit = "pt";
     const size = "A4"; // Use A1, A2, A3 or A4
     const orientation = "landscape"; // portrait or landscape
@@ -94,7 +103,7 @@ const BillingDetails = () => {
         doc.setFontSize(20);
         let title = "Billing Summary Report";
         let headers = [["Bill No", "Name","Bill Date","Lodging","Boarding","LuxuryTax","Serv Tax","R.Service","Recn.","Taxi","Misc","Laun.","Total","Adv.Rcpt","Adv.Amount","Paid"]];
-        let data = [["1","Hari"]]
+        let data = bookings
         let content = {
           startY: 120,
           head: headers,
@@ -104,7 +113,8 @@ const BillingDetails = () => {
             cellWidth:'wrap',
             halign: 'center',
           },
-          margin: marginLeft
+          margin: marginLeft,
+          pageBreak:'auto'
         };
     
         doc.text(title, 300, 30);

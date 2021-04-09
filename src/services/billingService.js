@@ -2,7 +2,7 @@ import http from "./httpService";
 
 async function getBookings(startdate,enddate) {
   try {
-    const { data: bookings } = await http.post(
+    const { data: bookings } = await http.get(
       `${http.baseUrl}/bookingsbydate?fromDate=${startdate}&toDate=${enddate}`
     );
     return bookings;

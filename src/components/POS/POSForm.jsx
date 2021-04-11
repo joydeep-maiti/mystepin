@@ -5,6 +5,7 @@ import moment from "moment";
 
 import POSList from "./POSList";
 import bookingService from "../../services/bookingService";
+import posService from "../../services/posService";
 import FormUtils from "../../utils/formUtils";
 import utils from "../../utils/utils";
 import schemas from "../../utils/joiUtils";
@@ -27,7 +28,8 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
   const [openDatePicker, setOpenDatePicker] = useState(false);
   const [minDate, setMinDate] = useState(utils.getDate());
   const [posData, setPosData] = useState([]);
-  const [pos, setPos] = useState({});
+  const [pos, setPos] = useState(null);
+  const [posDetails, setPosDetails] = useState(null);
   const [guest, setGuest] = useState("");
   const [bookingOptions, setBookingOptions] = useState([]);
   const [roomOptions, setRoomOptions] = useState([]);
@@ -64,7 +66,7 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
   }, [allBookings]);
 
   useEffect(() => {
-    console.log("posData",posData)
+    // console.log("posData",posData)
     const options = posData.map(data => ({
       label: data.room.roomNumber,
       value: data.room.roomNumber
@@ -163,7 +165,7 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
     setErrors(updatedErrors);
   };
 
-  const setBookingId = (option) => {
+  const setBookingId = async(option) => {
     // let updatedErrors = { ...errors };
     // delete updatedErrors[input.name];
 
@@ -175,7 +177,12 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
 
     setData({ ...data, date: minDate, _id: option.value});
     setGuest(option.label)
-    setPos(filteredObj.booking.pos)
+    const response = await posService.getPosByBookingId(option.value);
+    // console.log("response",response)
+    if(response){
+      setPosDetails(response)
+      setPos(response.pos)
+    }
     console.log("bookingId",data)
     setMinDate(minDate);
     // setErrors(updatedErrors);
@@ -200,28 +207,50 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
       ...allBookings.find(booking => booking._id === _id)
     };
 
-    if (booking.pos) {
-      let pos = { ...booking.pos };
-      pos[title] = pos[title]
-        ? [...pos[title], { date, amount, remarks }]
+    if (pos) {
+      let _pos = { ...pos };
+      _pos[title] = _pos[title]
+        ? [..._pos[title], { date, amount, remarks }]
         : [{ date, amount, remarks }];
-      booking.pos = pos;
+      // booking.pos = _pos;
+      const response = await posService.updatePos({
+        ...posDetails,
+        pos:_pos
+      });
+      if (response){
+        openSnackBar("Updated Successfully", success);
+        setPos(_pos)
+      } 
+      else openSnackBar("Error Occurred", error);
     } else {
-      booking.pos = {};
-      booking.pos[title] = [{ date, amount, remarks }];
+      let _pos = {};
+      _pos[title] = [{ date, amount, remarks }];
+      const _posDetails = {
+        pos:_pos,
+        bookingId:booking._id,
+        guestName: guest,
+        rooms:booking.rooms
+      }
+      const response = await posService.addPos(_posDetails);
+      if (response.status === 201){
+        openSnackBar("Updated Successfully", success);
+        setPos(_pos)
+        setPosDetails(_posDetails)
+      } 
+      else openSnackBar("Error Occurred", error);
     }
 
-    const response = await bookingService.updateBooking(booking);
-    if (response.status === 200){
-      openSnackBar("Updated Successfully", success);
-      setPos(booking.pos)
-    } 
-    else openSnackBar("Error Occurred", error);
+    // const response = await bookingService.updateBooking(booking);
+    // if (response.status === 200){
+    //   openSnackBar("Updated Successfully", success);
+    //   setPos(booking.pos)
+    // } 
+    // else openSnackBar("Error Occurred", error);
     // onClose();
   };
 
   const openSnackBar = (message, variant) => {
-    const snakbarObj = { open: true, message, variant, resetBookings: true };
+    const snakbarObj = { open: true, message, variant, resetBookings: false };
     handleSnackbarEvent(snakbarObj);
   };
 
@@ -231,15 +260,18 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
     temp[title].splice(index,1)
     // console.log("pos",pos, temp)
     setPos(temp)
-    const { _id, date, amount, remarks } = data;
-    const booking = {
-      ...allBookings.find(booking => booking._id === _id)
-    };
-    booking.pos = temp
-    const response = await bookingService.updateBooking(booking);
-    if (response.status === 200) {
+    // const { _id, date, amount, remarks } = data;
+    // const booking = {
+    //   ...allBookings.find(booking => booking._id === _id)
+    // };
+    const _posDetails = {
+      ...posDetails,
+      pos:temp
+    }
+    const response = await posService.updatePos(_posDetails);
+    if (response) {
       openSnackBar("Updated Successfully", success);
-      setPos(booking.pos)
+      setPos(temp)
     }
     else openSnackBar("Error Occurred", error);
     // onClose();

@@ -4,6 +4,7 @@ import { Typography } from "@material-ui/core";
 import Checkbox from "./../../common/Checkbox/Checkbox";
 import FormUtils from "../../utils/formUtils";
 import taxService from "../../services/taxService";
+import posService from "../../services/posService";
 
 const useStyles = makeStyles(theme => ({
   formGroup: {
@@ -57,22 +58,23 @@ const BillingForm = props => {
   // const [taxSlabs, setTaxSlabs] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
 
-  React.useEffect(()=>{
-    if(!booking.pos) {
+  React.useEffect( async ()=>{
+    const response = await posService.getPosByBookingId(booking._id)
+    if(!response) {
       setBalance(Number(data.totalRoomCharges)-Number(booking.advance))
       return
     }
     let expense = 0
-    Object.keys(booking.pos).forEach(el=>{
+    Object.keys(response.pos).forEach(el=>{
       // debugger
-      booking.pos[el].forEach(e =>{
+      response.pos[el].forEach(e =>{
         expense += Number(e.amount)
       })
     })
     setPosTotal(expense)
     setBalance(Number(data.totalRoomCharges)+Number(expense)-Number(booking.advance))
     
-  },[booking,data.totalRoomCharges])
+  },[booking._id,data.totalRoomCharges])
 
   // React.useEffect(()=>{
   //   fetchTaxes()

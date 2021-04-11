@@ -122,12 +122,13 @@ const BillingFormLayout = props => {
   };
 
   const checkBalance = (data, errors) => {
+    // debugger
     const total =
       ((data.cash && parseInt(data.cash)) || 0) +
       ((data.card && parseInt(data.card)) || 0) +
       ((data.wallet && parseInt(data.wallet)) || 0);
 
-    if (total !== parseInt(selectedBooking.balance))
+    if (total !== parseInt(data.balance))
       return false
     return true
    
@@ -149,6 +150,10 @@ const BillingFormLayout = props => {
 
     if(!checkBalance(clonedData, errors)){
       if(!window.confirm("Total varies from balance. Do you want to proceed?")){
+        return
+      }
+    }else {
+      if(!window.confirm("Do you want to proceed with billing?")){
         return
       }
     }

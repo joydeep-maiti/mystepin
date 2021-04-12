@@ -14,6 +14,7 @@ import FormUtils from "../../utils/formUtils";
 import utils from "../../utils/utils";
 import bookingService from "../../services/bookingService";
 import taxService from "../../services/taxService";
+import billingService from "../../services/billingService";
 
 const { success, error } = constants.snackbarVariants;
 
@@ -176,17 +177,38 @@ const BillingFormLayout = props => {
     selectedBooking.status = { ...selectedBooking.status, checkedOut: true };
     selectedBooking.totalAmount = selectedBooking.roomCharges;
     selectedBooking.roomCharges = roomCharges;
-    const paymentData = { ...selectedBooking, payment: clonedData };
-    updateBookingPayment(paymentData);
+    // console.log("selectedBooking",selectedBooking,clonedData)
+    const {posData, ...paymentData} = clonedData
+    const billingData = {
+      bookingId: selectedBooking._id,
+      hotelName: selectedBooking.hotelName,
+      hotelAddress: selectedBooking.hotelAddress,
+      guestName: posData.guestName,
+      checkIn: selectedBooking.checkIn,
+      checkOut: selectedBooking.checkOut,
+      checkedInTime: selectedBooking.checkedInTime,
+      checkedOutTime: selectedBooking.checkedOutTime,
+      roomCharges: selectedBooking.roomCharges,
+      advance: selectedBooking.advance,
+      roomWiseRatesForBooking: selectedBooking.roomWiseRatesForBooking,
+      totalAmount: selectedBooking.totalAmount,
+      posData,
+      paymentData
+    }
+    updateBookingPayment(selectedBooking,billingData);
   };
 
-  const updateBookingPayment = async bookingData => {
+  const updateBookingPayment = async (bookingData, billingData) => {
+    console.log("bookingData, billingData",bookingData, billingData)
     const { status } = await bookingService.updateBooking(bookingData);
-    setLoading(false);
     if (status === 200) {
-      openSnackBar("Checked out Successfully", success);
-      props.onRedirectFromBilling(bookingData);
+      const { status } = await  billingService.addBilling(billingData);
+      if (status === 201) {
+        openSnackBar("Checked out Successfully", success);
+        props.onRedirectFromBilling(bookingData);
+      }
     } else openSnackBar("Error Occurred", error);
+    setLoading(false);
   };
 
   useEffect(()=>{

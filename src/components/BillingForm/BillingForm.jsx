@@ -50,6 +50,7 @@ const BillingForm = props => {
   console.log("data",data)
 
   const [postotal, setPosTotal] = React.useState(0)
+  const [pos, setPos] = React.useState(null)
   // const [roomChargesTotal, setRoomChargesTotal] = React.useState(0)
   // const [roomChargesTotalWithTax, setRoomChargesTotalWithTax] = React.useState(0)
   // const [tax, setTax] = React.useState(0)
@@ -64,6 +65,7 @@ const BillingForm = props => {
       setBalance(Number(data.totalRoomCharges)-Number(booking.advance))
       return
     }
+    setPos(response)
     let expense = 0
     Object.keys(response.pos).forEach(el=>{
       // debugger
@@ -72,6 +74,9 @@ const BillingForm = props => {
       })
     })
     setPosTotal(expense)
+    onChangeData({
+      posTotal:expense
+    })
     setBalance(Number(data.totalRoomCharges)+Number(expense)-Number(booking.advance))
     
   },[booking._id,data.totalRoomCharges])
@@ -82,7 +87,8 @@ const BillingForm = props => {
 
   React.useEffect(()=>{
     onChangeData({
-      balance: balance
+      balance: balance,
+      posData: pos
     })
   },[balance])
   

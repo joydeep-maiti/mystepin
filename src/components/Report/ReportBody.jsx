@@ -7,6 +7,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import FormUtils from "../../utils/formUtils";
 import utils from "../../utils/utils";
+import billingService from "../../services/billingService";
 
 const useStyles = makeStyles(theme => ({
   btnGroup: {
@@ -25,6 +26,8 @@ const ReportGenerator = ({ booking }) => {
 
   const getNumberOfGuests = () =>
     parseInt(booking.adults) + parseInt(booking.children);
+  
+  console.log("booking",booking)
 
   return (
     <div className="report" ref={pdfComponentRef}>
@@ -169,9 +172,19 @@ const ReportGenerator = ({ booking }) => {
 
 const ReportBody = ({ booking }) => {
   const classes = useStyles();
+  const [bill, setBill] = React.useState(null)
+  React.useEffect(()=>{
+    fetchBill(booking._id)
+  },[booking._id])
+  
+  const fetchBill = async(id)=>{
+    const response = await  billingService.getBillByBookingId(id);
+    setBill(response)
+  }
+
   return (
     <div>
-      <ReportGenerator booking={booking} />
+      {bill && <ReportGenerator booking={Object.assign({},bill,booking)} />}
       <div className={classes.btnGroup}>
         <ReactToPrint
           trigger={() =>

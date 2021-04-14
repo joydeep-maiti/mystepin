@@ -8,6 +8,7 @@ import moment from "moment";
 import utils from "../../utils/utils";
 import FormUtils from "../../utils/formUtils";
 import billingService from '../../services/billingService'
+import reportOptions from '../../services/reportOptions'
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import "jspdf-autotable";
@@ -37,16 +38,15 @@ const BillingDetails = () => {
   const [bookings, setBookings] = useState([]);
   const [bookingCategory,setBookingCategory] = useState("");
   const [shouldDisable, setShouldDisable] = useState(false);
-  const [billingTypes, setBillingTypes] = React.useState([
-    {billingType:"Billing Summary"},
-    {billingType:"Due"},
-    {billingType:"Settlement"},
-  ]);
+  const [billingTypes, setBillingTypes] = useState([]);
   
-
-  useEffect(()=>{
-    
-  },[])
+  //getting options
+  useEffect(async ()=>{
+    let options = await reportOptions.getBillingOptions("Billing Details");
+    options.forEach(option=>{
+      billingTypes.push(option)
+    })
+   },[])
   
   //Handle starting date Change
   const handleStartingDateChange =(date)=>{
@@ -64,8 +64,8 @@ const BillingDetails = () => {
   };
   //Get Plan Options
   const getPlanOptions = () => {
-      return billingTypes.map(plan => {
-      return { label: plan.billingType, value: plan.billingType};
+      return billingTypes.map(type => {
+      return { label: type, value: type};
     });
   };
   //Handle Select Change
@@ -75,10 +75,9 @@ const BillingDetails = () => {
     }
   //Getting Booking Details
   const getBookingsDetails = async (startingDate,currentDate) => { 
-
-     const booking = await billingService.getBookings(startingDate,currentDate);
+   const booking = await billingService.getBookings(startingDate,currentDate);
      let a=201;
-     console.log(booking)
+     console.log("Hari",booking)
       if(booking !== null){
           booking.forEach(book=>{
             let value=[`A/${a++}`,
@@ -93,7 +92,7 @@ const BillingDetails = () => {
           }
         }
         
-        const exporttoPDF = () =>{
+    const exporttoPDF = () =>{
     const unit = "pt";
     const size = "A4"; // Use A1, A2, A3 or A4
     const orientation = "landscape"; // portrait or landscape
@@ -116,7 +115,6 @@ const BillingDetails = () => {
           margin: marginLeft,
           pageBreak:'auto'
         };
-    
         doc.text(title, 300, 30);
         doc.setFontSize(15);
         doc.text("From : "+startDateString,100, 80);
@@ -129,7 +127,7 @@ const BillingDetails = () => {
 
   const generateReport=()=>{
     getBookingsDetails(startingDate,currentDate);
-    exporttoPDF();
+    //exporttoPDF();
     console.log("Generating Report");
   }
   //return method

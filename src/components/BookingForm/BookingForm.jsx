@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import { Typography } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import Input from "../../common/Input/Input";
@@ -67,6 +67,9 @@ const BookingForm = props => {
     {planType:"EP"},
     {planType:"MAP"},
   ]);
+
+
+  
   const [taxSlabs, setTaxSlabs] = React.useState([]);
   // const roomOptions = availableRooms.map(room => {
   //   return { label: room.roomNumber, value: room.roomNumber };
@@ -247,7 +250,51 @@ const BookingForm = props => {
   };
 
   console.log("*******formattedRates",formattedRates)
-
+  //Adding BookedOptions
+  const [bookedBy,setBookedBy] = useState("")
+  const [agent,setAgent] = useState("")
+  const [memberShipNumber,setMembershipNumber]=useState()
+  const [isAgent,setIsAgent] = useState(false);
+  const [isMember,setIsMember] = useState(false);
+  const bookedByOptions=[
+    {label:"Walk In" ,value:"Walk In"},
+    {label:"Agent" ,value:"Agent"},
+    {label:"Member" ,value:"Member"},
+    {label:"Head Office" ,value:"Head Office"},
+  
+  ]
+  const agentOption=[
+    {label:"Make my Trip" ,value:"Make my Trip"},
+    {label:"Gobibo" ,value:"Gobibo"},
+    {label:"Sitram Travel Agent" ,value:"Sitram Travel Agent"},
+    {label:"Local Agent" ,value:"Local Agent"},
+  
+  ]
+  console.log(memberShipNumber)
+  //BookedByType
+  const selectBookedByOption = (event) => {
+    setBookedBy(event.target.value);
+  }
+  const selectAgentOption = (event) => {
+    setAgent(event.target.value);
+  }
+  //Type
+  useEffect(()=>{
+    if(bookedBy === "Agent"){
+      setIsAgent(true);
+      setIsMember(false);
+      console.log("Hello Agent")
+    }
+    else if(bookedBy === "Member"){
+      setIsMember(true)
+      setIsAgent(false)
+      console.log("Hello member")
+    }
+    else{
+      setIsAgent(false)
+      setIsMember(false)
+    }
+  },[bookedBy])
   return (
     <form onSubmit={event => onFormSubmit(event)}>
       {loading && <Loader color="#0088bc" />}
@@ -334,6 +381,36 @@ const BookingForm = props => {
         {FormUtils.renderInput(
           getInputArgObj("advance", "Advance", "number", shouldDisable)
         )}
+      </div>
+      <div className="form-group">
+      {FormUtils.renderBookedBy({
+          id: "bookedby",
+          name: "bookedby",
+          label: "Booked By",
+          value: bookedBy,
+          onChange: event => selectBookedByOption(event),
+          bookedByOptions,
+          disabled: shouldDisable
+        })}
+        {isAgent && FormUtils.renderBookedBy({
+          id: "agent",
+          name: "agent",
+          label: "Select Agent",
+          value: agent,
+          onChange: event => selectAgentOption(event),
+          agentOption,
+          disabled: shouldDisable
+        })}
+        {
+          isMember && FormUtils.renderInput({
+            id: "memberNumber",
+            label: "Membership Number",
+            type: "number",
+            value: memberShipNumber,
+            onChange: (e)=>setMembershipNumber(e.target.value)
+            }
+          )
+        }
       </div>
       <div className="form-group">
         {FormUtils.renderproof({

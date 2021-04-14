@@ -9,25 +9,55 @@ import FormUtils from "../../utils/formUtils";
 import utils from "../../utils/utils";
 import billingService from "../../services/billingService";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   btnGroup: {
     marginTop: 20,
-    textAlign: "right"
+    textAlign: "right",
   },
   btnSecondary: {
-    marginRight: 20
-  }
+    marginRight: 20,
+  },
 }));
 
 const pdfComponentRef = React.createRef();
 
 const ReportGenerator = ({ booking }) => {
+  console.log("booking", booking);
   const getFullName = () => `${booking.firstName} ${booking.lastName}`;
+  let balance =
+    parseInt(booking.paymentData.totalRoomCharges) - parseInt(booking.advance);
 
-  const getNumberOfGuests = () =>
-    parseInt(booking.adults) + parseInt(booking.children);
-  
-  console.log("booking",booking)
+  const [posItems, setPosItems] = React.useState([]);
+  const [posSum, setPosSum] = React.useState({});
+
+  React.useEffect(() => {
+    if (booking.posData) {
+      balance += parseInt(booking.paymentData.posTotal);
+      let posItem = booking.posData.pos;
+      let posVar = {};
+      let res = Object.keys(posItem);
+      res.forEach((i) => {
+        let sum = 0;
+        posItem[i].map((item) => {
+          sum += parseInt(item.amount);
+        });
+        console.log(sum);
+        posVar[i] = sum;
+      });
+      // console.log("res",res);
+      // console.log("sum values",posVar);
+      setPosItems(res);
+      setPosSum(posVar);
+    }
+  }, [booking]);
+  const keys = Object.keys(posSum).map((key) => {
+    return key;
+  });
+
+  const getCheckinDateandTime = () =>
+    `${utils.getFormattedDate(booking.checkIn)} ${booking.checkedInTime}`;
+  const getCheckoutDateandTime = () =>
+    `${utils.getFormattedDate(booking.checkOut)} ${booking.checkedOutTime}`;
 
   return (
     <div className="report" ref={pdfComponentRef}>
@@ -60,6 +90,10 @@ const ReportGenerator = ({ booking }) => {
             <span className="report-value">{getFullName()}</span>
           </div>
           <div className="report-row">
+            <span className="report-key">Address</span>
+            <span className="report-value">{booking.address}</span>
+          </div>
+          <div className="report-row">
             <span className="report-key">Contact Number</span>
             <span className="report-value">{booking.contactNumber}</span>
           </div>
@@ -69,32 +103,24 @@ const ReportGenerator = ({ booking }) => {
         </div>
         <div className="report__section">
           <div className="report-row">
-            <span className="report-key">Check In</span>
-            <span className="report-value">
-              {utils.getFormattedDate(booking.checkIn)}
-            </span>
+            <span className="report-key">Check In Date and Time</span>
+            <span className="report-value">{getCheckinDateandTime()}</span>
           </div>
           <div className="report-row">
-            <span className="report-key">Check In Time</span>
-            <span className="report-value">{booking.checkedInTime}</span>
-          </div>
-          <div className="report-row">
-            <span className="report-key">Check Out</span>
-            <span className="report-value">
-              {utils.getFormattedDate(booking.checkOut)}
-            </span>
-          </div>
-          <div className="report-row">
-            <span className="report-key">Check Out Time</span>
-            <span className="report-value">{booking.checkedOutTime}</span>
+            <span className="report-key">Check Out Date and Time</span>
+            <span className="report-value">{getCheckoutDateandTime()}</span>
           </div>
           <div className="report-row">
             <span className="report-key">No of Rooms</span>
             <span className="report-value">{booking.rooms.length}</span>
           </div>
           <div className="report-row">
-            <span className="report-key">No of Guests</span>
-            <span className="report-value">{getNumberOfGuests()}</span>
+            <span className="report-key">Adult</span>
+            <span className="report-value">{booking.adults}</span>
+          </div>
+          <div className="report-row">
+            <span className="report-key">Child</span>
+            <span className="report-value">{booking.children}</span>
           </div>
           <div className="report-row">
             <span className="report-key">No of Nights</span>
@@ -104,7 +130,7 @@ const ReportGenerator = ({ booking }) => {
           </div>
         </div>
         <div className="report__header-secondary">
-          <Typography variant="subtitle1">AMOUNT DETAILS</Typography>
+          <Typography variant="subtitle1">CHARGE DETAILS</Typography>
         </div>
         <div className="report__section">
           <div className="report-row">
@@ -114,15 +140,33 @@ const ReportGenerator = ({ booking }) => {
           {booking.paymentData.taxStatus === "withTax" && (
             <React.Fragment>
               <div className="report-row">
-                <span className="report-key">Tax</span>
+                <span className="report-key">Tax Amount</span>
                 <span className="report-value">
-                  {booking.paymentData.taxPercent}%
+                  &#8377; {booking.paymentData.tax}
                 </span>
               </div>
               <div className="report-row">
-                <span className="report-key">Total</span>
+                <span className="report-key">Room Total</span>
                 <span className="report-value">
-                  &#8377; {booking.totalAmount}
+                  &#8377; {booking.paymentData.totalRoomCharges}
+                </span>
+              </div>
+            </React.Fragment>
+          )}
+          {booking.paymentData.posTotal && (
+            <React.Fragment>
+              {Object.keys(posSum).map((key) => {
+                return (
+                  <div className="report-row">
+                    <span className="report-key">{key}</span>
+                    <span className="report-value">&#8377;{posSum[key]}</span>
+                  </div>
+                );
+              })}
+              <div className="report-row">
+                <span className="report-key">POS Total</span>
+                <span className="report-value">
+                  &#8377; {booking.paymentData.posTotal}
                 </span>
               </div>
             </React.Fragment>
@@ -133,7 +177,7 @@ const ReportGenerator = ({ booking }) => {
           </div>
           <div className="report-row">
             <span className="report-key">Balance</span>
-            <span className="report-value">&#8377; {booking.balance}</span>
+            <span className="report-value">&#8377; {balance}</span>
           </div>
         </div>
         <div className="report__header-secondary">
@@ -172,19 +216,19 @@ const ReportGenerator = ({ booking }) => {
 
 const ReportBody = ({ booking }) => {
   const classes = useStyles();
-  const [bill, setBill] = React.useState(null)
-  React.useEffect(()=>{
-    fetchBill(booking._id)
-  },[booking._id])
-  
-  const fetchBill = async(id)=>{
-    const response = await  billingService.getBillByBookingId(id);
-    setBill(response)
-  }
+  const [bill, setBill] = React.useState(null);
+  React.useEffect(() => {
+    fetchBill(booking._id);
+  }, [booking._id]);
+
+  const fetchBill = async (id) => {
+    const response = await billingService.getBillByBookingId(id);
+    setBill(response);
+  };
 
   return (
     <div>
-      {bill && <ReportGenerator booking={Object.assign({},bill,booking)} />}
+      {bill && <ReportGenerator booking={Object.assign({}, bill, booking)} />}
       <div className={classes.btnGroup}>
         <ReactToPrint
           trigger={() =>
@@ -194,7 +238,7 @@ const ReportBody = ({ booking }) => {
               label: "Print",
               color: "secondary",
               className: classes.btnSecondary,
-              onClick: () => {}
+              onClick: () => {},
             })
           }
           content={() => pdfComponentRef.current}
@@ -207,7 +251,7 @@ const ReportBody = ({ booking }) => {
               label: "Download",
               color: "primary",
               className: null,
-              onClick: toPdf
+              onClick: toPdf,
             })
           }
         </ReactToPdf>

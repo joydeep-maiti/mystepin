@@ -239,7 +239,7 @@ const Dashboard = props => {
 
   const handleSnackbarEvent = snackbarObj => {
     setSnackbarObj(snackbarObj);
-    setLoading(true);
+    snackbarObj.resetBookings && setLoading(true);
     snackbarObj.resetBookings && setBookings(currentDateObj);
   };
 

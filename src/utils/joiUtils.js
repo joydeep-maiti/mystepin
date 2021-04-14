@@ -40,6 +40,8 @@ export default {
       .required()
       .label("Room Charges"),
     advance: Joi.number()
+    .default(0)
+    .required()
       .label("Advance"),
     rooms: Joi.array()
       .items(roomsSchema)

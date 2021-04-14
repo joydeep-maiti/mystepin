@@ -6,7 +6,13 @@ import {MuiPickersUtilsProvider,KeyboardDatePicker} from '@material-ui/pickers';
 import './BillingDetails.css';
 import moment from "moment";
 import utils from "../../utils/utils";
-import bookingService from "../../services/bookingService";
+import FormUtils from "../../utils/formUtils";
+import billingService from '../../services/billingService'
+import reportOptions from '../../services/reportOptions'
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import "jspdf-autotable";
+
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
@@ -24,49 +30,104 @@ const useStyles = makeStyles(theme => ({
 const BillingDetails = () => {
   const classes = useStyles();
   const [startingDate,setStartingDate]=useState(utils.getDate(moment().startOf('month')));
+  var sdate=moment(startingDate);
+  const [startDateString,setStartDateString]=useState(sdate.format('D')+"/"+sdate.format('M')+"/"+sdate.format('YYYY'));
   const [currentDate, setCurrentDate] = useState(utils.getDate());
-  const [startingDateObj, setStartingDateObj] = useState();
-  const [currentDateObj, setCurrentDateObj] = useState(utils.getDateObj(utils.getDate()));
-  const [billingCategory,setBillingCategory]=useState("");
+  var cdate=moment(currentDate);
+  const [currentDateString,setCurrentDateString]=useState(cdate.format('D')+"/"+cdate.format('M')+"/"+cdate.format('YYYY'));
   const [bookings, setBookings] = useState([]);
-
-  useEffect(()=>{
-    
-  },[])
-  //Handle current date Change
-  const handleCurrentDateChange = (date) => {  
-    setCurrentDate(utils.getDate(date));
-    setCurrentDateObj(utils.getDateObj(utils.getDate(date)));
-  };
+  const [bookingCategory,setBookingCategory] = useState("");
+  const [shouldDisable, setShouldDisable] = useState(false);
+  const [billingTypes, setBillingTypes] = useState([]);
+  
+  //getting options
+  useEffect(async ()=>{
+    let options = await reportOptions.getBillingOptions("Billing Details");
+    options.forEach(option=>{
+      billingTypes.push(option)
+    })
+   },[])
+  
   //Handle starting date Change
   const handleStartingDateChange =(date)=>{
     setStartingDate(utils.getDate(date));  
-    setStartingDateObj(utils.getDateObj(utils.getDate(date)));
-  };
-  //Getting Booking Details
-  // const getBookingsDetails = async (dateObjs) => {
-  //   dateObjs.forEach( async (dateObj)=>{
-  //     const booking = await bookingService.getBookings(dateObj.month);
-  //     if(booking !== null){
-  //       console.log(booking);
-  //       bookings.push(booking);
-  //     }
-  //   })   
-  // };
+    var d = moment(date);
+    setStartDateString(d.format('D')+"/"+d.format('M')+"/"+d.format('YYYY'));
 
-  //GenerateReport
-  const generateReport=()=>{
-    const dates=utils.daysBetweenDates(startingDate,currentDate);
-    const dateObjs=[];
-    dates.map(date=>{
-      var d=moment(date);
-     dateObjs.push({
-        month: d.format('M'),
-        day  : d.format('D'),
-        year : d.format('YYYY')
-      })
+  };
+  //Handle current date Change
+  const handleCurrentDateChange = (date) => {  
+    setCurrentDate(utils.getDate(date));
+    var d = moment(date);
+    setCurrentDateString(d.format('D')+"/"+d.format('M')+"/"+d.format('YYYY'));
+
+  };
+  //Get Plan Options
+  const getPlanOptions = () => {
+      return billingTypes.map(type => {
+      return { label: type, value: type};
     });
-    //getBookingsDetails(dateObjs);
+  };
+  //Handle Select Change
+  const handleSelectChange=(event)=>{
+    setBookingCategory(event.target.value);
+    console.log("event",bookingCategory);
+    }
+  //Getting Booking Details
+  const getBookingsDetails = async (startingDate,currentDate) => { 
+   const booking = await billingService.getBookings(startingDate,currentDate);
+     let a=201;
+     console.log("Hari",booking)
+      if(booking !== null){
+          booking.forEach(book=>{
+            let value=[`A/${a++}`,
+            book.firstName+" "+book.lastName,
+            utils.getDate(),""
+            ,"","","","","","","","",book.balance,
+            "",
+            "",
+            ""]
+             bookings.push(value);
+            })
+          }
+        }
+        
+    const exporttoPDF = () =>{
+    const unit = "pt";
+    const size = "A4"; // Use A1, A2, A3 or A4
+    const orientation = "landscape"; // portrait or landscape
+    const marginLeft = 20;
+    const marginLeft2 = 350;
+    const doc = new jsPDF(orientation, unit, size);
+        doc.setFontSize(20);
+        let title = "Billing Summary Report";
+        let headers = [["Bill No", "Name","Bill Date","Lodging","Boarding","LuxuryTax","Serv Tax","R.Service","Recn.","Taxi","Misc","Laun.","Total","Adv.Rcpt","Adv.Amount","Paid"]];
+        let data = bookings
+        let content = {
+          startY: 120,
+          head: headers,
+          body: data,
+          theme: 'striped',
+          styles: {
+            cellWidth:'wrap',
+            halign: 'center',
+          },
+          margin: marginLeft,
+          pageBreak:'auto'
+        };
+        doc.text(title, 300, 30);
+        doc.setFontSize(15);
+        doc.text("From : "+startDateString,100, 80);
+        doc.text("To : "+currentDateString,700, 80);
+        doc.setFontSize(12);
+        doc.autoTable(content);
+        doc.save("hari.pdf")
+
+  }
+
+  const generateReport=()=>{
+    getBookingsDetails(startingDate,currentDate);
+    //exporttoPDF();
     console.log("Generating Report");
   }
   //return method
@@ -113,12 +174,14 @@ const BillingDetails = () => {
             </div>  
             <div className="billingselect">
             <InputLabel id="label">Select Category to Generate Report on Billing </InputLabel>
-            <select name="billing" id="billingcategory" onChange={(e)=>{setBillingCategory(e.target.value)}}>
-            <option value=""></option>            
-            <option value="billingsummary">Billing Summary</option>
-            <option value="due">Due</option>
-            <option value="settlement">Settlement</option>
-            </select>
+              {FormUtils.renderSelect({
+                id: "billingType",
+                label: "Plan Type",
+                name:"billingType",
+                onChange: event => handleSelectChange(event),
+                options: getPlanOptions(),
+                disabled: shouldDisable
+              })}
             </div> 
             <div className="buttoncontainer"> 
             <Button type="submit"  className="button1">

@@ -222,7 +222,7 @@ const BookingFormLayout = ({
       setData(updatedData);
       return
     }
-    let duration = new Date(updatedData["checkOut"]).getTime() - new Date(updatedData["checkIn"]).getTime()
+    let duration = new Date(updatedData["checkOut"]).getTime() - new Date(updatedData["checkIn"]).getTime();
     console.log("days",moment.duration(duration).days())
     console.log("asDays",moment.duration(duration).asDays())
     let durationInDays = moment.duration(duration).days()+1;

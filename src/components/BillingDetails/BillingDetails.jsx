@@ -7,7 +7,7 @@ import './BillingDetails.css';
 import moment from "moment";
 import utils from "../../utils/utils";
 import FormUtils from "../../utils/formUtils";
-import billingService from '../../services/billingService'
+import billingDetails from '../../services/billingDetails'
 import reportOptions from '../../services/reportOptions'
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -75,7 +75,7 @@ const BillingDetails = () => {
     }
   //Getting Booking Details
   const getBookingsDetails = async (startingDate,currentDate) => { 
-   const booking = await billingService.getBookings(startingDate,currentDate);
+   const booking = await billingDetails.getBookings(startingDate,currentDate);
      let a=201;
      console.log("Hari",booking)
       if(booking !== null){

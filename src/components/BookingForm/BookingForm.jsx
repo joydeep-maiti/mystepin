@@ -392,7 +392,7 @@ const BookingForm = props => {
           bookedByOptions,
           disabled: shouldDisable
         })}
-        {isAgent && FormUtils.renderBookedBy({
+        {isAgent && FormUtils.renderAgent({
           id: "agent",
           name: "agent",
           label: "Select Agent",

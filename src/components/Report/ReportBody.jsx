@@ -7,6 +7,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import FormUtils from "../../utils/formUtils";
 import utils from "../../utils/utils";
+import billingService from "../../services/billingService";
 
 const useStyles = makeStyles(theme => ({
   btnGroup: {
@@ -25,6 +26,8 @@ const ReportGenerator = ({ booking }) => {
 
   const getNumberOfGuests = () =>
     parseInt(booking.adults) + parseInt(booking.children);
+  
+  console.log("booking",booking)
 
   return (
     <div className="report" ref={pdfComponentRef}>
@@ -39,7 +42,7 @@ const ReportGenerator = ({ booking }) => {
         <div className="report__section">
           <div className="report-row">
             <span className="report-key">Booking Id</span>
-            <span className="report-value">123_abc_id</span>
+            <span className="report-value">{booking._id}</span>
           </div>
           <div className="report-row">
             <span className="report-key">Booking Date</span>
@@ -108,12 +111,12 @@ const ReportGenerator = ({ booking }) => {
             <span className="report-key">Room Charges</span>
             <span className="report-value">&#8377; {booking.roomCharges}</span>
           </div>
-          {booking.payment.taxStatus === "withTax" && (
+          {booking.paymentData.taxStatus === "withTax" && (
             <React.Fragment>
               <div className="report-row">
                 <span className="report-key">Tax</span>
                 <span className="report-value">
-                  {booking.payment.taxPercent}%
+                  {booking.paymentData.taxPercent}%
                 </span>
               </div>
               <div className="report-row">
@@ -137,27 +140,27 @@ const ReportGenerator = ({ booking }) => {
           <Typography variant="subtitle1">PAYMENT DETAILS</Typography>
         </div>
         <div className="report__section">
-          {booking.payment.cash && (
+          {booking.paymentData.cash && (
             <div className="report-row">
               <span className="report-key">Payment By Cash</span>
               <span className="report-value">
-                &#8377; {booking.payment.cash}
+                &#8377; {booking.paymentData.cash}
               </span>
             </div>
           )}
-          {booking.payment.card && (
+          {booking.paymentData.card && (
             <div className="report-row">
               <span className="report-key">Payment By Card</span>
               <span className="report-value">
-                &#8377; {booking.payment.card}
+                &#8377; {booking.paymentData.card}
               </span>
             </div>
           )}
-          {booking.payment.wallet && (
+          {booking.paymentData.wallet && (
             <div className="report-row">
               <span className="report-key">Payment By Wallet</span>
               <span className="report-value">
-                &#8377; {booking.payment.wallet}
+                &#8377; {booking.paymentData.wallet}
               </span>
             </div>
           )}
@@ -169,9 +172,19 @@ const ReportGenerator = ({ booking }) => {
 
 const ReportBody = ({ booking }) => {
   const classes = useStyles();
+  const [bill, setBill] = React.useState(null)
+  React.useEffect(()=>{
+    fetchBill(booking._id)
+  },[booking._id])
+  
+  const fetchBill = async(id)=>{
+    const response = await  billingService.getBillByBookingId(id);
+    setBill(response)
+  }
+
   return (
     <div>
-      <ReportGenerator booking={booking} />
+      {bill && <ReportGenerator booking={Object.assign({},bill,booking)} />}
       <div className={classes.btnGroup}>
         <ReactToPrint
           trigger={() =>

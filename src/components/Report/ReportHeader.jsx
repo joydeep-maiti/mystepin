@@ -24,7 +24,7 @@ const ReportHeader = () => {
       <AppBar position="static">
         <Toolbar variant="dense">
           <Typography variant="h6" className={classes.title}>
-            Report
+            Billing
           </Typography>
         </Toolbar>
       </AppBar>

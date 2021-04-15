@@ -16,6 +16,8 @@ const Calendar = props => {
     currentDate,
     view
   } = props;
+
+  console.log("Allrooms",allRooms)
    //console.log("props",props)
   const [title, setTitle] = useState("");
   const [rows, setRows] = useState([]);
@@ -62,7 +64,6 @@ const Calendar = props => {
 
   const showBookings = (dateObj, bookings, allRooms) => {
     tempRows = getTableRows(allRooms, dateObj);
-    console.log(bookings);
     bookings &&
       bookings.forEach(booking => {
         let { checkIn, checkOut, months , status} = booking;
@@ -120,18 +121,21 @@ const Calendar = props => {
         }
       })
 
-    }else {
+    }
+    
+    else {
       rowIndex = tempRows.findIndex(
         row => row[0].room.roomNumber === roomNumber
       );
     }
     const dates = utils.daysBetweenDates(checkIn, checkOut);
+    
     updateRowObjByDate(dates, rowIndex, booking, color);
   };
 
   const updateRowObjByDate = (dates, rowIndex, booking, color) => {
     const rowsArray = [...tempRows];
-    // console.log("dates, rowIndex, booking",dates, rowIndex, booking)
+     //console.log("dates, rowIndex, booking",dates, rowIndex, booking)
     if(view === "day"){
       // console.log(dates,currentDate)
       dates.forEach(date => {
@@ -156,7 +160,6 @@ const Calendar = props => {
         }; 
       });
     }
-    
 
     tempRows = [...rowsArray];
   };
@@ -164,7 +167,11 @@ const Calendar = props => {
     if(view === "day"){
       return `${moment(date)
         .format("dddd, Do MMMM YYYY")}`;
-    }else {
+    }
+    else if(view == "week"){
+      return `${moment(date).format("MMMM").toUpperCase()} ${moment(date).format('Do')} to ${moment(date).add(6,'days').format('Do')} - Week View`
+    }
+    else {
       return `${moment(date)
               .format("MMMM")
               .toUpperCase()} ${moment(date).year()}`;
@@ -196,7 +203,19 @@ const Calendar = props => {
           roomIndex++
         }
       });
-    }else {
+
+    }
+   else if( view === 'week'){
+           rows = new Array(allRooms.length).fill();
+           rows.forEach((row,index)=>{
+             rows[index] =  new Array(8).fill({
+              room: { ...allRooms[index] },
+              handleRedirect: handleRedirect
+             })
+             rows[index][0] = { room: { ...allRooms[index] }, show: true };
+        })
+   }
+    else {
       rows = new Array(allRooms.length).fill();
       rows.forEach((row, index) => {
         rows[index] = new Array(dateObj.days + 1).fill({
@@ -206,18 +225,33 @@ const Calendar = props => {
         rows[index][0] = { room: { ...allRooms[index] }, show: true };
       });
     }
-    // console.log("rows",rows)
-
+     
+    console.log("DateObj",dateObj);
     return rows;
   };
 
   const getTableHeaders = () => {
-    let tableHeaders = new Array(dateObj.days + 1).fill({});
+  
+    let tableHeaders;
+   
+    if(view !== 'week'){
+    tableHeaders = new Array(dateObj.days + 1).fill({});
     tableHeaders = tableHeaders.map((value, index) => {
       if (index !== 0) return { date: index < 10 ? `0${index}` : `${index}` };
       else return { date: "" };
     });
-
+  }
+  else{
+    tableHeaders = new Array(8).fill({});
+    let start = moment().date()
+    let end = start+7;
+    console.log("end",end)
+    tableHeaders = tableHeaders.map((value,index) => {
+      if (index !== 0) return { date: start <= end ? start++ : 0 };
+      else return { date: "" };
+    });
+  }
+  //console.log("tableHeaders",tableHeaders)
     return tableHeaders;
   };
 

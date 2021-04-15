@@ -192,8 +192,9 @@ const getStandardCell = (...argument) => {
 };
 
 const getArgObj = (column, index, classes, dateObj, view, presentDate) => {
+
   let { show, room, booking, handleRedirect, color } = column;
-  // console.log("column",column)
+   console.log("column",column)
   const currentDate = moment().date();
   const name = booking && getShortName(booking.firstName, booking.lastName);
   const key = `column_${index}`;

@@ -65,69 +65,68 @@ const Occupancy = () => {
     const classes = useStyles();
     return (
       <div>
-        <div className={classes.root}>
-        <Typography variant="h6" className={classes.title}>
-         Occupancy
-        </Typography>
-        </div>
-
-        <div className="container">   
-      <div className="formdates">  
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-       <KeyboardDatePicker
-            disableToolbar
-            format="MM/dd/yyyy"
-           margin="normal"
-           id="date-picker-dialog"
-          label="From"
-          value={startingDate}              
-          onChange={handleStartingDateChange}
-          KeyboardButtonProps={{
-           'aria-label': 'change date',
-          }}
-         style={{ marginRight: "2rem",width:'150px'}}
-           />
-          </MuiPickersUtilsProvider>
-          <MuiPickersUtilsProvider utils={DateFnsUtils} 
-                        style={{ marginLeft: "1rem"}}>
-       <KeyboardDatePicker
-            disableToolbar
-            format="MM/dd/yyyy"
-           margin="normal"
-           id="date-picker-dialog"
-          label="To"
-          value={currentDate}              
-          onChange={handleCurrentDateChange}
-          KeyboardButtonProps={{
-           'aria-label': 'change date',
-          }}
-         style={{ marginLeft: "0.5rem",width:'150px'}}
-                          />
-          </MuiPickersUtilsProvider>
-          </div>  
-          <div className="occupancyselect">
-          <InputLabel id="label">Select Category to Generate Report on Occupancy </InputLabel>
+             <div className={classes.root}>
+            <Typography variant="h6" className={classes.title}>
+             Booking
+            </Typography>
+      </div>
+      <div className="container">   
+     
           {FormUtils.renderSelect({
-                id: "occupancy",
-                label: "Occupancy",
-                name:"occupancy",
-                value:occupancyCategory,
-                onChange: event => handleSelectChange(event),
-                options: getPlanOptions(),
-                disabled: shouldDisable
-              })}
-          </div> 
+            id: "occupancy",
+            label: "Occupancy Type",
+            name:"occupancy",
+            value:occupancyCategory,
+            onChange: event => handleSelectChange(event),
+            options: getPlanOptions(),
+            disabled: shouldDisable
+          })}
+          
+          <div className="formdates"> 
+              
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+         <KeyboardDatePicker
+              disableToolbar
+              format="dd/MMMM/yyyy"
+             margin="normal"
+             id="date-picker-dialog"
+            label="From"
+            value={startingDate}              
+            onChange={handleStartingDateChange}
+            KeyboardButtonProps={{
+             'aria-label': 'change date',
+            }}
+           style={{ width:'150px'}}
+             />
+            </MuiPickersUtilsProvider>
+            <MuiPickersUtilsProvider utils={DateFnsUtils} 
+                          style={{ marginLeft: "rem"}}>
+         <KeyboardDatePicker
+              disableToolbar
+              format="dd/MMMM/yyyy"
+             margin="normal"
+             id="date-picker-dialog"
+            label="To"
+            maxDate={currentDate}
+            value={currentDate}              
+            onChange={handleCurrentDateChange}
+            KeyboardButtonProps={{
+             'aria-label': 'change date',
+            }}
+           style={{ marginLeft: "3.5rem",width:'150px'}}
+                            />
+            </MuiPickersUtilsProvider>
+            </div>  
           <div className="buttoncontainer"> 
-          <Button type="submit"  className="button1">
-          Back
-        </Button>
-        <Button  type="submit" className="button2">
+        <Button  type="submit" className="button">
           Generate
         </Button>
           </div>
-        </div>
 
+          </div> 
+          
       </div>
+      
     )
 }
 

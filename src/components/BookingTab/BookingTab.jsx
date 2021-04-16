@@ -73,60 +73,62 @@ const BookingTab = () => {
             </Typography>
       </div>
       <div className="container">   
-      <div className="formdates">  
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-       <KeyboardDatePicker
-            disableToolbar
-            format="MM/dd/yyyy"
-           margin="normal"
-           id="date-picker-dialog"
-          label="From"
-          value={startingDate}              
-          onChange={handleStartingDateChange}
-          KeyboardButtonProps={{
-           'aria-label': 'change date',
-          }}
-         style={{ marginRight: "2rem",width:'150px'}}
-           />
-          </MuiPickersUtilsProvider>
-          <MuiPickersUtilsProvider utils={DateFnsUtils} 
-                        style={{ marginLeft: "1rem"}}>
-       <KeyboardDatePicker
-            disableToolbar
-            format="MM/dd/yyyy"
-           margin="normal"
-           id="date-picker-dialog"
-          label="To"
-          value={currentDate}              
-          onChange={handleCurrentDateChange}
-          KeyboardButtonProps={{
-           'aria-label': 'change date',
-          }}
-         style={{ marginLeft: "0.5rem",width:'150px'}}
-                          />
-          </MuiPickersUtilsProvider>
-          </div>  
-          <div className="bookingselect">
-          <InputLabel id="label">Select Category to Generate Report on Booking </InputLabel>
+      
           {FormUtils.renderSelect({
-                id: "bookingType",
-                label: "Booking Type",
-                name:"bookingType",
-                value:bookingCategory,
-                onChange: event => handleSelectChange(event),
-                options: getPlanOptions(),
-                disabled: shouldDisable
-              })}
-          </div> 
+            id: "bookingType",
+            label: "Booking Type",
+            name:"bookingType",
+            value:bookingCategory,
+            onChange: event => handleSelectChange(event),
+            options: getPlanOptions(),
+            disabled: shouldDisable
+          })}
+         
+          <div className="formdates"> 
+              
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+         <KeyboardDatePicker
+              disableToolbar
+              format="dd/MMMM/yyyy"
+             margin="normal"
+             id="date-picker-dialog"
+            label="From"
+            value={startingDate}              
+            onChange={handleStartingDateChange}
+            KeyboardButtonProps={{
+             'aria-label': 'change date',
+            }}
+           style={{ width:'150px'}}
+             />
+            </MuiPickersUtilsProvider>
+            <MuiPickersUtilsProvider utils={DateFnsUtils} 
+                          style={{ marginLeft: "rem"}}>
+         <KeyboardDatePicker
+              disableToolbar
+              format="dd/MMMM/yyyy"
+             margin="normal"
+             id="date-picker-dialog"
+            label="To"
+            maxDate={currentDate}
+            value={currentDate}              
+            onChange={handleCurrentDateChange}
+            KeyboardButtonProps={{
+             'aria-label': 'change date',
+            }}
+           style={{ marginLeft: "3.5rem",width:'150px'}}
+                            />
+            </MuiPickersUtilsProvider>
+            </div>  
           <div className="buttoncontainer"> 
-          <Button type="submit"  className="button1">
-          Back
-        </Button>
-        <Button  type="submit" className="button2">
+        <Button  type="submit" className="button">
           Generate
         </Button>
           </div>
-        </div>
+
+
+
+          </div> 
+          
       </div>
     )
 }

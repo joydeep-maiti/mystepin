@@ -81,10 +81,6 @@ const BillingDetails = () => {
     }
   //Getting Booking Details
   // const getBookingsDetails = async (startingDate,currentDate) => { 
-<<<<<<< HEAD
-=======
-
->>>>>>> 63e1b672b140806c3ff3dec18cbedcc2dab994c3
   //  const booking = await billingDetails.getBookings(startingDate,currentDate);
   //    let a=201;
   //    console.log("Hari",booking)
@@ -100,13 +96,8 @@ const BillingDetails = () => {
   //            bookings.push(value);
   //           })
   //         }
-<<<<<<< HEAD
-  //       }
-=======
-
   //       }
 
->>>>>>> 63e1b672b140806c3ff3dec18cbedcc2dab994c3
         
     const exporttoPDF = () =>{
     const unit = "pt";

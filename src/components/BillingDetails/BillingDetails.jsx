@@ -80,11 +80,7 @@ const BillingDetails = () => {
     console.log("event",billingCategory);
     }
   //Getting Booking Details
-<<<<<<< HEAD
-  const getBookingsDetails = async (startingDate,currentDate) => { 
-=======
   // const getBookingsDetails = async (startingDate,currentDate) => { 
->>>>>>> fe55002f5715af1b84410ef79430d635257f661e
   //  const booking = await billingDetails.getBookings(startingDate,currentDate);
   //    let a=201;
   //    console.log("Hari",booking)
@@ -100,11 +96,7 @@ const BillingDetails = () => {
   //            bookings.push(value);
   //           })
   //         }
-<<<<<<< HEAD
-        }
-=======
   //       }
->>>>>>> fe55002f5715af1b84410ef79430d635257f661e
         
     const exporttoPDF = () =>{
     const unit = "pt";

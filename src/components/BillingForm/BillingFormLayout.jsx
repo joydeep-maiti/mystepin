@@ -35,6 +35,7 @@ const BillingFormLayout = props => {
     cash: "",
     card: "",
     wallet: "",
+    billingStatus:"Due",
     taxStatus: "withTax",
     totalRoomCharges:0,
     tax:0

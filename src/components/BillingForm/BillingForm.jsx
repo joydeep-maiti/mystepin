@@ -58,6 +58,19 @@ const BillingForm = props => {
   const [balance, setBalance] = React.useState(0)
   // const [taxSlabs, setTaxSlabs] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const [billingst,setBillingst] = React.useState("Due");
+  //console.log(billingst);
+  const billingStatus=[
+    {label:"Due" ,value:"Due"},
+    {label:"Paid" ,value:"Paid"},
+    {label:"Bill to company" ,value:"Bill to company"},
+  ]
+  const selectBillingStatus = (event) => {
+    setBillingst(event.target.value);
+    onChangeData({
+      billingStatus:event.target.value
+    })
+  }
 
   React.useEffect( async ()=>{
     const response = await posService.getPosByBookingId(booking._id)
@@ -230,6 +243,16 @@ const BillingForm = props => {
           {renderInputItems("Total Charges", data.totalRoomCharges, "totalRoomCharges")}
           {renderInputItems("Advance", booking.advance, "advance")}
           {renderInputItems("Balance",  balance, "balance")}
+        </div>
+        <div>
+        {FormUtils.renderBillingStatus({
+          id: "billingstatus",
+          name: "billingstatus",
+          label: "Billingstatus",
+          value: billingst,
+          onChange: event => selectBillingStatus(event),
+          billingStatus
+        })}
         </div>
         {/* <Divider className={classes.divider} /> */}
         <div className={classes.paymentMethods}>

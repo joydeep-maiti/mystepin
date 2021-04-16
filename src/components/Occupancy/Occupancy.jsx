@@ -4,7 +4,10 @@ import Typography from "@material-ui/core/Typography";
 import DateFnsUtils from '@date-io/date-fns';
 import {MuiPickersUtilsProvider,KeyboardDatePicker} from '@material-ui/pickers';
 import './Occupancy.css'
-
+import moment from "moment";
+import utils from "../../utils/utils";
+import FormUtils from "../../utils/formUtils";
+import reportOptions from '../../services/reportOptions'
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
@@ -18,15 +21,47 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 const Occupancy = () => {
-  const [occupancyCategory,setOccupancyCategory]=useState("");
-
+  const [startingDate,setStartingDate]=useState(utils.getDate(moment().startOf('month')));
+  const [currentDate, setCurrentDate] = useState(utils.getDate());
+  const [bookings, setBookings] = useState([]);
+  const [occupancyCategory,setOccupancyCategory] = useState("");
+  const [shouldDisable, setShouldDisable] = useState(false);
+  const [occupancyTypes, setBillingTypes] = useState([]);
+  
+  //getting options
   useEffect(()=>{
-    
-       console.log(occupancyCategory) ;
-    
+    fetchBillingTypes()
+   },[])
 
-  },[occupancyCategory])
-
+  const fetchBillingTypes = async()=>{
+    let options = await reportOptions.getBillingOptions("Occupancy");
+    const types = []
+    options.forEach(option=>{
+      types.push(option)
+    })
+    setBillingTypes(types)
+  } 
+  
+    //Handle starting date Change
+    const handleStartingDateChange =(date)=>{
+      setStartingDate(utils.getDate(date));  
+          };
+    //Handle current date Change
+    const handleCurrentDateChange = (date) => {  
+      setCurrentDate(utils.getDate(date));
+     };
+    //Get Plan Options
+    const getPlanOptions = () => {
+        return occupancyTypes.map(type => {
+        return { label: type, value: type};
+      });
+    };
+    //Handle Select Change
+    const handleSelectChange=(event)=>{
+      setOccupancyCategory(event.target.value);
+      console.log("event",occupancyCategory);
+      }
+  
     const classes = useStyles();
     return (
       <div>
@@ -45,8 +80,8 @@ const Occupancy = () => {
            margin="normal"
            id="date-picker-dialog"
           label="From"
-          //value={currentDate}              
-          //onChange={handleDateChange}
+          value={startingDate}              
+          onChange={handleStartingDateChange}
           KeyboardButtonProps={{
            'aria-label': 'change date',
           }}
@@ -61,8 +96,8 @@ const Occupancy = () => {
            margin="normal"
            id="date-picker-dialog"
           label="To"
-          //value={currentDate}              
-          //onChange={handleDateChange}
+          value={currentDate}              
+          onChange={handleCurrentDateChange}
           KeyboardButtonProps={{
            'aria-label': 'change date',
           }}
@@ -72,12 +107,15 @@ const Occupancy = () => {
           </div>  
           <div className="occupancyselect">
           <InputLabel id="label">Select Category to Generate Report on Occupancy </InputLabel>
-          <select name="occupancy" id="occupancycategory" onChange={(e)=>{setOccupancyCategory(e.target.value)}}>
-          <option value=""></option>            
-          <option value="bookingsummary">Billing Summary</option>
-          <option value="due">Due</option>
-          <option value="settlement">Settlement</option>
-          </select>
+          {FormUtils.renderSelect({
+                id: "occupancy",
+                label: "Occupancy",
+                name:"occupancy",
+                value:occupancyCategory,
+                onChange: event => handleSelectChange(event),
+                options: getPlanOptions(),
+                disabled: shouldDisable
+              })}
           </div> 
           <div className="buttoncontainer"> 
           <Button type="submit"  className="button1">

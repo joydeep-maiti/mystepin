@@ -4,7 +4,10 @@ import Typography from "@material-ui/core/Typography";
 import DateFnsUtils from '@date-io/date-fns';
 import {MuiPickersUtilsProvider,KeyboardDatePicker} from '@material-ui/pickers';
 import './BookingTab.css'
-
+import moment from "moment";
+import utils from "../../utils/utils";
+import FormUtils from "../../utils/formUtils";
+import reportOptions from '../../services/reportOptions'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -19,15 +22,47 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const BookingDetails = () => {
-  const [bookingCategory,setBookingCategory]=useState("");
-
+const BookingTab = () => {
+  const [startingDate,setStartingDate]=useState(utils.getDate(moment().startOf('month')));
+  const [currentDate, setCurrentDate] = useState(utils.getDate());
+  const [bookings, setBookings] = useState([]);
+  const [bookingCategory,setBookingCategory] = useState("");
+  const [shouldDisable, setShouldDisable] = useState(false);
+  const [bookingTypes, setBookingTypes] = useState([]);
+  
+  //getting options
   useEffect(()=>{
-    
-       console.log(bookingCategory) ;
-    
+    fetchBillingTypes()
+   },[])
 
-  },[bookingCategory])
+  const fetchBillingTypes = async()=>{
+    let options = await reportOptions.getBillingOptions("Booking");
+    const types = []
+    options.forEach(option=>{
+      types.push(option)
+    })
+    setBookingTypes(types)
+  } 
+  
+    //Handle starting date Change
+    const handleStartingDateChange =(date)=>{
+      setStartingDate(utils.getDate(date));  
+          };
+    //Handle current date Change
+    const handleCurrentDateChange = (date) => {  
+      setCurrentDate(utils.getDate(date));
+     };
+    //Get Plan Options
+    const getPlanOptions = () => {
+        return bookingTypes.map(type => {
+        return { label: type, value: type};
+      });
+    };
+    //Handle Select Change
+    const handleSelectChange=(event)=>{
+      setBookingCategory(event.target.value);
+      console.log("event",bookingCategory);
+      }
   
   const classes = useStyles();
     return (
@@ -46,8 +81,8 @@ const BookingDetails = () => {
            margin="normal"
            id="date-picker-dialog"
           label="From"
-          //value={currentDate}              
-          //onChange={handleDateChange}
+          value={startingDate}              
+          onChange={handleStartingDateChange}
           KeyboardButtonProps={{
            'aria-label': 'change date',
           }}
@@ -62,8 +97,8 @@ const BookingDetails = () => {
            margin="normal"
            id="date-picker-dialog"
           label="To"
-          //value={currentDate}              
-          //onChange={handleDateChange}
+          value={currentDate}              
+          onChange={handleCurrentDateChange}
           KeyboardButtonProps={{
            'aria-label': 'change date',
           }}
@@ -73,12 +108,15 @@ const BookingDetails = () => {
           </div>  
           <div className="bookingselect">
           <InputLabel id="label">Select Category to Generate Report on Booking </InputLabel>
-          <select name="booking" id="bookingcategory" onChange={(e)=>{setBookingCategory(e.target.value)}}>
-          <option value=""></option>            
-          <option value="bookingsummary">Billing Summary</option>
-          <option value="due">Due</option>
-          <option value="settlement">Settlement</option>
-          </select>
+          {FormUtils.renderSelect({
+                id: "bookingType",
+                label: "Booking Type",
+                name:"bookingType",
+                value:bookingCategory,
+                onChange: event => handleSelectChange(event),
+                options: getPlanOptions(),
+                disabled: shouldDisable
+              })}
           </div> 
           <div className="buttoncontainer"> 
           <Button type="submit"  className="button1">
@@ -93,4 +131,4 @@ const BookingDetails = () => {
     )
 }
 
-export default BookingDetails
+export default BookingTab

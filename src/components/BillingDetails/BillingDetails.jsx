@@ -36,7 +36,7 @@ const BillingDetails = () => {
   var cdate=moment(currentDate);
   const [currentDateString,setCurrentDateString]=useState(cdate.format('D')+"/"+cdate.format('M')+"/"+cdate.format('YYYY'));
   const [bookings, setBookings] = useState([]);
-  const [bookingCategory,setBookingCategory] = useState("");
+  const [billingCategory,setBillingCategory] = useState("");
   const [shouldDisable, setShouldDisable] = useState(false);
   const [billingTypes, setBillingTypes] = useState([]);
   
@@ -76,27 +76,27 @@ const BillingDetails = () => {
   };
   //Handle Select Change
   const handleSelectChange=(event)=>{
-    setBookingCategory(event.target.value);
-    console.log("event",bookingCategory);
+    setBillingCategory(event.target.value);
+    console.log("event",billingCategory);
     }
   //Getting Booking Details
-  const getBookingsDetails = async (startingDate,currentDate) => { 
-   const booking = await billingDetails.getBookings(startingDate,currentDate);
-     let a=201;
-     console.log("Hari",booking)
-      if(booking !== null){
-          booking.forEach(book=>{
-            let value=[`A/${a++}`,
-            book.firstName+" "+book.lastName,
-            utils.getDate(),""
-            ,"","","","","","","","",book.balance,
-            "",
-            "",
-            ""]
-             bookings.push(value);
-            })
-          }
-        }
+  // const getBookingsDetails = async (startingDate,currentDate) => { 
+  //  const booking = await billingDetails.getBookings(startingDate,currentDate);
+  //    let a=201;
+  //    console.log("Hari",booking)
+  //     if(booking !== null){
+  //         booking.forEach(book=>{
+  //           let value=[`A/${a++}`,
+  //           book.firstName+" "+book.lastName,
+  //           utils.getDate(),""
+  //           ,"","","","","","","","",book.balance,
+  //           "",
+  //           "",
+  //           ""]
+  //            bookings.push(value);
+  //           })
+  //         }
+  //       }
         
     const exporttoPDF = () =>{
     const unit = "pt";
@@ -132,8 +132,8 @@ const BillingDetails = () => {
   }
 
   const generateReport=()=>{
-    getBookingsDetails(startingDate,currentDate);
-    //exporttoPDF();
+    //getBookingsDetails(startingDate,currentDate);
+    exporttoPDF();
     console.log("Generating Report");
   }
   //return method
@@ -182,8 +182,9 @@ const BillingDetails = () => {
             <InputLabel id="label">Select Category to Generate Report on Billing </InputLabel>
               {FormUtils.renderSelect({
                 id: "billingType",
-                label: "Plan Type",
+                label: "Billing Details",
                 name:"billingType",
+                value:billingCategory,
                 onChange: event => handleSelectChange(event),
                 options: getPlanOptions(),
                 disabled: shouldDisable

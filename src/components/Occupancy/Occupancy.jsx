@@ -67,7 +67,7 @@ const Occupancy = () => {
       <div>
              <div className={classes.root}>
             <Typography variant="h6" className={classes.title}>
-             Booking
+             Occupancy
             </Typography>
       </div>
       <div className="container">   

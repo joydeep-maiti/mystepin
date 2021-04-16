@@ -71,7 +71,7 @@ const Agent = () => {
       <div>
              <div className={classes.root}>
             <Typography variant="h6" className={classes.title}>
-             Booking
+             Agent
             </Typography>
       </div>
       <div className="container">   

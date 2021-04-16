@@ -229,10 +229,12 @@ const BillingFormLayout = props => {
     })
     setData({
       ...data,
-      totalRoomCharges: total,
+      totalRoomCharges: Number(selectedBooking.roomCharges)+Number(tax),
+      totalCalculatedRoomCharges: total,
       tax,
       taxStatus: "withTax",
     })
+    console.log("totalRoomCharges",total)
   };
 
   const removeTaxes = () => {
@@ -245,7 +247,8 @@ const BillingFormLayout = props => {
     })
     setData({
       ...data,
-      totalRoomCharges: total,
+      totalRoomCharges: Number(selectedBooking.roomCharges),
+      totalCalculatedRoomCharges: total,
       tax: 0,
       taxStatus: "withoutTax",
     })

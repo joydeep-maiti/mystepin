@@ -75,21 +75,21 @@ const BillingDetails = () => {
     }
   //Getting Booking Details
   const getBookingsDetails = async (startingDate,currentDate) => { 
-   const booking = await billingDetails.getBookings(startingDate,currentDate);
-     let a=201;
-     console.log("Hari",booking)
-      if(booking !== null){
-          booking.forEach(book=>{
-            let value=[`A/${a++}`,
-            book.firstName+" "+book.lastName,
-            utils.getDate(),""
-            ,"","","","","","","","",book.balance,
-            "",
-            "",
-            ""]
-             bookings.push(value);
-            })
-          }
+  //  const booking = await billingDetails.getBookings(startingDate,currentDate);
+  //    let a=201;
+  //    console.log("Hari",booking)
+  //     if(booking !== null){
+  //         booking.forEach(book=>{
+  //           let value=[`A/${a++}`,
+  //           book.firstName+" "+book.lastName,
+  //           utils.getDate(),""
+  //           ,"","","","","","","","",book.balance,
+  //           "",
+  //           "",
+  //           ""]
+  //            bookings.push(value);
+  //           })
+  //         }
         }
         
     const exporttoPDF = () =>{
@@ -126,8 +126,8 @@ const BillingDetails = () => {
   }
 
   const generateReport=()=>{
-    getBookingsDetails(startingDate,currentDate);
-    //exporttoPDF();
+    //getBookingsDetails(startingDate,currentDate);
+    exporttoPDF();
     console.log("Generating Report");
   }
   //return method

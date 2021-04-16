@@ -75,7 +75,7 @@ const CalendarBody = ({ tableHeaders, tableRows, loading, dateObj, view , presen
   const classes = useStyles();
 
   // console.log("tableHeaders",tableHeaders)
-  // console.log("tableRows",tableRows)
+  console.log("tableRows",tableRows)
   // console.log("loading",loading)
   // console.log("dateObj",dateObj)
 
@@ -194,7 +194,7 @@ const getStandardCell = (...argument) => {
 const getArgObj = (column, index, classes, dateObj, view, presentDate) => {
 
   let { show, room, booking, handleRedirect, color } = column;
-   console.log("column",column)
+  //  console.log("column",column)
   const currentDate = moment().date();
   const name = booking && getShortName(booking.firstName, booking.lastName);
   const key = `column_${index}`;

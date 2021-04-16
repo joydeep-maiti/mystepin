@@ -81,6 +81,10 @@ const BillingDetails = () => {
     }
   //Getting Booking Details
   // const getBookingsDetails = async (startingDate,currentDate) => { 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 63e1b672b140806c3ff3dec18cbedcc2dab994c3
   //  const booking = await billingDetails.getBookings(startingDate,currentDate);
   //    let a=201;
   //    console.log("Hari",booking)
@@ -96,7 +100,13 @@ const BillingDetails = () => {
   //            bookings.push(value);
   //           })
   //         }
+<<<<<<< HEAD
   //       }
+=======
+
+  //       }
+
+>>>>>>> 63e1b672b140806c3ff3dec18cbedcc2dab994c3
         
     const exporttoPDF = () =>{
     const unit = "pt";
@@ -107,7 +117,7 @@ const BillingDetails = () => {
     const doc = new jsPDF(orientation, unit, size);
         doc.setFontSize(20);
         let title = "Billing Summary Report";
-        let headers = [["Bill No", "Name","Bill Date","Lodging","Boarding","LuxuryTax","Serv Tax","R.Service","Recn.","Taxi","Misc","Laun.","Total","Adv.Rcpt","Adv.Amount","Paid"]];
+        let headers = [["Bill No", "Name","Bill Date","Room Rate","Boarding","Tax","Food","Transport","Laundary","Misc","Phone","Total","Advance","Balance"]];
         let data = bookings
         let content = {
           startY: 120,
@@ -122,6 +132,7 @@ const BillingDetails = () => {
           pageBreak:'auto'
         };
         doc.text(title, 300, 30);
+        doc.text(billingCategory,320,60)
         doc.setFontSize(15);
         doc.text("From : "+startDateString,100, 80);
         doc.text("To : "+currentDateString,700, 80);
@@ -145,11 +156,23 @@ const BillingDetails = () => {
             </Typography>
         </div>
         <div className="container">   
-        <div className="formdates">  
+      
+        {FormUtils.renderSelect({
+          id: "billingType",
+          label: "Billing Details",
+          name:"billingType",
+          value:billingCategory,
+          onChange: event => handleSelectChange(event),
+          options: getPlanOptions(),
+          disabled: shouldDisable
+        })} 
+        
+        <div className="formdates"> 
+              
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
          <KeyboardDatePicker
               disableToolbar
-              format="MM/dd/yyyy"
+              format="dd/MMMM/yyyy"
              margin="normal"
              id="date-picker-dialog"
             label="From"
@@ -158,43 +181,29 @@ const BillingDetails = () => {
             KeyboardButtonProps={{
              'aria-label': 'change date',
             }}
-           style={{ marginRight: "2rem",width:'150px'}}
+           style={{ width:'150px'}}
              />
             </MuiPickersUtilsProvider>
             <MuiPickersUtilsProvider utils={DateFnsUtils} 
-                          style={{ marginLeft: "1rem"}}>
+                          style={{ marginLeft: "rem"}}>
          <KeyboardDatePicker
               disableToolbar
-              format="MM/dd/yyyy"
+              format="dd/MMMM/yyyy"
              margin="normal"
              id="date-picker-dialog"
             label="To"
+            maxDate={currentDate}
             value={currentDate}              
             onChange={handleCurrentDateChange}
             KeyboardButtonProps={{
              'aria-label': 'change date',
             }}
-           style={{ marginLeft: "0.5rem",width:'150px'}}
+           style={{ marginLeft: "3.5rem",width:'150px'}}
                             />
             </MuiPickersUtilsProvider>
             </div>  
-            <div className="billingselect">
-            <InputLabel id="label">Select Category to Generate Report on Billing </InputLabel>
-              {FormUtils.renderSelect({
-                id: "billingType",
-                label: "Billing Details",
-                name:"billingType",
-                value:billingCategory,
-                onChange: event => handleSelectChange(event),
-                options: getPlanOptions(),
-                disabled: shouldDisable
-              })}
-            </div> 
             <div className="buttoncontainer"> 
-            <Button type="submit"  className="button1">
-            Back
-          </Button>
-          <Button  type="submit" className="button2" onClick={generateReport}>
+          <Button  type="submit" className="button" onClick={generateReport}>
             Generate
           </Button>
             </div>

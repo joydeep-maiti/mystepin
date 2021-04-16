@@ -177,7 +177,7 @@ const ReportGenerator = ({ booking }) => {
           </div>
           <div className="report-row">
             <span className="report-key">Balance</span>
-            <span className="report-value">&#8377; {balance}</span>
+            <span className="report-value">&#8377; {booking.paymentData.balance}</span>
           </div>
         </div>
         <div className="report__header-secondary">

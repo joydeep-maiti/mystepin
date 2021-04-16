@@ -36,17 +36,23 @@ const BillingDetails = () => {
   var cdate=moment(currentDate);
   const [currentDateString,setCurrentDateString]=useState(cdate.format('D')+"/"+cdate.format('M')+"/"+cdate.format('YYYY'));
   const [bookings, setBookings] = useState([]);
-  const [bookingCategory,setBookingCategory] = useState("");
+  const [billingCategory,setBillingCategory] = useState("");
   const [shouldDisable, setShouldDisable] = useState(false);
   const [billingTypes, setBillingTypes] = useState([]);
   
   //getting options
-  useEffect(async ()=>{
-    let options = await reportOptions.getBillingOptions("Billing Details");
-    options.forEach(option=>{
-      billingTypes.push(option)
-    })
+  useEffect(()=>{
+    fetchBillingTypes()
    },[])
+
+  const fetchBillingTypes = async()=>{
+    let options = await reportOptions.getBillingOptions("Billing Details");
+    const types = []
+    options.forEach(option=>{
+      types.push(option)
+    })
+    setBillingTypes(types)
+  } 
   
   //Handle starting date Change
   const handleStartingDateChange =(date)=>{
@@ -70,11 +76,15 @@ const BillingDetails = () => {
   };
   //Handle Select Change
   const handleSelectChange=(event)=>{
-    setBookingCategory(event.target.value);
-    console.log("event",bookingCategory);
+    setBillingCategory(event.target.value);
+    console.log("event",billingCategory);
     }
   //Getting Booking Details
+<<<<<<< HEAD
   const getBookingsDetails = async (startingDate,currentDate) => { 
+=======
+  // const getBookingsDetails = async (startingDate,currentDate) => { 
+>>>>>>> fe55002f5715af1b84410ef79430d635257f661e
   //  const booking = await billingDetails.getBookings(startingDate,currentDate);
   //    let a=201;
   //    console.log("Hari",booking)
@@ -90,7 +100,11 @@ const BillingDetails = () => {
   //            bookings.push(value);
   //           })
   //         }
+<<<<<<< HEAD
         }
+=======
+  //       }
+>>>>>>> fe55002f5715af1b84410ef79430d635257f661e
         
     const exporttoPDF = () =>{
     const unit = "pt";
@@ -176,8 +190,9 @@ const BillingDetails = () => {
             <InputLabel id="label">Select Category to Generate Report on Billing </InputLabel>
               {FormUtils.renderSelect({
                 id: "billingType",
-                label: "Plan Type",
+                label: "Billing Details",
                 name:"billingType",
+                value:billingCategory,
                 onChange: event => handleSelectChange(event),
                 options: getPlanOptions(),
                 disabled: shouldDisable

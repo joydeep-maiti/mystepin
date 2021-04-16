@@ -4,6 +4,10 @@ import Typography from "@material-ui/core/Typography";
 import DateFnsUtils from '@date-io/date-fns';
 import {MuiPickersUtilsProvider,KeyboardDatePicker} from '@material-ui/pickers';
 import './Agent.css'
+import moment from "moment";
+import utils from "../../utils/utils";
+import FormUtils from "../../utils/formUtils";
+import reportOptions from '../../services/reportOptions'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -20,15 +24,47 @@ const useStyles = makeStyles(theme => ({
 
 
 const Agent = () => {
-
-  const [agentCategory,setagentCategory]=useState("");
-
+  const [startingDate,setStartingDate]=useState(utils.getDate(moment().startOf('month')));
+  const [currentDate, setCurrentDate] = useState(utils.getDate());
+  const [bookings, setBookings] = useState([]);
+  const [agent,setAgent] = useState("");
+  const [shouldDisable, setShouldDisable] = useState(false);
+  const [agentTypes, setAgentTypes] = useState([]);
+  
+  //getting options
   useEffect(()=>{
-    
-       console.log(agentCategory) ;
-    
+    fetchBillingTypes()
+   },[])
 
-  },[agentCategory])
+  const fetchBillingTypes = async()=>{
+    let options = await reportOptions.getBillingOptions("Agent");
+    const types = []
+    options.forEach(option=>{
+      types.push(option)
+    })
+    setAgentTypes(types)
+  } 
+  
+    //Handle starting date Change
+    const handleStartingDateChange =(date)=>{
+      setStartingDate(utils.getDate(date));  
+          };
+    //Handle current date Change
+    const handleCurrentDateChange = (date) => {  
+      setCurrentDate(utils.getDate(date));
+     };
+    //Get Plan Options
+    const getPlanOptions = () => {
+        return agentTypes.map(type => {
+        return { label: type, value: type};
+      });
+    };
+    //Handle Select Change
+    const handleSelectChange=(event)=>{
+      setAgent(event.target.value);
+      console.log("event",agent);
+      }
+  
 
     const classes = useStyles();
     return (
@@ -47,8 +83,8 @@ const Agent = () => {
            margin="normal"
            id="date-picker-dialog"
           label="From"
-          //value={currentDate}              
-          //onChange={handleDateChange}
+          value={startingDate}              
+          onChange={handleStartingDateChange}
           KeyboardButtonProps={{
            'aria-label': 'change date',
           }}
@@ -63,8 +99,8 @@ const Agent = () => {
            margin="normal"
            id="date-picker-dialog"
           label="To"
-          //value={currentDate}              
-          //onChange={handleDateChange}
+          value={currentDate}              
+          onChange={handleCurrentDateChange}
           KeyboardButtonProps={{
            'aria-label': 'change date',
           }}
@@ -74,12 +110,15 @@ const Agent = () => {
           </div>  
           <div className="agentselect">
           <InputLabel id="label">Select Category to Generate Report on Agent </InputLabel>
-          <select name="agent" id="agentcategory" onChange={(e)=>{setagentCategory(e.target.value)}}>
-          <option value=""></option>            
-          <option value="agentsummary">Billing Summary</option>
-          <option value="due">Due</option>
-          <option value="settlement">Settlement</option>
-          </select>
+          {FormUtils.renderSelect({
+                id: "agent",
+                label: "Agent",
+                name:"agent",
+                value:agent,
+                onChange: event => handleSelectChange(event),
+                options: getPlanOptions(),
+                disabled: shouldDisable
+              })}
           </div> 
           <div className="buttoncontainer"> 
           <Button type="submit"  className="button1">

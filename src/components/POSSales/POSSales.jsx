@@ -4,7 +4,10 @@ import Typography from "@material-ui/core/Typography";
 import DateFnsUtils from '@date-io/date-fns';
 import {MuiPickersUtilsProvider,KeyboardDatePicker} from '@material-ui/pickers';
 import './POSSales.css'
-
+import moment from "moment";
+import utils from "../../utils/utils";
+import FormUtils from "../../utils/formUtils";
+import reportOptions from '../../services/reportOptions'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -20,15 +23,47 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const POSSales = () => {
-  const [posSalesCategory,setposSalesCategory]=useState("");
-
+  const [startingDate,setStartingDate]=useState(utils.getDate(moment().startOf('month')));
+  const [currentDate, setCurrentDate] = useState(utils.getDate());
+  const [bookings, setBookings] = useState([]);
+  const [posCategory,setPosCategory] = useState("");
+  const [shouldDisable, setShouldDisable] = useState(false);
+  const [posTypes, setPosTypes] = useState([]);
+  
+  //getting options
   useEffect(()=>{
-    
-       console.log(posSalesCategory) ;
-    
+    fetchBillingTypes()
+   },[])
 
-  },[posSalesCategory])
-
+  const fetchBillingTypes = async()=>{
+    let options = await reportOptions.getBillingOptions("POS Sales");
+    const types = []
+    options.forEach(option=>{
+      types.push(option)
+    })
+    setPosTypes(types)
+  } 
+  
+    //Handle starting date Change
+    const handleStartingDateChange =(date)=>{
+      setStartingDate(utils.getDate(date));  
+          };
+    //Handle current date Change
+    const handleCurrentDateChange = (date) => {  
+      setCurrentDate(utils.getDate(date));
+     };
+    //Get Plan Options
+    const getPlanOptions = () => {
+        return posTypes.map(type => {
+        return { label: type, value: type};
+      });
+    };
+    //Handle Select Change
+    const handleSelectChange=(event)=>{
+      setPosCategory(event.target.value);
+      console.log("event",posCategory);
+      }
+  
     const classes = useStyles();
     return (
       <div>
@@ -46,8 +81,8 @@ const POSSales = () => {
            margin="normal"
            id="date-picker-dialog"
           label="From"
-          //value={currentDate}              
-          //onChange={handleDateChange}
+          value={startingDate}              
+          onChange={handleStartingDateChange}
           KeyboardButtonProps={{
            'aria-label': 'change date',
           }}
@@ -62,8 +97,8 @@ const POSSales = () => {
            margin="normal"
            id="date-picker-dialog"
           label="To"
-          //value={currentDate}              
-          //onChange={handleDateChange}
+          value={currentDate}              
+          onChange={handleCurrentDateChange}
           KeyboardButtonProps={{
            'aria-label': 'change date',
           }}
@@ -73,12 +108,15 @@ const POSSales = () => {
           </div>  
           <div className="posSaleselect">
           <InputLabel id="label">Select Category to Generate Report on Pos Sales </InputLabel>
-          <select name="posSales" id="posSalescategory" onChange={(e)=>{setposSalesCategory(e.target.value)}}>
-          <option value=""></option>            
-          <option value="posSalesummary">POS Sales Summary</option>
-          <option value="due">Due</option>
-          <option value="settlement">Settlement</option>
-          </select>
+          {FormUtils.renderSelect({
+                id: "possales",
+                label: "POS Sales",
+                name:"possales",
+                value:posCategory,
+                onChange: event => handleSelectChange(event),
+                options: getPlanOptions(),
+                disabled: shouldDisable
+              })}
           </div> 
           <div className="buttoncontainer"> 
           <Button type="submit"  className="button1">

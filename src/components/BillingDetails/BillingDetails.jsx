@@ -41,12 +41,18 @@ const BillingDetails = () => {
   const [billingTypes, setBillingTypes] = useState([]);
   
   //getting options
-  useEffect(async ()=>{
-    let options = await reportOptions.getBillingOptions("Billing Details");
-    options.forEach(option=>{
-      billingTypes.push(option)
-    })
+  useEffect(()=>{
+    fetchBillingTypes()
    },[])
+
+  const fetchBillingTypes = async()=>{
+    let options = await reportOptions.getBillingOptions("Billing Details");
+    const types = []
+    options.forEach(option=>{
+      types.push(option)
+    })
+    setBillingTypes(types)
+  } 
   
   //Handle starting date Change
   const handleStartingDateChange =(date)=>{

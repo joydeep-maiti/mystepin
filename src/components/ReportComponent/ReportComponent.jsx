@@ -68,7 +68,7 @@ const ReportComponent = () => {
   const classes = useStyles();
   const [taxSlabs, setTaxSlabs] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [value, setValue] = React.useState(0);
+  const [tabvalue, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -79,7 +79,7 @@ const ReportComponent = () => {
     <div className={classes.root} style={{backgroundColor:'#D6EAF8',height:"100vh"}}>
       <AppBar position="static" color="default">
         <Tabs
-          value={value}
+          value={tabvalue}
           onChange={handleChange}
           indicatorColor="primary"
           textColor="primary"
@@ -96,25 +96,25 @@ const ReportComponent = () => {
           <Tab label="Guest Details" {...a11yProps(6)} />
         </Tabs>
       </AppBar>
-      <TabPanel className={classes.tabDiv} value={value} index={0}>
+      <TabPanel className={classes.tabDiv} value={tabvalue} index={0}>
         <BillingDetails/>
       </TabPanel>
-      <TabPanel className={classes.tabDiv} value={value} index={1}>
+      <TabPanel className={classes.tabDiv} value={tabvalue} index={1}>
         <BillingTab />
       </TabPanel>
-      <TabPanel className={classes.tabDiv} value={value} index={2}>
+      <TabPanel className={classes.tabDiv} value={tabvalue} index={2}>
         <PoSSales/>
       </TabPanel>
-      <TabPanel className={classes.tabDiv} value={value} index={3}>
+      <TabPanel className={classes.tabDiv} value={tabvalue} index={3}>
         <Agent/>
       </TabPanel>
-      <TabPanel className={classes.tabDiv} value={value} index={4}>
+      <TabPanel className={classes.tabDiv} value={tabvalue} index={4}>
         <Occupancy/>
       </TabPanel>
-      <TabPanel className={classes.tabDiv} value={value} index={5}>
+      <TabPanel className={classes.tabDiv} value={tabvalue} index={5}>
         <CollectionReport/>
       </TabPanel>
-      <TabPanel className={classes.tabDiv} value={value} index={6}>
+      <TabPanel className={classes.tabDiv} value={tabvalue} index={6}>
        <GuestDetails/>
       </TabPanel>
     </div>

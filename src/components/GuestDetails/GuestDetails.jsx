@@ -70,7 +70,7 @@ const GuestDetails = () => {
       <div>
              <div className={classes.root}>
             <Typography variant="h6" className={classes.title}>
-             Booking
+             Guest
             </Typography>
       </div>
       <div className="container">   

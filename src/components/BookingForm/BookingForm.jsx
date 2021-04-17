@@ -28,6 +28,8 @@ import "./BookingForm.scss";
 import ratemasterService from "../../services/ratemasterService";
 import Loader from "../../common/Loader/Loader";
 import taxService from "../../services/taxService";
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 const BookingForm = props => {
   const classes = useStyles();
@@ -53,7 +55,8 @@ const BookingForm = props => {
     openDatePickerCheckOut,
     handleDatePicker,
     enableFileUpload,
-    onSetPrice
+    onSetPrice,
+    handleFlatRateChange
   } = props;
   console.log("props",props)
 
@@ -95,7 +98,8 @@ const BookingForm = props => {
 
   React.useEffect(()=>{
     formatRates()
-  },[dayWiseRates,data.planType])
+  },[dayWiseRates,data.planType, data.flatRoomRate,data.roomCharges])
+
 
   React.useEffect(()=>{
     calculateBookingPrice(formattedRates,data.rooms)
@@ -144,46 +148,87 @@ const BookingForm = props => {
     // console.log
     setFormattedRates(rates)
     calculateBookingPrice(rates,data.rooms)
-    
   }
 
+
   const calculateBookingPrice = (rates, rooms) => {
-    console.log("--------shouldDisable",shouldDisable)
+    console.log("--------shouldDisable",shouldDisable,data.roomCharges)
     // debugger
     if(shouldDisable)
       return
-    let price = 0
+    let price = data.flatRoomRate?data.roomCharges:0
     console.log("rates, rooms",rates, rooms)
     const roomWiseRatesForBooking = []
+    let dates = data.flatRoomRate && daysBetweenDates(data.checkIn,data.checkOut)
+    let divi = data.flatRoomRate && Number(dates.length)+Number(rooms.length)
+    // console.log("data.roomCharges/divi",data.roomCharges/divi,data.roomCharges,divi)
+    let singleRooomSingleNightRate = data.flatRoomRate && data.roomCharges/divi;
+    console.log("singleRooomSingleNightRate", dates,singleRooomSingleNightRate)
     rooms.forEach(room=>{
       const bookingRate = {
         roomNumber:room.roomNumber,
       }
       const bookingRates = []
-      rates[room.roomType] && rates[room.roomType].forEach(dayrate=>{
-        // debugger
-        price += parseInt(dayrate.rate)
-        const slab = taxSlabs.filter(el => dayrate.rate>el.greaterThan && dayrate.rate<= (el.lessThanAndEqual || 9999999999))
+      if(!data.flatRoomRate){
+        rates[room.roomType] && rates[room.roomType].forEach(dayrate=>{
+          // debugger
+          price += parseInt(dayrate.rate)
+          const slab = taxSlabs.filter(el => dayrate.rate>el.greaterThan && dayrate.rate<= (el.lessThanAndEqual || 9999999999))
+          let taxPercent;
+          let tax;
+          if(slab.length>0){
+            taxPercent = slab[0].taxPercent
+            tax = dayrate.rate*(slab[0].taxPercent/100)
+          }
+          bookingRates.push({
+            date: dayrate.date,
+            rate: dayrate.rate,
+            extra: dayrate.extraRate,
+            taxPercent,
+            tax
+          })
+        })
+      }else {
+        const slab = taxSlabs.filter(el => singleRooomSingleNightRate>el.greaterThan && singleRooomSingleNightRate<= (el.lessThanAndEqual || 9999999999))
         let taxPercent;
         let tax;
         if(slab.length>0){
           taxPercent = slab[0].taxPercent
-          tax = dayrate.rate*(slab[0].taxPercent/100)
+          tax = singleRooomSingleNightRate*(slab[0].taxPercent/100)
         }
-        bookingRates.push({
-          date: dayrate.date,
-          rate: dayrate.rate,
-          extra: dayrate.extraRate,
-          taxPercent,
-          tax
+        dates.forEach(el=>{
+          bookingRates.push({
+            date: el.toISOString(),
+            rate: singleRooomSingleNightRate,
+            extra: 0,
+            taxPercent,
+            tax
+          })
         })
-      })
+      }
       bookingRate.rates = bookingRates
       roomWiseRatesForBooking.push(bookingRate)
     })
     console.log("Final Price",price, roomWiseRatesForBooking)
     onSetPrice(price,roomWiseRatesForBooking)
   };
+
+  const daysBetweenDates = (startDate, endDate) => {
+    let dates = [];
+    const currDate = moment(startDate).startOf("day");
+    //console.log(currDate)
+    const lastDate = moment(endDate).startOf("day");
+    //console.log("lastDate",currDate,lastDate)
+    while (currDate.add(1, "days").diff(lastDate) < 0) {
+      dates.push(currDate.clone().toDate());
+    }
+
+    dates.unshift(moment(startDate).toDate());
+    // dates.push(moment(endDate).toDate());
+    console.log(dates)
+
+    return dates;
+  }
 
   const handleChange = panel => (event, isExpanded) => {
     // setExpanded(isExpanded ? panel : false);
@@ -371,10 +416,23 @@ const BookingForm = props => {
           options: getPlanOptions(),
           disabled: shouldDisable
         })}
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={data.flatRoomRate}
+              onChange={handleFlatRateChange}
+              name="flatRoomRate"
+              color="primary"
+            />
+          
+          }
+          label="Flat Rate"
+          style={{minWidth:"max-content", marginLeft:"0.3rem"}}
+        />
         {FormUtils.renderInput(
-          getInputArgObj("roomCharges", "Total Room Charge", "number", shouldDisable)
+          getInputArgObj("roomCharges", "Total Room Charge", "number", shouldDisable || !data.flatRoomRate)
         )}
-        <IconButton color="primary" aria-label="Price breakup" style={{position:"absolute",left:"56%", top:"20px"}} onClick={()=>setOpenPriceModal(true)}>
+        <IconButton color="primary" aria-label="Price breakup" style={{position:"absolute",left:"65%", top:"20px"}} onClick={()=>setOpenPriceModal(true)}>
           <InfoOutlinedIcon />
         </IconButton>
         

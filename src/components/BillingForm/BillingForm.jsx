@@ -43,7 +43,8 @@ const BillingForm = props => {
     errors,
     booking,
     payment,
-    onChangeData
+    onChangeData,
+    due
   } = props;
 
   console.log("booking",booking)
@@ -60,13 +61,13 @@ const BillingForm = props => {
   const [loading, setLoading] = React.useState(false);
   const [billingst,setBillingst] = React.useState("Due");
   //console.log(billingst);
-  const billingStatus=[
+  const billingStatus=due?[
     {label:"Due" ,value:"Due"},
-    {label:"Paid" ,value:"Paid"},
     {label:"Bill to company" ,value:"Bill to company"},
+  ]:[
+    {label:"Paid" ,value:"Paid"},
   ]
   const selectBillingStatus = (event) => {
-    setBillingst(event.target.value);
     onChangeData({
       billingStatus:event.target.value
     })
@@ -244,12 +245,12 @@ const BillingForm = props => {
           {renderInputItems("Advance", booking.advance, "advance")}
           {renderInputItems("Balance",  balance, "balance")}
         </div>
-        <div>
+        <div style={{width:"15rem"}}>
         {FormUtils.renderBillingStatus({
           id: "billingstatus",
           name: "billingstatus",
           label: "Billingstatus",
-          value: billingst,
+          value: data.billingStatus,
           onChange: event => selectBillingStatus(event),
           billingStatus
         })}
@@ -277,7 +278,7 @@ const BillingForm = props => {
             payment.card.checked
           )}
           {renderPaymentMethods(
-            "Wallet Payment",
+            "Wallet/UPI Payment",
             "wallet",
             data.wallet,
             onInputChange,

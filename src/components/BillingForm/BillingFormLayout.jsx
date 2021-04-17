@@ -30,6 +30,7 @@ const BillingFormLayout = props => {
   const [taxSlabs, setTaxSlabs] = useState();
   const [roomCharges, setRoomCharges] = useState();
   const [isBillingForm, setIsBillingForm] = useState(false);
+  const [due, setDue] = useState(true);
 
   const [data, setData] = useState({
     cash: "",
@@ -60,6 +61,22 @@ const BillingFormLayout = props => {
     else getTaxSlabs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if(Number(data.card)+Number(data.cash)+Number(data.wallet) === data.balance){
+      setDue(false)
+      setData({
+        ...data,
+        billingStatus:"Paid",
+      })
+    }else {
+      setDue(true)
+      setData({
+        ...data,
+        billingStatus:"Due",
+      })
+    }
+  }, [data.cash,data.card,data.wallet,data.balance]);
 
   const handleInputChange = ({ currentTarget: input }) => {
     const updatedState = FormUtils.handleInputChange(
@@ -337,6 +354,7 @@ const BillingFormLayout = props => {
           booking={selectedBooking}
           payment={payment}
           onChangeData={handleChangeData}
+          due={due}
         />
       );
     }else {

@@ -49,19 +49,20 @@ const BookingFormLayout = ({
     lastName: "",
     address: "",
     checkIn: utils.getDate(),
-    checkOut: utils.getDate(),
+    checkOut: moment().add(1, 'days').toDate(),
     checkedInTime: "",
     checkedOutTime: "",
-    nights:0,
-    adults: "",
+    nights:1,
+    adults: 1,
     children: 0,
     contactNumber: "",
     rooms: [],
     roomCharges: "",
+    flatRoomRate:false,
     Idproof:"",
     proofs:[proofType],
     planType:"AP",
-    advance: "",
+    advance: 0,
     bookingDate: null,
     status: {
       cancel: false,
@@ -124,7 +125,7 @@ const BookingFormLayout = ({
     const room = { roomNumber, roomType, _id };
     newData.rooms.push(room);
     newData.checkIn = selectedDate;
-    newData.checkOut = selectedDate;
+    // newData.checkOut = selectedDate;
 
     const availableRooms = await getAvailableRooms(
       newData.checkIn,
@@ -199,6 +200,7 @@ const BookingFormLayout = ({
   };
 
   const handleInputChange = ({ currentTarget: input }) => {
+    console.log("input",input)
     const updatedState = FormUtils.handleInputChange(
       input,
       data,
@@ -207,6 +209,13 @@ const BookingFormLayout = ({
     );
     setData(updatedState.data);
     setErrors(updatedState.errors);
+  };
+
+  const handleFlatRateChange = (event) => {
+    setData({
+      ...data,
+      flatRoomRate:event.target.checked
+    })
   };
 
   const handleDatePickerChange = async (event, id) => {
@@ -263,7 +272,7 @@ const BookingFormLayout = ({
   };
 
   const handleSelectChange = async (event, index) => {
-    debugger
+    // debugger
     let newErrors = { ...errors };
     if (newErrors.rooms)
       newErrors.rooms = newErrors.rooms.filter(error => error.index !== index);
@@ -426,6 +435,7 @@ const BookingFormLayout = ({
               status={data.status}
               checkIn={data.checkIn}
               checkOut={data.checkOut}
+              isBooked={data.bookingDate}
               onEdit={handleEdit}
               onCancel={handleCancel}
               onCheckIn={handleCheckIn}
@@ -454,6 +464,7 @@ const BookingFormLayout = ({
               openDatePickerCheckOut={openDatePickerCheckOut}
               handleDatePicker={handleDatePicker}
               enableFileUpload={enableFileUpload}
+              handleFlatRateChange={handleFlatRateChange}
             />
           }
           maxWidth={700}

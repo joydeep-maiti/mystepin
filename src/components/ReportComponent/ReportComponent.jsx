@@ -77,7 +77,7 @@ const ReportComponent = () => {
 
   return (
     <div className={classes.root} style={{backgroundColor:'#D6EAF8',height:"100vh"}}>
-      <AppBar position="static" color="default">
+      <AppBar position="sticky" color="default" style={{position:"sticky",top:"64px"}}>
         <Tabs
           value={tabvalue}
           onChange={handleChange}

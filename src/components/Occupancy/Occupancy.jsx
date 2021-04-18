@@ -47,21 +47,45 @@ const Occupancy = () => {
   } 
   const fetchAndGenerateReport = async()=>{
     let options = await reportService.getDailyOccupancyReport();
+    let adults = 0
+    let children = 0
+    let plans = [{},{}] 
+    let occupied = 0
+    let continuing =0
     if(options){
       let data = options.map(el=>{
+        adults+=Number(el.adults)
+        children+=Number(el.children)
+        if(el.planType && el.planType.trim()!=="" && !plans[0][el.planType]){
+          plans[0][el.planType] = Number(el.adults)
+          plans[1][el.planType] = Number(el.children)
+        }else if(el.planType && el.planType.trim()!=="" ){
+          plans[0][el.planType] = Number(plans[0][el.planType])+Number(el.adults)
+          plans[1][el.planType] = Number(plans[1][el.planType])+Number(el.children)
+        }
+        if(el.guestName && el.guestName.trim()!=="" && moment(el.arraivalDate).format('D.MMM.YYYY') === moment().format('D.MMM.YYYY')){
+          occupied+=1
+        }else if(el.guestName && el.guestName.trim()!=="" && moment(el.arraivalDate).format('D.MMM.YYYY') !== moment().format('D.MMM.YYYY')){
+          continuing+=1
+        }
         return([
           el.roomNumber1,
           el.guestName,
-          el.balance,
+          el.planType,
           el.pax,
           el.arraivalDate?moment(el.arraivalDate).format('D.MMM.YYYY'):"",
           el.departureDate?moment(el.departureDate).format('D.MMM.YYYY'):"",
           el.stay,
-          el.receipt,
-          el.advance,
         ])
       })
-      exportToPDF(data)
+      console.log("plans",plans,adults,children)
+      data.push(["","TOTAL NO OF PAX :",adults+"+"+children])
+      data.push(["","ADULTS :",adults])
+      data.push(["","CHILDREN :",children])
+      Object.keys(plans[0]).map(el=>{
+        data.push(["",el+":",plans[0][el]+"+"+plans[1][el]])
+      })
+      exportToPDF(data,occupied,continuing)
     }
   } 
   
@@ -87,7 +111,7 @@ const Occupancy = () => {
 
   const classes = useStyles();
 
-  const exportToPDF = (reportData) =>{
+  const exportToPDF = (reportData,occupied,continuing) =>{
     const unit = "pt";
     const size = "A4"; // Use A1, A2, A3 or A4
     const orientation = "landscape"; // portrait or landscape
@@ -98,12 +122,12 @@ const Occupancy = () => {
     const doc = new jsPDF(orientation, unit, size);
         doc.setFontSize(20);
         let title = "DAILY OCCUPANCY CHART";
-        let headers = [["ROOM No", "Name of Guest","Balance","Pax","DT. of Arr","DT. of Dept","Stay","Receipt No","Advance"]];
+        let headers = [["ROOM NO", "NAME OF GUEST","PLAN TYPE","PAX","DT. OF ARR","DT. OF DEPT","STAY"]];
         let content = {
           startY: 120,
           head: headers,
           body: reportData,
-          theme: 'striped',
+          theme: 'grid',
           styles: {
             cellWidth:'wrap',
             halign: 'center',
@@ -113,11 +137,13 @@ const Occupancy = () => {
         };
         doc.text(title, 300, 30);
         doc.setFontSize(12);
-        doc.text("Date : "+ date,30,60)
-        doc.text("Day : "+ day,30,80)
+        doc.text("DATE : "+ date,30,60)
+        doc.text("DAY : "+ day,30,80)
+        doc.text("TOTAL OCCUPIED : "+ occupied,650,60)
+        doc.text("OCCUPIED CONT. : "+ continuing,650,80)
         doc.setFontSize(12);
         doc.autoTable(content);
-        doc.save("test.pdf")
+        doc.save("Daily Occupancy Report.pdf")
 
   }
 

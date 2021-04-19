@@ -235,7 +235,8 @@ const BookingFormLayout = ({
     console.log("days",moment.duration(duration).days())
     console.log("asDays",moment.duration(duration).asDays())
     let durationInDays = moment.duration(duration).days()+1;
-    updatedData.nights = durationInDays
+    const dates = daysBetweenDates(updatedData["checkIn"],updatedData["checkOut"])
+    updatedData.nights = dates.length
     if (id === "checkIn") data["checkOut"] = data[id];
 
     let availableRooms = await getAvailableRooms(
@@ -261,6 +262,23 @@ const BookingFormLayout = ({
       // setOpenDatePicker(newOpenDatePicker);
     });
   };
+
+  const daysBetweenDates = (startDate, endDate) => {
+    let dates = [];
+    const currDate = moment(startDate).startOf("day");
+    //console.log(currDate)
+    const lastDate = moment(endDate).startOf("day");
+    //console.log("lastDate",currDate,lastDate)
+    while (currDate.add(1, "days").diff(lastDate) < 0) {
+      dates.push(currDate.clone().toDate());
+    }
+
+    dates.unshift(moment(startDate).toDate());
+    // dates.push(moment(endDate).toDate());
+    console.log(dates)
+
+    return dates;
+  }
 
   const handleDatePicker = id => {
     return

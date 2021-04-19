@@ -111,6 +111,7 @@ const renderTableHead = (tableHeaders, classes) => {
 };
 
 const renderTableRows = (tableRows, classes, dateObj, view, presentDate) => {
+  console.log("tableRows",tableRows)
   return (
     <React.Fragment>
       {tableRows.map((row, index) => (
@@ -125,7 +126,7 @@ const renderTableRows = (tableRows, classes, dateObj, view, presentDate) => {
 const renderTableColumns = (row, classes, dateObj, view, presentDate) => {
   return (
     <React.Fragment>
-      {row.map((column, index) =>
+      {row && row.map((column, index) =>
         getStandardCell(getArgObj(column, index, classes, dateObj,view, presentDate))
       )}
     </React.Fragment>

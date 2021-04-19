@@ -79,13 +79,13 @@ const Occupancy = () => {
         ])
       })
       console.log("plans",plans,adults,children)
-      data.push(["","TOTAL NO OF PAX :",adults+"+"+children])
+      data.push(["","TOTAL NO OF PAX :",adults+children])
       data.push(["","ADULTS :",adults])
       data.push(["","CHILDREN :",children])
       Object.keys(plans[0]).map(el=>{
         data.push(["",el+":",plans[0][el]+"+"+plans[1][el]])
       })
-      exportToPDF(data,occupied,continuing)
+      exportToPDF(data,Number(occupied)+Number(continuing),continuing)
     }
   } 
   

@@ -5,6 +5,7 @@ import Checkbox from "./../../common/Checkbox/Checkbox";
 import FormUtils from "../../utils/formUtils";
 import taxService from "../../services/taxService";
 import posService from "../../services/posService";
+import LoaderDialog from "../../common/LoaderDialog/LoaderDialog";
 
 const useStyles = makeStyles(theme => ({
   formGroup: {
@@ -74,7 +75,9 @@ const BillingForm = props => {
   }
 
   React.useEffect( async ()=>{
+    setLoading(true)
     const response = await posService.getPosByBookingId(booking._id)
+    setLoading(false)
     if(!response) {
       setBalance(Number(data.totalRoomCharges)-Number(booking.advance))
       return
@@ -227,6 +230,7 @@ const BillingForm = props => {
   return (
     booking && (
       <form onSubmit={event => onFormSubmit(event)}>
+        {loading && <LoaderDialog open={loading} />}
         {/* <div className={classes.radioGroup}>
           {FormUtils.renderRadioGroup({
             label: "",

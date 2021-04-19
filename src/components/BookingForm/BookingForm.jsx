@@ -389,7 +389,7 @@ const BookingForm = props => {
               "checkOut",
               "Check Out",
               "text",
-              data.checkIn,
+              moment(data.checkIn).add(1, 'days').toDate(),
               shouldDisable,
               // openDatePickerCheckOut
             )
@@ -423,6 +423,7 @@ const BookingForm = props => {
               onChange={handleFlatRateChange}
               name="flatRoomRate"
               color="primary"
+              disabled={shouldDisable}
             />
           
           }

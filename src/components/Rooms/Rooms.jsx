@@ -205,10 +205,11 @@ const RoomCategory = ({ onClose }) => {
                   <TableCell component="th" scope="row">
                     {i+1}
                   </TableCell>
-                  {editingRow._id !== row._id && <TableCell align="center">{row.roomNumber}</TableCell>}
-                  {editingRow._id === row._id && <TableCell align="center">
+                  <TableCell align="center">{row.roomNumber}</TableCell>
+                  {/* {editingRow._id !== row._id && <TableCell align="center">{row.roomNumber}</TableCell>} */}
+                  {/* {editingRow._id === row._id && <TableCell align="center">
                     <TextField required id="standard-required" label="Room Number" name="roomNumber" value={editingRow.roomNumber} onChange={handleInputChange}/>
-                  </TableCell>}
+                  </TableCell>} */}
                   {editingRow._id !== row._id && <TableCell align="center">{row.roomType}</TableCell>}
                   {editingRow._id === row._id && <TableCell align="center">
                   <FormControl style={{width:"100%"}}>

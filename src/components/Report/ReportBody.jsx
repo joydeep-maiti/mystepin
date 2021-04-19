@@ -226,6 +226,8 @@ const ReportBody = ({ booking }) => {
     setBill(response);
   };
 
+
+
   return (
     <div>
       {bill && <ReportGenerator booking={Object.assign({}, bill, booking)} />}

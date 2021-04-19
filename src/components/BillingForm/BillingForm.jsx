@@ -74,7 +74,11 @@ const BillingForm = props => {
     })
   }
 
-  React.useEffect( async ()=>{
+  React.useEffect(()=>{
+    fetchPos()
+  },[booking._id,data.totalRoomCharges])
+
+  const fetchPos = async()=>{
     setLoading(true)
     const response = await posService.getPosByBookingId(booking._id)
     setLoading(false)
@@ -95,12 +99,7 @@ const BillingForm = props => {
       posTotal:expense
     })
     setBalance(Number(data.totalRoomCharges)+Number(expense)-Number(booking.advance))
-    
-  },[booking._id,data.totalRoomCharges])
-
-  // React.useEffect(()=>{
-  //   fetchTaxes()
-  // },[])
+  }
 
   React.useEffect(()=>{
     onChangeData({

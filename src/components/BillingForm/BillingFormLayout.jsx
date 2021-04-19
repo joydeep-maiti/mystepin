@@ -201,7 +201,7 @@ const BillingFormLayout = props => {
       bookingId: selectedBooking._id,
       hotelName: selectedBooking.hotelName,
       hotelAddress: selectedBooking.hotelAddress,
-      guestName: posData.guestName,
+      guestName: selectedBooking.firstName+" "+selectedBooking.lastName,
       checkIn: selectedBooking.checkIn,
       checkOut: selectedBooking.checkOut,
       checkedInTime: selectedBooking.checkedInTime,
@@ -224,6 +224,7 @@ const BillingFormLayout = props => {
       if (status === 201) {
         openSnackBar("Checked out Successfully", success);
         props.onRedirectFromBilling(bookingData);
+        // props.history.push("/report")
       }
     } else openSnackBar("Error Occurred", error);
     setLoading(false);

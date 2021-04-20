@@ -15,6 +15,7 @@ import roomService from "../../services/roomService";
 import bookingService from "../../services/bookingService";
 
 const schema = schemas.bookingFormSchema;
+const checkinSchema = schemas.checkInFormSchema;
 const { success, error } = constants.snackbarVariants;
 // const roomTypes = [
 //   { label: "AC", value: "AC" },
@@ -64,6 +65,7 @@ const BookingFormLayout = ({
     planType:"AP",
     advance: 0,
     bookingDate: null,
+    bookedBy: "",
     status: {
       cancel: false,
       checkedIn: false,
@@ -187,7 +189,8 @@ const BookingFormLayout = ({
   };
 
   const checkForErrors = () => {
-    let errors = FormUtils.validate(data, schema);
+    let errors = FormUtils.validate(data, data._id?checkinSchema:schema);
+    console.log("errors",errors)
     errors = errors || {};
     setErrors(errors);
     return Object.keys(errors).length;
@@ -205,7 +208,7 @@ const BookingFormLayout = ({
       input,
       data,
       errors,
-      schema
+      data._id?checkinSchema:schema
     );
     setData(updatedState.data);
     setErrors(updatedState.errors);
@@ -483,6 +486,7 @@ const BookingFormLayout = ({
               handleDatePicker={handleDatePicker}
               enableFileUpload={enableFileUpload}
               handleFlatRateChange={handleFlatRateChange}
+              updatedata={(val)=>setData({...data,...val})}
             />
           }
           maxWidth={700}

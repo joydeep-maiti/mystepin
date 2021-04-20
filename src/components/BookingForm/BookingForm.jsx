@@ -56,7 +56,8 @@ const BookingForm = props => {
     handleDatePicker,
     enableFileUpload,
     onSetPrice,
-    handleFlatRateChange
+    handleFlatRateChange,
+    updatedata
   } = props;
   console.log("props",props)
 
@@ -320,18 +321,24 @@ const BookingForm = props => {
   //BookedByType
   const selectBookedByOption = (event) => {
     setBookedBy(event.target.value);
+    updatedata({
+      bookedBy: event.target.value
+    })
   }
   const selectAgentOption = (event) => {
     setAgent(event.target.value);
+    updatedata({
+      agent: event.target.value
+    })
   }
   //Type
   useEffect(()=>{
-    if(bookedBy === "Agent"){
+    if(data.bookedBy === "Agent"){
       setIsAgent(true);
       setIsMember(false);
       console.log("Hello Agent")
     }
-    else if(bookedBy === "Member"){
+    else if(data.bookedBy === "Member"){
       setIsMember(true)
       setIsAgent(false)
       console.log("Hello member")
@@ -340,7 +347,7 @@ const BookingForm = props => {
       setIsAgent(false)
       setIsMember(false)
     }
-  },[bookedBy])
+  },[data.bookedBy])
   return (
     <form onSubmit={event => onFormSubmit(event)}>
       {loading && <Loader color="#0088bc" />}
@@ -447,7 +454,7 @@ const BookingForm = props => {
           id: "bookedby",
           name: "bookedby",
           label: "Booked By",
-          value: bookedBy,
+          value: data.bookedBy,
           onChange: event => selectBookedByOption(event),
           bookedByOptions,
           disabled: shouldDisable
@@ -456,7 +463,7 @@ const BookingForm = props => {
           id: "agent",
           name: "agent",
           label: "Select Agent",
-          value: agent,
+          value: data.agent,
           onChange: event => selectAgentOption(event),
           agentOption,
           disabled: shouldDisable
@@ -480,7 +487,8 @@ const BookingForm = props => {
           value: data.proofs,
           onChange: event => selectfun1(event),
           options1,
-          disabled: shouldDisable
+          disabled: shouldDisable,
+          error: errors["proofType"]
         })}
 
         {FormUtils.renderInput(

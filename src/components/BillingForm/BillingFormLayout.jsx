@@ -240,8 +240,9 @@ const BillingFormLayout = props => {
     let tax = 0
     selectedBooking && selectedBooking.roomWiseRatesForBooking && selectedBooking.roomWiseRatesForBooking.map(el=>{            
       el.rates.map(rate=>{
-        const dayTotal = Number(rate.rate)+Number(rate.tax);
-        tax+=Number(rate.tax)
+        const taxAmount = Number(rate.tax).toFixed(2);
+        const dayTotal = Number(rate.rate)+Number(taxAmount);
+        tax+=Number(taxAmount)
         total+=dayTotal;
       })
     })

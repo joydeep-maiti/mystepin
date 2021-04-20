@@ -236,7 +236,7 @@ const BookingFormLayout = ({
     console.log("asDays",moment.duration(duration).asDays())
     let durationInDays = moment.duration(duration).days()+1;
     const dates = daysBetweenDates(updatedData["checkIn"],updatedData["checkOut"])
-    updatedData.nights = dates.length
+    updatedData.nights = dates.length>0?dates.length:1
     if (id === "checkIn") data["checkOut"] = data[id];
 
     let availableRooms = await getAvailableRooms(

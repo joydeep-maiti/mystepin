@@ -160,7 +160,8 @@ const BookingForm = props => {
     console.log("rates, rooms",rates, rooms)
     const roomWiseRatesForBooking = []
     let dates = data.flatRoomRate && daysBetweenDates(data.checkIn,data.checkOut)
-    let divi = data.flatRoomRate && Number(dates.length)*Number(rooms.length)
+    let nights = dates.length > 0? dates.length : 1 
+    let divi = data.flatRoomRate && Number(nights)*Number(rooms.length)
     // console.log("data.roomCharges/divi",data.roomCharges/divi,data.roomCharges,divi)
     let singleRooomSingleNightRate = data.flatRoomRate && data.roomCharges/divi;
     console.log("singleRooomSingleNightRate", dates,singleRooomSingleNightRate)
@@ -389,7 +390,7 @@ const BookingForm = props => {
               "checkOut",
               "Check Out",
               "text",
-              moment(data.checkIn).add(1, 'days').toDate(),
+              utils.getDate(),
               shouldDisable,
               // openDatePickerCheckOut
             )

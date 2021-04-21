@@ -173,7 +173,8 @@ const Calendar = props => {
           };
         }
       });
-    }else{
+    }
+    else{
       dates.forEach(date => {
         const dateNumber = moment(date).date();
         rowsArray[rowIndex] = [...rowsArray[rowIndex]];
@@ -234,11 +235,13 @@ const Calendar = props => {
   //          rows.forEach((row,index)=>{
   //            rows[index] =  new Array(8).fill({
   //             room: { ...allRooms[index] },
-  //             handleRedirect: handleRedirect
+  //             handleRedirect: handleRedirect,
+  //             show: false
   //            })
-  //            rows[index][0] = { room: { ...allRooms[index] }, show: true };
+  //            rows[index][0] = { room: { ...allRooms[index] }, show: true};
   //       })
   //  }
+
     else {
       rows = new Array(allRooms.length).fill();
       rows.forEach((row, index) => {
@@ -259,11 +262,11 @@ const Calendar = props => {
     let tableHeaders;
    
     if(view !== 'week'){
-    tableHeaders = new Array(dateObj.days + 1).fill({});
-    tableHeaders = tableHeaders.map((value, index) => {
-      if (index !== 0) return { date: index < 10 ? `0${index}` : `${index}` };
-      else return { date: "" };
-    });
+      tableHeaders = new Array(dateObj.days + 1).fill({});
+      tableHeaders = tableHeaders.map((value, index) => {
+        if (index !== 0) return { date: index < 10 ? `0${index}` : `${index}` };
+        else return { date: "" };
+      });
   }
   else{
     tableHeaders = new Array(8).fill({});

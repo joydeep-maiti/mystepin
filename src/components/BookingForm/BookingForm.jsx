@@ -468,6 +468,9 @@ const BookingForm = props => {
           agentOption,
           disabled: shouldDisable
         })}
+        {isAgent && FormUtils.renderInput(
+          getInputArgObj("referencenumber", "Reference number", "number", shouldDisable)
+        )}
         {
           isMember && FormUtils.renderInput({
             id: "memberNumber",

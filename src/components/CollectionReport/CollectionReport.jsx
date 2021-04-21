@@ -69,7 +69,7 @@ const CollectionReport = () => {
       <div>
              <div className={classes.root}>
             <Typography variant="h6" className={classes.title}>
-             Collection
+             Collection Report
             </Typography>
       </div>
       <div className="container">   

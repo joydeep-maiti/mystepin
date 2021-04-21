@@ -29,6 +29,7 @@ function TabPanel(props) {
           <Typography>{children}</Typography>
         </Box>
       )}
+      
     </div>
   );
 }
@@ -61,7 +62,7 @@ const useStyles = makeStyles(theme => ({
   },
   tabDiv: {
     padding: '0px 20px'
-  }
+  },
 }));
 
 const ReportComponent = () => {
@@ -87,7 +88,8 @@ const ReportComponent = () => {
           scrollButtons="auto"
           aria-label="scrollable auto tabs example"
         >
-          <Tab label="Billing Details" {...a11yProps(0)} />
+
+          <Tab label="Billing Details"  onmouseover="openCity(event, '')" {...a11yProps(0)} />
           <Tab label="Booking" {...a11yProps(1)} />
           <Tab label="POS Sales" {...a11yProps(2)} />
           <Tab label="Agent" {...a11yProps(3)} />
@@ -117,6 +119,10 @@ const ReportComponent = () => {
       <TabPanel className={classes.tabDiv} value={tabvalue} index={6}>
        <GuestDetails/>
       </TabPanel>
+
+      <div className={classes.billingd}>
+
+      </div>
     </div>
   );
 };

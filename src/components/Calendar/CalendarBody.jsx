@@ -206,9 +206,9 @@ const getArgObj = (column, index, classes, dateObj, view, presentDate) => {
   let disable = false;
 
   if (month === currentMonth && year === currentYear) {
-    disable = index < currentDate && view!=="day"  ? true : false;
+    disable = index < currentDate && view!=="day" && view!=="week" ? true : false;
     handleRedirect =
-      index >= currentDate || booking || view==="day" ? handleRedirect : () => {};
+      index >= currentDate || booking || view==="day" && view=== "week" ? handleRedirect : () => {};
   }
 
   const date = view==="day" ? presentDate : new Date(`${dateObj.month + 1}/${index}/${dateObj.year}`);

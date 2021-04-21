@@ -112,18 +112,19 @@ const Calendar = props => {
           }
         });
       });
-    if(view==="week"){
+    if(view === "week"){
       const _rows = tempRows.map(el=>{
         return [
           el[0],
           ...el.splice(startEnd,7)
         ]
+        
       })
       setRows(_rows);
-      return
+      return 
     }
     setRows(tempRows);
-  };
+   };
 
   const setBookingObjByRoom = (
     roomNumber,
@@ -146,8 +147,9 @@ const Calendar = props => {
       })
 
     }
+   
     
-    else {
+    else  {
       rowIndex = tempRows.findIndex(
         row => row[0].room.roomNumber === roomNumber
       );
@@ -194,7 +196,9 @@ const Calendar = props => {
         .format("dddd, Do MMMM YYYY")}`;
     }
     else if(view == "week"){
-      return `${moment(date).format("MMMM").toUpperCase()} ${moment(date).format('Do')} to ${moment(date).add(6,'days').format('Do')} - Week View`
+      return `${moment(date)
+        .format("MMMM")
+        .toUpperCase()} ${moment(date).year()}`;
     }
     else {
       return `${moment(date)

@@ -199,6 +199,7 @@ const Calendar = props => {
       return `${moment(date)
         .format("MMMM")
         .toUpperCase()} ${moment(date).year()}`;
+        
     }
     else {
       return `${moment(date)
@@ -268,6 +269,7 @@ const Calendar = props => {
     if(view !== 'week'){
       tableHeaders = new Array(dateObj.days + 1).fill({});
       tableHeaders = tableHeaders.map((value, index) => {
+        console.log(index);
         if (index !== 0) return { date: index < 10 ? `0${index}` : `${index}` };
         else return { date: "" };
       });
@@ -278,7 +280,7 @@ const Calendar = props => {
     let end = start+7;
     console.log("end",end)
     tableHeaders = tableHeaders.map((value,index) => {
-      if (index !== 0) return { date: start <= end ? start++ : 0 };
+      if (index !== 0) return { date: start <= end ? start++ : 0};
       else return { date: "" };
     });
   }

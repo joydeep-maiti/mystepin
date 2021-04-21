@@ -8,6 +8,7 @@ import Select1 from "../common/Select/Select1";
 import Select2 from "../common/Select/Select2";
 import Select3 from "../common/Select/Select3";
 import Select4 from "../common/Select/Select4";
+import Select5 from "../common/Select/Select5";
 
 
 
@@ -78,6 +79,7 @@ const renderproof = args => <Select1 name={args.id} {...args} />;
 const renderBookedBy = args => <Select2 name={args.id} {...args}/>;
 const renderAgent = args => <Select3 name={args.id} {...args}/>;
 const renderBillingStatus = args => <Select4 name= {args.id} {...args}/>;
+const renderCardStatus = args => <Select5 name= {args.id} {...args}/>;
 
 /*
   renderButton
@@ -121,5 +123,6 @@ export default {
   renderproof,
   renderBookedBy,
   renderBillingStatus,
+  renderCardStatus,
   renderAgent
 };

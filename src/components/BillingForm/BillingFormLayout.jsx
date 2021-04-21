@@ -270,6 +270,7 @@ const BillingFormLayout = props => {
       totalCalculatedRoomCharges: total,
       tax: 0,
       taxStatus: "withoutTax",
+
     })
   };
 

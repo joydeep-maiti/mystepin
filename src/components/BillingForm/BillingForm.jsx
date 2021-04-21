@@ -6,6 +6,7 @@ import FormUtils from "../../utils/formUtils";
 import taxService from "../../services/taxService";
 import posService from "../../services/posService";
 import LoaderDialog from "../../common/LoaderDialog/LoaderDialog";
+import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles(theme => ({
   formGroup: {
@@ -45,7 +46,7 @@ const BillingForm = props => {
     booking,
     payment,
     onChangeData,
-    due
+    due,
   } = props;
 
   console.log("booking",booking)
@@ -61,17 +62,31 @@ const BillingForm = props => {
   // const [taxSlabs, setTaxSlabs] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [billingst,setBillingst] = React.useState("Due");
-  //console.log(billingst);
+  const[cardnum,setCardnum]=React.useState("");
+  const[wallet,setWallet]=React.useState("");  
   const billingStatus=due?[
     {label:"Due" ,value:"Due"},
     {label:"Bill to company" ,value:"Bill to company"},
   ]:[
     {label:"Paid" ,value:"Paid"},
   ]
+
+  const walletList =[
+      {label:"PhonePe" ,value:"Phonepe"},
+      {label:"GooglePay" ,value:"GooglePay"},
+      {label:"Paytm" ,value:"Paytm"},
+      {label:"Others" ,value:"others"}
+  ]
+  const handleCardNum = (event)=>{
+    setCardnum(event.target.value)
+  }
   const selectBillingStatus = (event) => {
     onChangeData({
       billingStatus:event.target.value
     })
+  }
+  const selectwalletStatus = (event) => {
+    setWallet(event.target.value)
   }
 
   React.useEffect(()=>{
@@ -291,6 +306,29 @@ const BillingForm = props => {
             payment.wallet.checked
           )}
         </div>
+        <div style={{display:"flex"}}>
+        <div>
+        {payment.card.checked && 
+        <TextField style={{width:"10rem",position:"relative",right:"-250px"}}
+                  id="card-num" 
+                  label="last 4 digits" 
+                  type="number"
+                  variant="outlined" 
+                  value={cardnum}  
+                  onChange={handleCardNum}>
+        </TextField>}
+        </div>
+        <div style={{width:"10rem",position:"relative",right:"-320px",top:"-10px"}}>
+        {payment.wallet.checked && FormUtils.renderCardStatus({
+          id: "Walletstatus",
+          name: "Walletstatus",
+          label: "Choose Wallet type",
+          value: wallet,
+          onChange: event => selectwalletStatus(event),
+          walletList
+        })}
+        </div>
+      </div>
         {errors.customError && (
           <div style={{ color: "#f44336" }}>
             <p>{errors.customError}</p>

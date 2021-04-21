@@ -25,7 +25,7 @@ const ReportGenerator = ({ booking }) => {
   console.log("booking", booking);
   const getFullName = () => `${booking.firstName} ${booking.lastName}`;
   let balance =
-    parseInt(booking.paymentData.totalRoomCharges) - parseInt(booking.advance);
+    (Number(booking.paymentData.balance) - (Number(booking.paymentData.cash)+Number(booking.paymentData.card)+Number(booking.paymentData.wallet))).toFixed(2);
 
   const [posItems, setPosItems] = React.useState([]);
   const [posSum, setPosSum] = React.useState({});
@@ -208,6 +208,21 @@ const ReportGenerator = ({ booking }) => {
               </span>
             </div>
           )}
+          <div>
+          <div className="report-row">
+              <span className="report-key">Billing Status</span>
+              <span className="report-value">
+                {booking.paymentData.billingStatus}
+              </span>
+            </div>
+            <div className="report-row">
+              <span className="report-key">Due</span>
+              <span className="report-value">
+                &#8377; {balance}
+              </span>
+            </div>
+            </div>
+
         </div>
       </div>
     </div>

@@ -59,11 +59,11 @@ const Calendar = props => {
   useEffect(() => {
     if (allRooms.length > 0) {
       const rows = getTableRows(allRooms, dateObj);
-      if(view==="week"){
-        setRows(rows.splice(startEnd,7));
-        return
-      }
-      setRows(rows);
+      // if(view==="week"){
+      //   setRows(rows.splice(startEnd,7));
+      //   return
+      // }
+      // setRows(rows);
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -76,7 +76,7 @@ const Calendar = props => {
     props.setBookings(dateObj);
   }, [currentDate]);
 
-
+  
   const showBookings = (dateObj, bookings, allRooms) => {
     tempRows = getTableRows(allRooms, dateObj);
     bookings &&
@@ -262,6 +262,7 @@ const Calendar = props => {
     return rows;
   };
 
+  const [weekStartDate,setWeekStartDate]=useState(moment())
   const getTableHeaders = () => {
   
     let tableHeaders;
@@ -276,11 +277,21 @@ const Calendar = props => {
   }
   else{
     tableHeaders = new Array(8).fill({});
-    let start = moment().date()
-    let end = start+7;
-    console.log("end",end)
+ 
+    let start = weekStartDate.date();
+    //let temp = 7;
+    
     tableHeaders = tableHeaders.map((value,index) => {
-      if (index !== 0) return { date: start <= end ? start++ : 0};
+      if (index !== 0) {
+        if(1){
+          let val = start++;
+          if(start>30){
+            start=1;
+          }
+          return { date: val }
+        }
+      }
+
       else return { date: "" };
     });
   }
@@ -320,6 +331,13 @@ const Calendar = props => {
     if(view === "day"){
       prevDate = currentDate
       newDate = moment(prevDate).add(value, "d");
+      newDateObj = utils.getDateObj(newDate);
+    }
+    if(view === "week")
+    {
+      prevDate = currentDate
+      newDate = moment(prevDate).add(value,"w");
+      setWeekStartDate(newDate)
       newDateObj = utils.getDateObj(newDate);
     }
 

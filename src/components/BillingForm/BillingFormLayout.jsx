@@ -39,6 +39,8 @@ const BillingFormLayout = props => {
     billingStatus:"Due",
     taxStatus: "withTax",
     totalRoomCharges:0,
+    cardNum:"",
+    walletType:"",
     tax:0
 
   });
@@ -163,7 +165,7 @@ const BillingFormLayout = props => {
     const clonedData = { ...data };
 
     let errors = FormUtils.validate(clonedData, schema);
-    if (clonedData.cash || clonedData.card || clonedData.wallet)
+    if (clonedData.cash || clonedData.card || clonedData.wallet || clonedData.billingStatus)
       delete errors.customError;
     else errors.customError = "Please select any payment mode";
 

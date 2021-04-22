@@ -194,7 +194,7 @@ const ReportGenerator = ({ booking }) => {
           )}
           {booking.paymentData.card && (
             <div className="report-row">
-              <span className="report-key">Payment By Card</span>
+              <span className="report-key">Payment By Card(xxxx-xxxx-xxxx-{booking.paymentData.cardNum})</span>
               <span className="report-value">
                 &#8377; {booking.paymentData.card}
               </span>
@@ -202,7 +202,7 @@ const ReportGenerator = ({ booking }) => {
           )}
           {booking.paymentData.wallet && (
             <div className="report-row">
-              <span className="report-key">Payment By Wallet</span>
+              <span className="report-key">Payment By Wallet({booking.paymentData.walletType})</span>
               <span className="report-value">
                 &#8377; {booking.paymentData.wallet}
               </span>
@@ -216,7 +216,7 @@ const ReportGenerator = ({ booking }) => {
               </span>
             </div>
             <div className="report-row">
-              <span className="report-key">Due</span>
+              <span className="report-key">Due Amount</span>
               <span className="report-value">
                 &#8377; {balance}
               </span>

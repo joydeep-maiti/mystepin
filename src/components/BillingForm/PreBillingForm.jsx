@@ -201,7 +201,8 @@ const PreBillingForm = props => {
                 dayWiseRates && Object.keys(dayWiseRates).map((date,i)=>{
                   let dayTotal = 0;
                   return dayWiseRates[date].map((rate,index)=>{
-                    let roomDayTotal = data.taxStatus==="withTax"?Number(rate.rate)+Number(rate.tax):Number(rate.rate)
+                    const taxAmount = Number(rate.tax).toFixed(2);
+                    let roomDayTotal = data.taxStatus==="withTax"?Number(rate.rate)+Number(taxAmount):Number(rate.rate)
                     dayTotal += roomDayTotal;
 
                     return (
@@ -211,7 +212,7 @@ const PreBillingForm = props => {
                           <td className={classes.pricetableTd}>{rate.roomNumber}</td>
                           <td className={classes.pricetableTd}>{rate.rate}</td>
                           <td className={classes.pricetableTd}>{rate.taxPercent+"%"}</td>
-                          <td className={classes.pricetableTd}>{data.taxStatus==="withTax"?rate.tax:0}</td>
+                          <td className={classes.pricetableTd}>{data.taxStatus==="withTax"?taxAmount:0}</td>
                           <td className={classes.pricetableTd}>{roomDayTotal}</td>
                         </tr>
                         {

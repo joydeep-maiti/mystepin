@@ -59,7 +59,6 @@ const BookingForm = props => {
     handleFlatRateChange,
     updatedata
   } = props;
-  console.log("props",props)
 
   const [loading, setLoading] = React.useState(false);
   const [openPriceModal, setOpenPriceModal] = React.useState(false)

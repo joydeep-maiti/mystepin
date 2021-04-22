@@ -39,6 +39,8 @@ const BillingFormLayout = props => {
     billingStatus:"Due",
     taxStatus: "withTax",
     totalRoomCharges:0,
+    cardNum:"",
+    walletType:"",
     tax:0
 
   });
@@ -163,7 +165,7 @@ const BillingFormLayout = props => {
     const clonedData = { ...data };
 
     let errors = FormUtils.validate(clonedData, schema);
-    if (clonedData.cash || clonedData.card || clonedData.wallet)
+    if (clonedData.cash || clonedData.card || clonedData.wallet || clonedData.billingStatus)
       delete errors.customError;
     else errors.customError = "Please select any payment mode";
 
@@ -240,8 +242,9 @@ const BillingFormLayout = props => {
     let tax = 0
     selectedBooking && selectedBooking.roomWiseRatesForBooking && selectedBooking.roomWiseRatesForBooking.map(el=>{            
       el.rates.map(rate=>{
-        const dayTotal = Number(rate.rate)+Number(rate.tax);
-        tax+=Number(rate.tax)
+        const taxAmount = Number(rate.tax).toFixed(2);
+        const dayTotal = Number(rate.rate)+Number(taxAmount);
+        tax+=Number(taxAmount)
         total+=dayTotal;
       })
     })
@@ -269,6 +272,7 @@ const BillingFormLayout = props => {
       totalCalculatedRoomCharges: total,
       tax: 0,
       taxStatus: "withoutTax",
+
     })
   };
 

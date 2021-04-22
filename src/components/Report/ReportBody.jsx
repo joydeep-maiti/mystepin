@@ -25,7 +25,7 @@ const ReportGenerator = ({ booking }) => {
   console.log("booking", booking);
   const getFullName = () => `${booking.firstName} ${booking.lastName}`;
   let balance =
-    parseInt(booking.paymentData.totalRoomCharges) - parseInt(booking.advance);
+    (Number(booking.paymentData.balance) - (Number(booking.paymentData.cash)+Number(booking.paymentData.card)+Number(booking.paymentData.wallet))).toFixed(2);
 
   const [posItems, setPosItems] = React.useState([]);
   const [posSum, setPosSum] = React.useState({});
@@ -194,7 +194,7 @@ const ReportGenerator = ({ booking }) => {
           )}
           {booking.paymentData.card && (
             <div className="report-row">
-              <span className="report-key">Payment By Card</span>
+              <span className="report-key">Payment By Card(xxxx-xxxx-xxxx-{booking.paymentData.cardNum})</span>
               <span className="report-value">
                 &#8377; {booking.paymentData.card}
               </span>
@@ -202,12 +202,27 @@ const ReportGenerator = ({ booking }) => {
           )}
           {booking.paymentData.wallet && (
             <div className="report-row">
-              <span className="report-key">Payment By Wallet</span>
+              <span className="report-key">Payment By Wallet({booking.paymentData.walletType})</span>
               <span className="report-value">
                 &#8377; {booking.paymentData.wallet}
               </span>
             </div>
           )}
+          <div>
+          <div className="report-row">
+              <span className="report-key">Billing Status</span>
+              <span className="report-value">
+                {booking.paymentData.billingStatus}
+              </span>
+            </div>
+            <div className="report-row">
+              <span className="report-key">Due Amount</span>
+              <span className="report-value">
+                &#8377; {balance}
+              </span>
+            </div>
+            </div>
+
         </div>
       </div>
     </div>

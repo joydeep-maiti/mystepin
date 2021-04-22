@@ -6,6 +6,8 @@ import FormUtils from "../../utils/formUtils";
 import taxService from "../../services/taxService";
 import posService from "../../services/posService";
 import LoaderDialog from "../../common/LoaderDialog/LoaderDialog";
+import TextField from '@material-ui/core/TextField';
+import { YearSelection } from "@material-ui/pickers/views/Year/YearView";
 
 const useStyles = makeStyles(theme => ({
   formGroup: {
@@ -16,7 +18,8 @@ const useStyles = makeStyles(theme => ({
   },
   input: { width: "40%" },
   paymentMethods: {
-    display: "flex"
+    display: "flex",
+    alignItems: "flex-start"
   },
   checkbox: {
     marginTop: 20
@@ -45,7 +48,7 @@ const BillingForm = props => {
     booking,
     payment,
     onChangeData,
-    due
+    due,
   } = props;
 
   console.log("booking",booking)
@@ -61,17 +64,33 @@ const BillingForm = props => {
   // const [taxSlabs, setTaxSlabs] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [billingst,setBillingst] = React.useState("Due");
-  //console.log(billingst);
+  const[cardnum,setCardnum]=React.useState("");
+  const[wallet,setWallet]=React.useState("");  
   const billingStatus=due?[
     {label:"Due" ,value:"Due"},
-    {label:"Bill to company" ,value:"Bill to company"},
+    {label:"Bill to Company" ,value:"Bill to Company"},
   ]:[
     {label:"Paid" ,value:"Paid"},
   ]
+
+  const walletList =[
+      {label:"PhonePe" ,value:"Phonepe"},
+      {label:"GooglePay" ,value:"GooglePay"},
+      {label:"Paytm" ,value:"Paytm"},
+      {label:"Others" ,value:"others"}
+  ]
+  const handleCardNum = (event)=>{
+    setCardnum(event.target.value)
+    onChangeData({cardNum:event.target.value})
+  }
   const selectBillingStatus = (event) => {
     onChangeData({
       billingStatus:event.target.value
     })
+  }
+  const selectwalletStatus = (event) => {
+    setWallet(event.target.value)
+    onChangeData({walletType:event.target.value})
   }
 
   React.useEffect(()=>{
@@ -248,11 +267,12 @@ const BillingForm = props => {
           {renderInputItems("Advance", booking.advance, "advance")}
           {renderInputItems("Balance",  balance, "balance")}
         </div>
-        <div style={{width:"15rem"}}>
+        <div style={{width:"20rem",display:"flex"}}>
+        <label style={{width:"16rem"}}>Billing Status</label>
+        <span>:</span>
         {FormUtils.renderBillingStatus({
-          id: "billingstatus",
+          id: "billingstatus:",
           name: "billingstatus",
-          label: "Billingstatus",
           value: data.billingStatus,
           onChange: event => selectBillingStatus(event),
           billingStatus
@@ -270,27 +290,60 @@ const BillingForm = props => {
             payment.cash.disable,
             payment.cash.checked
           )}
-          {renderPaymentMethods(
-            "Card Payment",
-            "card",
-            data.card,
-            onInputChange,
-            onCheckboxChange,
-            errors.card,
-            payment.card.disable,
-            payment.card.checked
-          )}
-          {renderPaymentMethods(
-            "Wallet/UPI Payment",
-            "wallet",
-            data.wallet,
-            onInputChange,
-            onCheckboxChange,
-            errors.wallet,
-            payment.wallet.disable,
-            payment.wallet.checked
-          )}
+          <div style={{position:"relative", textAlign:"-webkit-center"}}>
+            {renderPaymentMethods(
+              "Card Payment",
+              "card",
+              data.card,
+              onInputChange,
+              onCheckboxChange,
+              errors.card,
+              payment.card.disable,
+              payment.card.checked
+            )}
+            <div  style={{width:"10rem"}}>
+                {payment.card.checked && 
+                <TextField
+                          required
+                          id="card-num" 
+                          label="last 4 digits" 
+                          type="number"
+                          variant="outlined" 
+                          inputProps={{ maxLength: 4 }}
+                          value={cardnum}  
+                          onChange={handleCardNum}>
+                </TextField>
+                }
+            </div>
+          </div>
+          <div style={{position:"relative", textAlign:"-webkit-center",marginBottom:"2rem"}}>
+            {renderPaymentMethods(
+              "Wallet/UPI Payment",
+              "wallet",
+              data.wallet,
+              onInputChange,
+              onCheckboxChange,
+              errors.wallet,
+              payment.wallet.disable,
+              payment.wallet.checked
+            )}
+            <div style={{width:"10rem"}}>
+              {payment.wallet.checked && FormUtils.renderCardStatus({
+                id: "Walletstatus",
+                name: "Walletstatus",
+                label: "Choose type",
+                value: wallet,
+                required:true,
+                onChange: event => selectwalletStatus(event),
+                walletList
+              })}
+              </div>
+          </div>
         </div>
+        <div style={{display:"flex"}}>
+        
+       
+      </div>
         {errors.customError && (
           <div style={{ color: "#f44336" }}>
             <p>{errors.customError}</p>

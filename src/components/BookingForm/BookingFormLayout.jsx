@@ -103,6 +103,7 @@ const BookingFormLayout = ({
     setStartDate(booking.checkIn);
     setEndDate(booking.checkOut);
   };
+  
 
   const fetchRoomTypes = async () => {
     setLoading(true);

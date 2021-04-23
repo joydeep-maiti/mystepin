@@ -85,7 +85,7 @@ const CalendarBody = ({ tableHeaders, tableRows, loading, dateObj, view , presen
       <Paper className={`${classes.root} hideSrollbar`}>
         <Table className={classes.root} stickyHeader>
           <TableHead>
-            {view!=="day" && <TableRow>{renderTableHead(tableHeaders, classes)}</TableRow>}
+            {view!=="day"  && <TableRow>{renderTableHead(tableHeaders, classes)}</TableRow>}
           </TableHead>
           <TableBody className={classes.tableBody}>
             {renderTableRows(tableRows, classes, dateObj,view,presentDate)}
@@ -114,7 +114,7 @@ const renderTableRows = (tableRows, classes, dateObj, view, presentDate) => {
   return (
     <React.Fragment>
       {tableRows.map((row, index) => (
-        <TableRow key={`row_${index}`} style={view==="day"?{height:"4rem"}:{height:"unset", lineHeight:"1rem"}}>
+        <TableRow key={`row_${index}`} style={view==="day" ?{height:"4rem"}:{height:"unset", lineHeight:"1rem"}}>
           {renderTableColumns(row, classes, dateObj, view, presentDate)}
         </TableRow>
       ))}
@@ -164,7 +164,7 @@ const getStandardCell = (...argument) => {
       >
         <div className={arg.classes.div}>
           <Popover
-            content={arg.view=="day"?arg.booking && `${arg.booking.firstName} ${arg.booking.lastName}`:arg.value}
+            content={arg.view=="day"  ?arg.booking && `${arg.booking.firstName} ${arg.booking.lastName}`:arg.value}
             popoverContent={
               arg.booking && `${arg.booking.firstName} ${arg.booking.lastName}`
             }
@@ -178,7 +178,7 @@ const getStandardCell = (...argument) => {
             }
           />
         </div>}
-        {arg.view=="day" && <div className={arg.classes.roomTypePop}>
+        {arg.view=="day"  && <div className={arg.classes.roomTypePop}>
           <Popover
             content={arg.room.roomType}
             popoverContent={
@@ -201,14 +201,14 @@ const getArgObj = (column, index, classes, dateObj, view, presentDate) => {
 
   const currentDateObj = utils.getDateObj(utils.getDate());
 
-  const { month, year } = dateObj;
+  const { month, year  } = dateObj;
   const { month: currentMonth, year: currentYear } = currentDateObj;
   let disable = false;
 
   if (month === currentMonth && year === currentYear) {
     disable = index < currentDate && view!=="day" && view!=="week" ? true : false;
     handleRedirect =
-      index >= currentDate || booking || view==="day" && view=== "week" ? handleRedirect : () => {};
+      index >= currentDate || booking || view==="day" || view=== "week" ? handleRedirect : () => {};
   }
 
   const date = view==="day" ? presentDate : new Date(`${dateObj.month + 1}/${index}/${dateObj.year}`);

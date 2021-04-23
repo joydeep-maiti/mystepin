@@ -109,21 +109,23 @@ const Calendar = props => {
           if(res){
             const { roomNumber } = res
             setBookingObjByRoom(roomNumber, checkIn, checkOut, booking, color);
-          }
+          }         
         });
       });
-    if(view === "week"){
-      const _rows = tempRows.map(el=>{
-        return [
-          el[0],
-          ...el.splice(startEnd,7)
-        ]
-        
-      })
-      setRows(_rows);
-      return 
-    }
-    setRows(tempRows);
+      console.log("tempRows--",tempRows)
+      if(view === "week"){
+        const _rows = tempRows.map(el=>{
+          return [
+            el[0],
+            ...el.splice(startEnd,7)
+          ]
+          
+        })
+        console.log("tempRows--",_rows)
+        setRows(_rows);
+        return 
+      }
+      setRows(tempRows);
    };
 
   const setBookingObjByRoom = (
@@ -176,7 +178,7 @@ const Calendar = props => {
         }
       });
     }
-    else{
+    else {
       dates.forEach(date => {
         const dateNumber = moment(date).date();
         rowsArray[rowIndex] = [...rowsArray[rowIndex]];
@@ -200,6 +202,7 @@ const Calendar = props => {
         .format("MMMM")
         .toUpperCase()} ${moment(date).year()}`;
         
+        //`${moment(date).format("MMMM").toUpperCase()} ${moment(date).format('Do')} to ${moment(date).format("MMMM").toUpperCase()} ${moment(date).add(6,'days').format('Do')} - Week View`
     }
     else {
       return `${moment(date)

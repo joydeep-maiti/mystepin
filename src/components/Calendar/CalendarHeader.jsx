@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const CalendarHeader = ({ title, onChange, month, currentDate, view }) => {
+const CalendarHeader = ({ title, onChange, month, currentDate, view,week }) => {
   const classes = useStyles();
 
   const [disable, setDisable] = React.useState(true)
@@ -33,8 +33,12 @@ const CalendarHeader = ({ title, onChange, month, currentDate, view }) => {
       setDisable(moment(currentDate).isSame(new Date(),'d'))
       return
     }
+    if(view === 'week'){
+      setDisable(moment(moment().week()).isSame(week,'w'))
+      return 
+    }
     setDisable(moment().month() === month)
-  },[ currentDate, month, view])
+  },[ currentDate, month, view,week])
 
   return (
     <div className={classes.root}>

@@ -279,13 +279,13 @@ const Calendar = props => {
     tableHeaders = new Array(8).fill({});
  
     let start = weekStartDate.date();
-    //let temp = 7;
+    let maxDays = weekStartDate.daysInMonth();
     
     tableHeaders = tableHeaders.map((value,index) => {
       if (index !== 0) {
         if(1){
           let val = start++;
-          if(start>30){
+          if(start>maxDays){
             start=1;
           }
           return { date: val }
@@ -354,6 +354,7 @@ const Calendar = props => {
         title={title}
         onChange={handleChange}
         month={dateObj.month}
+        week={weekStartDate}
         currentDate={currentDate}
         view={view}
       />

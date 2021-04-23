@@ -62,7 +62,7 @@ const Calendar = props => {
 
   const showBookings = (dateObj, bookings, allRooms) => {
     tempRows = getTableRows(allRooms, dateObj);
-    console.log(bookings);
+    console.log("booking",bookings);
     bookings &&
       bookings.forEach(booking => {
         let { checkIn, checkOut, months , status} = booking;
@@ -95,6 +95,14 @@ const Calendar = props => {
             setBookingObjByRoom(roomNumber, checkIn, checkOut, booking, color);
           }
         });
+      });
+      console.log("allrooms",allRooms);
+      allRooms.forEach(rooms=>{
+        let{inactive}=rooms;
+        let color="";
+        if(inactive === true){
+          color='#050F16';
+        }
       });
 
     setRows(tempRows);

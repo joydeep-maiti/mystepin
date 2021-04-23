@@ -84,17 +84,22 @@ const Occupancy = () => {
    }
    //**************************************Monthly Occupancy Report*************************************
   const fetchAndGenerateMonthlyOccupanyReport = async()=>{
-    let options = await reportService.getMonthlyOccupancyReport(occupancyCategory,startingDate,currentDate)
+
+    let startD = moment(startingDate).format('yyyy-M-D')
+    let currentD = moment(currentDate).format('yyyy-M-D')
+    console.log("Start",startD)
+    console.log("End",currentD)
+
+    let options = await reportService.getMonthlyOccupancyReport(occupancyCategory,startD,currentD)
 
 
-    console.log("Start",startingDate)
-    console.log("End",currentDate)
     console.log("Catergory",occupancyCategory)
 
     console.log("monthly report ",options)
     let data = options.map(option=>{
+      let date = moment(option.date).format('D-MMMM-YYYY');
       return([
-        option.date,
+        date,
         option.TotalRooms,
         option.OccupiedRooms,
         option.Adults,
@@ -118,7 +123,7 @@ const Occupancy = () => {
     const day = moment().format('dddd')
     const doc = new jsPDF(orientation, unit, size);
     doc.setFontSize(20);
-    let title = "MONTHLY OCCUPANCY CHART";
+    let title = "MONTHLY OCCUPANCY REPORT";
     let headers = [["DATE","TOTAL ROOMS","OCCUPIED ROOMS","ADULT","CHILD","TOTAL PAX","OCCUPANCY %"]];
     let content = {
       startY: 120,

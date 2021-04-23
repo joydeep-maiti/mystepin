@@ -31,7 +31,9 @@ const Occupancy = () => {
   const [occupancyCategory,setOccupancyCategory] = useState("");
   const [shouldDisable, setShouldDisable] = useState(false);
   const [occupancyTypes, setBillingTypes] = useState([]);
-  
+  const [generatedTime,setGeneratedTime] = useState(
+    moment().format('D/MMMM/YYYY')+'-'+moment().format('h:mm A')
+  )
   //getting options
   useEffect(()=>{
     fetchBillingTypes()
@@ -45,7 +47,110 @@ const Occupancy = () => {
     })
     setBillingTypes(types)
   } 
-  const fetchAndGenerateReport = async()=>{
+    //Handle starting date Change
+  const handleStartingDateChange =(date)=>{
+    setStartingDate(utils.getDate(date));  
+        };
+  //Handle current date Change
+  const handleCurrentDateChange = (date) => {  
+    setCurrentDate(utils.getDate(date));
+    };
+  //Get Plan Options
+  const getPlanOptions = () => {
+      return occupancyTypes.map(type => {
+      return { label: type, value: type};
+    });
+  };
+  //Handle Select Change
+  const handleSelectChange=(event)=>{
+    setOccupancyCategory(event.target.value);
+    console.log("event",occupancyCategory);
+  }
+
+    const classes = useStyles();
+
+   const generateReport =()=>{
+
+    if(occupancyCategory === 'Daily Occupancy chart'){
+      fetchAndGenerateDailyOccupanyReport();
+    }
+   else if(occupancyCategory === 'Monthly Occupancy'){
+    fetchAndGenerateMonthlyOccupanyReport();
+    }
+    else{
+      alert("Please Select a category")
+    }
+
+   }
+   //**************************************Monthly Occupancy Report*************************************
+  const fetchAndGenerateMonthlyOccupanyReport = async()=>{
+
+    let startD = moment(startingDate).format('yyyy-M-D')
+    let currentD = moment(currentDate).format('yyyy-M-D')
+    console.log("Start",startD)
+    console.log("End",currentD)
+
+    let options = await reportService.getMonthlyOccupancyReport(occupancyCategory,startD,currentD)
+
+
+    console.log("Catergory",occupancyCategory)
+
+    console.log("monthly report ",options)
+    let data = options.map(option=>{
+      let date = moment(option.date).format('D-MMMM-YYYY');
+      return([
+        date,
+        option.TotalRooms,
+        option.OccupiedRooms,
+        option.Adults,
+        option.Children,
+        option.Pax,
+        option.OccupancyPercent,
+      ])
+    })
+    exportMonthlyOccupantToPDF(data)
+  } 
+  
+
+//Export Monthly occupancy pdf
+    const exportMonthlyOccupantToPDF = (reportData) =>{
+    const unit = "pt";
+    const size = "A4"; // Use A1, A2, A3 or A4
+    const orientation = "landscape"; // portrait or landscape
+    const marginLeft = 20;
+    const marginLeft2 = 350;
+    const date = moment().format('D.MMM.YYYY')
+    const day = moment().format('dddd')
+    const doc = new jsPDF(orientation, unit, size);
+    doc.setFontSize(20);
+    let title = "MONTHLY OCCUPANCY REPORT";
+    let headers = [["DATE","TOTAL ROOMS","OCCUPIED ROOMS","ADULT","CHILD","TOTAL PAX","OCCUPANCY %"]];
+    let content = {
+      startY: 120,
+      head: headers,
+      body: reportData,
+      theme: 'grid',
+      styles: {
+        cellWidth:'wrap',
+        halign: 'center',
+      },
+      margin: marginLeft,
+      pageBreak:'auto'
+    };
+    doc.text(title, 300, 80);
+    doc.setFontSize(10);
+    doc.text("Report Generated at "+generatedTime,600,40);
+    doc.setFontSize(12);
+    doc.text("MONTH : "+ "APRIL 21",100,100)
+    doc.setFontSize(12);
+    doc.autoTable(content);
+    doc.setTextColor("#fb3640");
+    doc.save("Monthly Occupancy Report.pdf")
+  }
+  
+
+  //************************Daily Occupancy Report****************************
+  const fetchAndGenerateDailyOccupanyReport = async()=>{
     let options = await reportService.getDailyOccupancyReport();
     let adults = 0
     let children = 0
@@ -86,33 +191,13 @@ const Occupancy = () => {
       Object.keys(plans[0]).map(el=>{
         data2.push([el+":",plans[0][el]+"+"+plans[1][el]])
       })
-      exportToPDF(data,data2,Number(occupied)+Number(continuing),occupied)
+      exportDailyOccupantToPDF(data,data2,Number(occupied)+Number(continuing),occupied)
     }
   } 
   
-    //Handle starting date Change
-  const handleStartingDateChange =(date)=>{
-    setStartingDate(utils.getDate(date));  
-        };
-  //Handle current date Change
-  const handleCurrentDateChange = (date) => {  
-    setCurrentDate(utils.getDate(date));
-    };
-  //Get Plan Options
-  const getPlanOptions = () => {
-      return occupancyTypes.map(type => {
-      return { label: type, value: type};
-    });
-  };
-  //Handle Select Change
-  const handleSelectChange=(event)=>{
-    setOccupancyCategory(event.target.value);
-    console.log("event",occupancyCategory);
-  }
 
-  const classes = useStyles();
-
-  const exportToPDF = (reportData,data2,occupied,continuing) =>{
+//Export Daily occupancy pdf
+    const exportDailyOccupantToPDF = (reportData,data2,occupied,continuing) =>{
     const unit = "pt";
     const size = "A4"; // Use A1, A2, A3 or A4
     const orientation = "landscape"; // portrait or landscape
@@ -137,6 +222,8 @@ const Occupancy = () => {
       pageBreak:'auto'
     };
     doc.text(title, 300, 80);
+    doc.setFontSize(10);
+    doc.text("Report Generated at "+generatedTime,600,40);
     doc.setFontSize(12);
     doc.text("DATE : "+ date,30,60)
     doc.text("DAY : "+ day,30,80)
@@ -161,8 +248,9 @@ const Occupancy = () => {
       pageBreak:'auto'
     });
     doc.save("Daily Occupancy Report.pdf")
-
   }
+
+
 
   return (
     <div>
@@ -219,7 +307,7 @@ const Occupancy = () => {
           </MuiPickersUtilsProvider>
           </div>  
         <div className="buttoncontainer"> 
-      <Button  type="submit" className="button" onClick={fetchAndGenerateReport}>
+      <Button  type="submit" className="button" onClick={generateReport}>
         Generate
       </Button>
         </div>

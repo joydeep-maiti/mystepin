@@ -40,7 +40,7 @@ const BillingDetails = () => {
   const [shouldDisable, setShouldDisable] = useState(false);
   const [billingTypes, setBillingTypes] = useState([]);
   const [generatedTime,setGeneratedTime] = useState(
-    moment().format('h:mm A')+'-'+moment().format('D/MMMM/YYYY')
+    moment().format('D/MMMM/YYYY')+'-'+moment().format('h:mm A')
   )
   //getting options
   useEffect(()=>{

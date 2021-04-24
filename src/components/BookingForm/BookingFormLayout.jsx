@@ -5,6 +5,7 @@ import Card from "../../common/Card/Card";
 import BookingForm from "../BookingForm/BookingForm";
 import BookingFormHeader from "./BookingFormHeader";
 import LoaderDialog from "../../common/LoaderDialog/LoaderDialog";
+import Joi from "joi-browser";
 
 import moment from 'moment'
 import FormUtils from "../../utils/formUtils";
@@ -83,6 +84,7 @@ const BookingFormLayout = ({
   const [shouldDisable, setShouldDisable] = useState(false);
   const [loading, setLoading] = useState(false);
   const [enableFileUpload, setEnableFileUpload] = useState(false);
+  const [isCheckingIn, setIsCheckingIn] = useState(false);
 
   useEffect(() => {
     const { pathname } = location;
@@ -93,6 +95,34 @@ const BookingFormLayout = ({
     fetchRoomTypes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if(data.bookedBy === "Agent"){
+      schema.agent =  Joi.string().required().label("Agent")
+      schema.referencenumber =  Joi.number().required().label("Reference number")
+      schema.memberNumber = Joi.any()
+      let error = {...errors}
+      delete error.memberNumber
+      setErrors(error)
+    }else if (data.bookedBy === "Member"){
+      schema.memberNumber = Joi.number().required().label("Membership Number")
+      schema.agent = Joi.any()
+      schema.referencenumber = Joi.any()
+      let error = {...errors}
+      delete error.agent
+      delete error.referencenumber
+      setErrors(error)
+    }else {
+      schema.agent = Joi.any()
+      schema.referencenumber = Joi.any()
+      schema.memberNumber = Joi.any()
+      let error = {...errors}
+      delete error.agent
+      delete error.referencenumber
+      delete error.memberNumber
+      setErrors(error)
+    }
+  }, [data.bookedBy]);
 
   const setViewBookingData = async () => {
     const booking = { ...selectedBooking };
@@ -209,7 +239,7 @@ const BookingFormLayout = ({
       input,
       data,
       errors,
-      data._id?checkinSchema:schema
+      isCheckingIn?checkinSchema:schema
     );
     setData(updatedState.data);
     setErrors(updatedState.errors);
@@ -337,7 +367,10 @@ const BookingFormLayout = ({
   const handleSelectChange1=(event,index)=>{
     let newErrors = { ...errors };
     console.log("event",event.currentTarget);
-    if(event.target.name === "proofs"){
+    if(event.target.name === "planType"){
+      console.log(event.target.value);
+      setData({...data, planType:event.target.value})
+    }else {
 
       const updatedState = FormUtils.handleInputChange(
         {
@@ -346,13 +379,10 @@ const BookingFormLayout = ({
         },
         data,
         errors,
-        data._id?checkinSchema:schema
+        isCheckingIn?checkinSchema:schema
       );
       setData(updatedState.data);
       newErrors= updatedState.errors
-    }else if(event.target.name === "planType"){
-      console.log(event.target.value);
-      setData({...data, planType:event.target.value})
     }
     setErrors(newErrors);
    }
@@ -416,6 +446,7 @@ const BookingFormLayout = ({
   };
 
   const handleCheckIn = () => {
+    setIsCheckingIn(true)
     const errors = checkForErrors(checkinSchema);
     if (errors) {
       handleEdit()

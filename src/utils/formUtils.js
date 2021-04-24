@@ -47,7 +47,7 @@ const validate = (data, schema) => {
 };
 
 const validateProperty = ({ name, value }, formSchema) => {
-  debugger
+  // debugger
   const obj = { [name]: value };
   const schema = { [name]: formSchema[name] };
   if(schema.name){

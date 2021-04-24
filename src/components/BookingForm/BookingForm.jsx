@@ -319,7 +319,7 @@ const BookingForm = props => {
   console.log(memberShipNumber)
   //BookedByType
   const selectBookedByOption = (event) => {
-    setBookedBy(event.target.value);
+    // setBookedBy(event.target.value);
     updatedata({
       bookedBy: event.target.value
     })
@@ -450,22 +450,24 @@ const BookingForm = props => {
       </div>
       <div className="form-group">
       {FormUtils.renderBookedBy({
-          id: "bookedby",
-          name: "bookedby",
+          id: "bookedBy",
+          name: "bookedBy",
           label: "Booked By",
           value: data.bookedBy,
-          onChange: event => selectBookedByOption(event),
+          onChange: event => selectfun1(event),
           bookedByOptions,
-          disabled: shouldDisable
+          disabled: shouldDisable,
+          error: errors["bookedBy"]
         })}
         {isAgent && FormUtils.renderAgent({
           id: "agent",
           name: "agent",
           label: "Select Agent",
           value: data.agent,
-          onChange: event => selectAgentOption(event),
+          onChange: event => selectfun1(event),
           agentOption,
-          disabled: shouldDisable
+          disabled: shouldDisable,
+          error: errors["agent"]
         })}
         {isAgent && FormUtils.renderInput(
           getInputArgObj("referencenumber", "Reference number", "number", shouldDisable)
@@ -475,8 +477,10 @@ const BookingForm = props => {
             id: "memberNumber",
             label: "Membership Number",
             type: "number",
-            value: memberShipNumber,
-            onChange: (e)=>setMembershipNumber(e.target.value)
+            value: data.memberNumber,
+            onChange: (e)=>selectfun1(e),
+            error: errors["memberNumber"],
+            disabled: shouldDisable,
             }
           )
         }

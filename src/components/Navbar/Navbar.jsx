@@ -57,9 +57,8 @@ const HeaderNavbar = ({
               StepInn
             </div>
           </Typography>
-          {
-           path === "/reports" && (
-              <React.Fragment>
+          
+              
                 <Button color="inherit" onClick={onRefresh}
                  aria-owns={state.open ? 'simple-menu' : null}
                  aria-haspopup="true"
@@ -85,9 +84,9 @@ const HeaderNavbar = ({
           <MenuItem onClick={handleRequestClose}>Approximate Bill</MenuItem>
           <MenuItem onClick={handleRequestClose}>Petty Cash</MenuItem>
         </Menu>
-              </React.Fragment>
-            )
-          }
+             
+            
+          
           <Button
             className="button-bg"
             color="inherit"

@@ -25,7 +25,7 @@ const { success, error } = constants.snackbarVariants;
 //   { label: "Dormitory", value: "Dormitory" }
 // ];
 
-const proofType=[
+const proofTypes=[
   {label:"Aadhar" ,value:"Aadhar"},
   {label:"Passport" ,value:"Passport"},
   {label:"PAN" ,value:"PAN"},
@@ -61,7 +61,7 @@ const BookingFormLayout = ({
     roomCharges: "",
     flatRoomRate:false,
     Idproof:"",
-    proofs:[proofType],
+    proofs: "",
     planType:"AP",
     advance: 0,
     bookingDate: null,
@@ -189,8 +189,8 @@ const BookingFormLayout = ({
     else openSnackBar("Error Occurred", error);
   };
 
-  const checkForErrors = () => {
-    let errors = FormUtils.validate(data, data._id?checkinSchema:schema);
+  const checkForErrors = (_schema) => {
+    let errors = FormUtils.validate(data, _schema);
     console.log("errors",errors)
     errors = errors || {};
     setErrors(errors);
@@ -336,27 +336,30 @@ const BookingFormLayout = ({
 
   const handleSelectChange1=(event,index)=>{
     let newErrors = { ...errors };
-    console.log("event",event.target.value);
-    if(event.target.name === "proofType"){
-      if (newErrors.proofs)
-        newErrors.proofs = newErrors.proofs.filter(error => error.index !== index);
-      console.log(event.target.value);
-      const proofs=event.target.value;
-      console.log(proofs)
-      setData({ ...data, proofs });
-      
+    console.log("event",event.currentTarget);
+    if(event.target.name === "proofs"){
+
+      const updatedState = FormUtils.handleInputChange(
+        {
+          name:event.target.name,
+          value:event.target.value
+        },
+        data,
+        errors,
+        data._id?checkinSchema:schema
+      );
+      setData(updatedState.data);
+      newErrors= updatedState.errors
     }else if(event.target.name === "planType"){
       console.log(event.target.value);
       setData({...data, planType:event.target.value})
     }
     setErrors(newErrors);
-    // console.log(newErrors);
-    // console.log(proofs);
    }
 
   const handleFormSubmit = event => {
     event.preventDefault();
-    const errors = checkForErrors();
+    const errors = checkForErrors(schema);
     if (errors) return;
 
     setLoading(true);
@@ -413,6 +416,11 @@ const BookingFormLayout = ({
   };
 
   const handleCheckIn = () => {
+    const errors = checkForErrors(checkinSchema);
+    if (errors) {
+      handleEdit()
+      return;
+    }
     if(!data.idProofImage){
       alert("Please Upload Id Proof first in order to check in")
       setEnableFileUpload(true)
@@ -477,7 +485,7 @@ const BookingFormLayout = ({
               availableRooms={availableRooms}
               errors={errors}
               options={roomTypes}
-              options1={proofType}
+              options1={proofTypes}
               onSetPrice={(price,roomWiseRatesForBooking) => setData({...data,roomCharges:price,roomWiseRatesForBooking})}
               onFileSelect={onChangeHandler}
               shouldDisable={shouldDisable}

@@ -89,8 +89,9 @@ export default {
       .required(),
     Idproof: Joi.string()
     .label("ID_Proof"),
-    proofType: Joi.string()
+    proofs: Joi.string()
     .label("Proof Type")
+
   },
   billingFormSchema: {
     cash: Joi.number(),

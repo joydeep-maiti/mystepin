@@ -483,14 +483,14 @@ const BookingForm = props => {
       </div>
       <div className="form-group">
         {FormUtils.renderproof({
-          id: "proofType",
-          name: "proofType",
+          id: "proofs",
+          name: "proofs",
           label: "Proof Type",
           value: data.proofs,
           onChange: event => selectfun1(event),
           options1,
           disabled: shouldDisable,
-          error: errors["proofType"]
+          error: errors["proofs"]
         })}
 
         {FormUtils.renderInput(

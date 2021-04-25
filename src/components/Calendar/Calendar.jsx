@@ -22,6 +22,7 @@ const Calendar = props => {
   const [title, setTitle] = useState("");
   const [rows, setRows] = useState([]);
   const [startEnd, setStartEnd] = useState(0);
+  const [nextMonth,setNextMonth] = useState();
   let tempRows = [];
    useEffect(() => {
     //console.log("props",props)
@@ -101,7 +102,6 @@ const Calendar = props => {
           checkOut = updatedValue.checkOut;        
          }        
         booking.rooms.forEach(bookedRoom => {
-          
           const res = allRooms.find(room => {          
             
             return room._id === bookedRoom._id;
@@ -112,20 +112,22 @@ const Calendar = props => {
           }         
         });
       });
-      console.log("tempRows--",tempRows)
-      if(view === "week"){
-        const _rows = tempRows.map(el=>{
+setRows(tempRows);
+
+
+      if(view === 'week'){
+        const weekrows = tempRows.map(row=>{
+          console.log("row",row)
           return [
-            el[0],
-            ...el.splice(startEnd,7)
+            row[0],
+            ...row.splice(1,7)
           ]
-          
         })
-        console.log("tempRows--",_rows)
-        setRows(_rows);
+        console.log("weekrow",weekrows)
+        setRows(weekrows)
         return 
       }
-      setRows(tempRows);
+      
    };
 
   const setBookingObjByRoom = (
@@ -149,8 +151,6 @@ const Calendar = props => {
       })
 
     }
-   
-    
     else  {
       rowIndex = tempRows.findIndex(
         row => row[0].room.roomNumber === roomNumber

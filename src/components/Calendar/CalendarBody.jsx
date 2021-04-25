@@ -85,7 +85,7 @@ const CalendarBody = ({ tableHeaders, tableRows, loading, dateObj, view , presen
       <Paper className={`${classes.root} hideSrollbar`}>
         <Table className={classes.root} stickyHeader>
           <TableHead>
-            {view!=="day"  && <TableRow>{renderTableHead(tableHeaders, classes)}</TableRow>}
+            {view!=="day" && <TableRow>{renderTableHead(tableHeaders, classes)}</TableRow>}
           </TableHead>
           <TableBody className={classes.tableBody}>
             {renderTableRows(tableRows, classes, dateObj,view,presentDate)}
@@ -211,7 +211,7 @@ const getArgObj = (column, index, classes, dateObj, view, presentDate) => {
       index >= currentDate || booking || view==="day" || view=== "week" ? handleRedirect : () => {};
   }
 
-  const date = view==="day" ? presentDate : new Date(`${dateObj.month + 1}/${index}/${dateObj.year}`);
+  const date = view==="day"  ? presentDate : new Date(`${dateObj.month + 1}/${index}/${dateObj.year}`);
 
   if (show) return { key, value: room.roomNumber, classes };
   else

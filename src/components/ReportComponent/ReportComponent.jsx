@@ -93,7 +93,6 @@ const useStyles = makeStyles(theme => ({
   
 }));
 
-
 const ReportComponent = () => {
   const classes = useStyles();
   const [taxSlabs, setTaxSlabs] = useState([]);
@@ -124,6 +123,8 @@ const ReportComponent = () => {
     
     
   }
+  
+
 
   return (
     <div className={classes.root} style={{backgroundColor:'#D6EAF8',height:"100vh"}}>
@@ -137,6 +138,7 @@ const ReportComponent = () => {
           scrollButtons="auto"
           aria-label="scrollable auto tabs example"
         >
+       
           <Tab label="Billing Details"  {...a11yProps(0)}  id={0} onMouseOver={handlemouseover}/>
           <Tab label="Booking" {...a11yProps(1)} id={1} onMouseOver={handlemouseover}/>
           <Tab label="POS Sales" {...a11yProps(2)} id={2} onMouseOver={handlemouseover}/>

@@ -22,6 +22,7 @@ const Calendar = props => {
   const [title, setTitle] = useState("");
   const [rows, setRows] = useState([]);
   const [startEnd, setStartEnd] = useState(0);
+  const [nextMonth,setNextMonth] = useState();
   let tempRows = [];
    useEffect(() => {
     //console.log("props",props)
@@ -44,10 +45,10 @@ const Calendar = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [view]);
 
-  // useEffect(() => {
-  //   setRows(rows.splice(startEnd,7))
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [startEnd]);
+  useEffect(() => {
+    setRows(rows.splice(startEnd,7))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [startEnd]);
 
 
   useEffect(() => {
@@ -56,18 +57,18 @@ const Calendar = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allBookings,view]);
 
-  // useEffect(() => {
-  //   if (allRooms.length > 0) {
-  //     const rows = getTableRows(allRooms, dateObj);
-  //     // if(view==="week"){
-  //     //   setRows(rows.splice(startEnd,7));
-  //     //   return
-  //     // }
-  //     // setRows(rows);
-  //   }
+  useEffect(() => {
+    if (allRooms.length > 0) {
+      const rows = getTableRows(allRooms, dateObj);
+      // if(view==="week"){
+      //   setRows(rows.splice(startEnd,7));
+      //   return
+      // }
+      // setRows(rows);
+    }
 
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [allRooms, dateObj,view]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allRooms, dateObj,view]);
 
   useEffect(() => {
     const title = getTitle(currentDate);
@@ -81,7 +82,7 @@ const Calendar = props => {
     tempRows = getTableRows(allRooms, dateObj);
     bookings &&
       bookings.forEach(booking => {
-        let { checkIn, checkOut, months , status,} = booking;
+        let { checkIn, checkOut, months , status} = booking;
 
         
         //Changing Color according to Booking && Checkedin
@@ -95,37 +96,38 @@ const Calendar = props => {
            color='white';
          }
           //const color = utils.generateRandomColor();
-          if (months.length > 1) {
-            const updatedValue = getUpdatedValues(booking, dateObj);
-            checkIn = updatedValue.checkIn;
-            checkOut = updatedValue.checkOut;        
-          }        
-          booking.rooms.forEach(bookedRoom => {
+        if (months.length > 1) {
+          const updatedValue = getUpdatedValues(booking, dateObj);
+          checkIn = updatedValue.checkIn;
+          checkOut = updatedValue.checkOut;        
+         }        
+        booking.rooms.forEach(bookedRoom => {
+          const res = allRooms.find(room => {          
             
-            const res = allRooms.find(room => {          
-              
-              return room._id === bookedRoom._id;
-            });
-            if(res){
-              const { roomNumber } = res
-              setBookingObjByRoom(roomNumber, checkIn, checkOut, booking, color);
-            }         
+            return room._id === bookedRoom._id;
           });
+          if(res){
+            const { roomNumber } = res
+            setBookingObjByRoom(roomNumber, checkIn, checkOut, booking, color);
+          }         
         });
-        console.log("tempRows--",tempRows)
-        if(view === "week"){
-          const _rows = tempRows.map(el=>{
-            return [
-              el[0],
-              ...el.splice(startEnd,7)
-            ]
-            
-          })
-          console.log("tempRows--",_rows)
-          setRows(_rows);
-          return 
-        }
-        setRows(tempRows);
+      });
+setRows(tempRows);
+
+
+      if(view === 'week'){
+        const weekrows = tempRows.map(row=>{
+          console.log("row",row)
+          return [
+            row[0],
+            ...row.splice(1,7)
+          ]
+        })
+        console.log("weekrow",weekrows)
+        setRows(weekrows)
+        return 
+      }
+      
    };
 
   const setBookingObjByRoom = (
@@ -149,8 +151,6 @@ const Calendar = props => {
       })
 
     }
-   
-    
     else  {
       rowIndex = tempRows.findIndex(
         row => row[0].room.roomNumber === roomNumber
@@ -265,7 +265,7 @@ const Calendar = props => {
     return rows;
   };
 
-  const [weekStartDate,setWeekStartDate] = useState(moment());
+  const [weekStartDate,setWeekStartDate]=useState(moment())
   const getTableHeaders = () => {
   
     let tableHeaders;

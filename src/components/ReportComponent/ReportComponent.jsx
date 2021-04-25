@@ -12,19 +12,10 @@ import Agent from '../Agent/Agent';
 import Occupancy from '../Occupancy/Occupancy';
 import CollectionReport from '../CollectionReport/CollectionReport';
 import GuestDetails from '../GuestDetails/GuestDetails';
-import Popover from '@material-ui/core/Popover';
 import reportOptions from '../../services/reportOptions'
-import Tooltip from '@material-ui/core/Tooltip';
-import { List,
-  Toolbar,
-  Paper,
-  Link,
-  Popper,
-  Menu,
-  MenuList,
-  MenuItem,
-  InputBase,
-  withStyles } from "@material-ui/core";
+import Popover from "@material-ui/core/Popover";
+import MenuList from "@material-ui/core/MenuList";
+import MenuItem from "@material-ui/core/MenuItem";
 import billingDetails from "../../services/billingDetails";
 
 
@@ -84,6 +75,11 @@ const useStyles = makeStyles(theme => ({
   paper: {
     padding: theme.spacing(1),
   },
+  root: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.paper,
+    textTransform: "none"
+  }
   // tooltip .title : {
   //   width: '120px',
   //   top: '100%',
@@ -100,55 +96,124 @@ const ReportComponent = () => {
   const [tabvalue, setValue] = React.useState(0);
   const [billingTypes, setBillingTypes] = useState([])
   const [allTypes,setAllTypes] = useState([])
+  // const [state,setState] = useState([])
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [popno, setpopno] = useState(-1)
+  const [id, setid] = useState(0)
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  
+  //  const state = {
+  //   value: 0,
+  //   anchorEl: null,
+  //   popno: -1
+  // };
+
+  // const handlePopoverClose = () => {
+  //   this.setState({ anchorEl: null, popno: -1 });
+  // };
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+    //setpopno(-1);
+  };
+
+  const handleEvent = (e, _popno) => {
+    setAnchorEl( e.currentTarget);
+     setpopno(_popno );
+  };
+
+  // const handleChange = (event, value) => {
+  //  setvalue( value );
+  // };
+ //const  classes = this.props;
+  //const  value  = state[0];
   // options
  //Adding Hover
  
  let types=["Billing Details","Booking","POS Sales","Agent","Occupancy","Collection","Guest Report"]
   const fetchBillingTypes = async(index)=>{
-   
     
     let temp = await reportOptions.getBillingOptions(types[index]);
-    console.log(temp);
+    console.log(temp)
     setBillingTypes(temp)
   }
-  const handlemouseover=(e)=>{
+  const handlemouseover=(e,event,name)=>{ 
     e.preventDefault()
-    let label= parseInt(e.target.id);
+    let label= parseInt(e.target.name);
     if(label!==null){
       fetchBillingTypes(label)
+
     }
-    
-    
+    setid(id);
   }
   
-
-
+  
   return (
     <div className={classes.root} style={{backgroundColor:'#D6EAF8',height:"100vh"}}>
+      {/* <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onMouseOver={handleClose}
+      ></Menu> */}
       <AppBar position="sticky" color="default" style={{position:"sticky",top:"64px"}}>
         <Tabs
           value={tabvalue}
           onChange={handleChange}
+          onMouseOver={handlemouseover}
           indicatorColor="primary"
           textColor="primary"
           variant="scrollable"
           scrollButtons="auto"
           aria-label="scrollable auto tabs example"
+          id={id}
         >
        
-          <Tab label="Billing Details"  {...a11yProps(0)}  id={0} onMouseOver={handlemouseover}/>
-          <Tab label="Booking" {...a11yProps(1)} id={1} onMouseOver={handlemouseover}/>
-          <Tab label="POS Sales" {...a11yProps(2)} id={2} onMouseOver={handlemouseover}/>
-          <Tab label="Agent" {...a11yProps(3)}  id={3} onMouseOver={handlemouseover} />
-          <Tab label="Occupancy" {...a11yProps(4)} id={4}  onMouseOver={handlemouseover}/>
-          <Tab label="Collection Report" {...a11yProps(5)}  id={5}  onMouseOver={handlemouseover}/>
-          <Tab label="Guest Details" {...a11yProps(6)}  id={6} onMouseOver={handlemouseover}/>
-          
+          <Tab label="Billing Details"  {...a11yProps(0)}  name={0} onMouseOver={e => handleEvent(e, 1)}  />
+          <Tab label="Booking" {...a11yProps(1)} name={1} onMouseOver={e => handleEvent(e, 1)}/>
+          <Tab label="POS Sales" {...a11yProps(2)} name={2} onMouseOver={e => handleEvent(e, 1)}/>
+          <Tab label="Agent" {...a11yProps(3)}  name={3}  onMouseOver={e => handleEvent(e, 1)}/>
+          <Tab label="Occupancy" {...a11yProps(4)} name={4}  onMouseOver={e => handleEvent(e, 1)}/>
+          <Tab label="Collection Report" {...a11yProps(5)}  name={5}  onMouseOver={e => handleEvent(e, 1)}/>
+          <Tab label="Guest Details" {...a11yProps(6)}  name={6} onMouseOver={e => handleEvent(e, 1)}/>
         </Tabs>
-
+        <Popover
+            id="menu2Popover"
+            open={anchorEl !=null}
+            onClose={handlePopoverClose}
+            anchorEl={anchorEl}
+          >
+            {popno === 1 && (
+              <MenuList>
+                <MenuItem>{billingTypes[0]}</MenuItem>
+                <MenuItem>{billingTypes[1]}</MenuItem>
+                <MenuItem>{billingTypes[2]}</MenuItem>
+                <MenuItem>{billingTypes[3]}</MenuItem>
+                <MenuItem>{billingTypes[4]}</MenuItem>
+                <MenuItem>{billingTypes[5]}</MenuItem>
+                <MenuItem>{billingTypes[6]}</MenuItem>
+                <MenuItem>{billingTypes[7]}</MenuItem>
+                <MenuItem>{billingTypes[8]}</MenuItem>
+                <MenuItem>{billingTypes[9]}</MenuItem>
+              </MenuList>
+            )}
+            {/* {popno === 2 && (
+              <MenuList>
+                <MenuItem>Tab 2 - Submenu 1</MenuItem>
+                <MenuItem>Tab 2 - Submenu 2</MenuItem>
+              </MenuList>
+            )}
+            {popno === 3 && (
+              <MenuList>
+                <MenuItem>Tab 3 - Submenu 1</MenuItem>
+                <MenuItem>Tab 3 - Submenu 2</MenuItem>
+              </MenuList>
+            )} */}
+          </Popover>
       </AppBar>
       <TabPanel className={classes.tabDiv} value={tabvalue} index={0}>
         <BillingDetails/>

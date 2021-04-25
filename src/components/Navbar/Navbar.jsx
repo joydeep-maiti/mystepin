@@ -1,15 +1,16 @@
 import React,{useState}from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
-import POSMenu from "../POS/POSMenu";
 import { withRouter } from "react-router-dom";
 import './Navbar.css'
 import BuildIcon from '@material-ui/icons/Build';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import LocalHotelSharpIcon from '@material-ui/icons/LocalHotelSharp';
 import AssessmentIcon from '@material-ui/icons/Assessment';
-import UpdateIcon from '@material-ui/icons/Update';
 import {Menu,MenuItem } from '@material-ui/core';
+import { DialogTitle } from "@material-ui/core";
+import POSMenu from '../POS/POSMenu'
+import AdvanceMenu from '../AdvancedTab/AdvancedMenu'
 const useStyles = makeStyles(theme => ({
   stepIn: {
     display: "inline-block",
@@ -34,19 +35,11 @@ const HeaderNavbar = ({
   path,
   onRedirectFromNavbar,
   showTaxes,
+  showAdvancedDialog,
   showPOSDialog,
   ...props
 }) => {
   const classes = useStyles();
-  const [state,setState]=useState({open:false, anchorEl:null})
-  const handleClick = event => {
-    setState({ open: true, anchorEl: event.currentTarget });
-  };
-
- const handleRequestClose = () => {
-    setState({ open: false });
-  };
-
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -60,31 +53,7 @@ const HeaderNavbar = ({
           {
            path === "/reports" && (
               <React.Fragment>
-                <Button color="inherit" onClick={onRefresh}
-                 aria-owns={state.open ? 'simple-menu' : null}
-                 aria-haspopup="true"
-                 onClick={handleClick}
-                 onMouseOver={handleClick} 
-                >
-                  <UpdateIcon/>
-                  Utility
-                </Button>
-                <Menu
-                autoWidth={false}
-          id="simple-menu"
-          anchorEl={state.anchorEl}
-          open={state.open}
-          onClose={handleRequestClose}
-          getContentAnchorEl={null}
-          anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
-          transformOrigin={{vertical: 'top', horizontal: 'center'}}
-        >
-          <MenuItem onClick={handleRequestClose}>Advanced</MenuItem>
-          <MenuItem onClick={handleRequestClose}>Recent Checkout</MenuItem>
-          <MenuItem onClick={handleRequestClose}>Bill Settlement</MenuItem>
-          <MenuItem onClick={handleRequestClose}>Approximate Bill</MenuItem>
-          <MenuItem onClick={handleRequestClose}>Petty Cash</MenuItem>
-        </Menu>
+                <AdvanceMenu showAdvancedDialog={showAdvancedDialog}  />
               </React.Fragment>
             )
           }

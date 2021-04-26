@@ -50,6 +50,8 @@ export default {
       .items(roomsSchema)
       .unique()
       .required(),
+    bookedBy: Joi.string()
+    .label("Booked By"),
   },
   checkInFormSchema: {
     firstName: Joi.string()
@@ -92,8 +94,11 @@ export default {
       .required(),
     Idproof: Joi.string()
     .label("ID_Proof"),
-    proofType: Joi.string()
-    .label("Proof Type")
+    proofs: Joi.string()
+    .label("Proof Type"),
+    bookedBy: Joi.string()
+    .label("Booked By")
+
   },
   billingFormSchema: {
     cash: Joi.number(),

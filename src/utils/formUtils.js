@@ -48,10 +48,13 @@ const validate = (data, schema) => {
 };
 
 const validateProperty = ({ name, value }, formSchema) => {
+  // debugger
   const obj = { [name]: value };
   const schema = { [name]: formSchema[name] };
-  const { error } = Joi.validate(obj, schema);
-  return error ? error.details[0].message : null;
+  if(schema.name){
+    const { error } = Joi.validate(obj, schema);
+    return error ? error.details[0].message : null;
+  }
 };
 
 /*

@@ -32,7 +32,7 @@ const Occupancy = () => {
   const [shouldDisable, setShouldDisable] = useState(false);
   const [occupancyTypes, setBillingTypes] = useState([]);
   const [generatedTime,setGeneratedTime] = useState(
-    moment().format('D/MMMM/YYYY')+'-'+moment().format('h:mm A')
+    moment().format('D.MMMM.YYYY h:mm A')
   )
   const [dailyview,setDailyView] = useState(false)
   //getting options
@@ -147,7 +147,7 @@ const Occupancy = () => {
     };
     doc.text(title, 300, 80);
     doc.setFontSize(10);
-    doc.text("Report Generated at "+generatedTime,600,40);
+    doc.text("Report Generated at "+generatedTime,600,20);
     doc.setFontSize(12);
     doc.text("MONTH : "+ "APRIL 21",100,100)
     doc.setFontSize(12);
@@ -193,11 +193,11 @@ const Occupancy = () => {
       })
       console.log("plans",plans,adults,children)
       let data2 =[]
-      data2.push(["TOTAL NO OF PAX :",adults+children])
+      data2.push(["TOTAL NO OF PAX :",adults+children+`(${adults}+${children})`])
       data2.push(["ADULTS :",adults])
       data2.push(["CHILDREN :",children])
       Object.keys(plans[0]).map(el=>{
-        data2.push([el+":",plans[0][el]+"+"+plans[1][el]])
+        data2.push([el+":",Number(plans[0][el])+Number(plans[1][el])+"("+plans[0][el]+"+"+plans[1][el]+")"])
       })
       exportDailyOccupantToPDF(data,data2,Number(occupied)+Number(continuing),occupied)
     }
@@ -226,12 +226,15 @@ const Occupancy = () => {
         cellWidth:'wrap',
         halign: 'center',
       },
+      headerStyles: {
+        fillColor: "#0088bc",
+      },
       margin: marginLeft,
       pageBreak:'auto'
     };
     doc.text(title, 300, 80);
     doc.setFontSize(10);
-    doc.text("Report Generated at "+generatedTime,600,40);
+    doc.text("Report Generated at "+generatedTime,600,20);
     doc.setFontSize(12);
     doc.text("DATE : "+ date,30,60)
     doc.text("DAY : "+ day,30,80)

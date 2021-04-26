@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import seasonService from "../../services/seasonService";
 import roomTypeService from "../../services/roomTypeService";
 import ratemasterService from "../../services/ratemasterService";
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
 import Loader from "../../common/Loader/Loader";
 import {
@@ -85,6 +87,7 @@ const RateMaster = ({ onClose }) => {
   const [newDoc, setNewDoc] = useState({});
   const [editingRow, setEditingRow] = useState({});
   const [loading, setLoading] = useState(false);
+  const [percentView, setPercentView] = useState(false);
   const [roomTypes, setRoomTypes] = useState([]);
   const [seasons, setSeasons] = useState([]);
   const [planTypes, setPlanTypes] = useState([
@@ -124,9 +127,28 @@ const RateMaster = ({ onClose }) => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const res = await ratemasterService.addRate(newDoc);
+    let data = {...newDoc}
+    delete data.percent;
+    const res = await ratemasterService.addRate(data);
     setLoading(false);
     if(res.status===201){
+      // setNewDoc({})
+      setLoading(true);
+      fetchData()
+    }else {
+      console.log(res)
+      setNewDoc({})
+      alert("Bad Request")
+    }
+
+  }
+
+  const handlePercentFormSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const res = await ratemasterService.updateRateByPercent(newDoc);
+    setLoading(false);
+    if(res){
       // setNewDoc({})
       setLoading(true);
       fetchData()
@@ -213,15 +235,31 @@ const RateMaster = ({ onClose }) => {
   const tablestyles={
     color:'#0088bc',
     fontWeight:"bold"
-   }
+  }
 
-
+  const handleSwitch = (event) => {
+    setPercentView(event.target.checked)
+  };
 
   return (
     <React.Fragment>
-      <DialogTitle>Rate Master</DialogTitle>
+      <DialogTitle>
+        Rate Master
+        <FormControlLabel
+          control={
+            <Switch
+              checked={percentView}
+              onChange={handleSwitch}
+              name="percentView"
+              color="primary"
+            />
+          }
+          label="Percentage View"
+          style={{float:"right"}}
+        />
+      </DialogTitle>
       <DialogContent className={classes.roomsDiv}>
-        <form className={classes.formGroup} noValidate autoComplete="off" onSubmit={handleFormSubmit}>
+        {!percentView && <form className={classes.formGroup} autoComplete="off" onSubmit={handleFormSubmit}>
           <FormControl className={classes.formControl}>
             <InputLabel id="demo-simple-select-label">Room Type</InputLabel>
             <Select
@@ -261,8 +299,8 @@ const RateMaster = ({ onClose }) => {
               {seasons.map(el=><MenuItem value={el._id}>{el.season}</MenuItem>)}
             </Select>
           </FormControl>
-          <TextField type="number" required id="standard-required" label="Rate" name="rate" onChange={handleInput}/>
-          <TextField type="number" required id="standard-required" label="Extra Rate" name="extraRate" onChange={handleInput}/>
+          <TextField type="number" required id="standard-required" label="Rate" name="rate" onChange={handleInput} value={newDoc.rate} inputProps={{min:0, step:.01}}/>
+          <TextField type="number" required id="standard-required" label="Extra Rate" name="extraRate" onChange={handleInput} value={newDoc.extraRate}  inputProps={{min:0, step:.01}}/>
           <Button 
           type="submit" 
           variant="contained"
@@ -270,7 +308,37 @@ const RateMaster = ({ onClose }) => {
           >
             ADD
           </Button>
-        </form>
+        </form>}
+        {percentView && <form className={classes.formGroup} autoComplete="off" onSubmit={handlePercentFormSubmit}>
+          <FormControl className={classes.formControl}>
+            <InputLabel id="demo-simple-select-label">Season</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              required
+              name="seasonId"
+              value={newDoc.seasonId}
+              onChange={handleInput}
+              >
+              {seasons.map(el=><MenuItem value={el._id}>{el.season}</MenuItem>)}
+            </Select>
+          </FormControl>
+          <TextField 
+            type="number" 
+            value={newDoc.percent} 
+            required id="standard-required" 
+            label="Percentage" 
+            name="percent" 
+            inputProps={{min:0, max:100, step:.01}} 
+            onChange={handleInput}/>
+          <Button 
+          type="submit" 
+          variant="contained"
+          style={{backgroundColor:"#0088bc",color:'white'}}
+          >
+            SUBMIT
+          </Button>
+        </form>}
         {loading && <Loader color="#0088bc" />}
         <TableContainer className={classes.table} component={Paper}>
           <Table className={classes.table} size="small" stickyHeader aria-label="sticky table">

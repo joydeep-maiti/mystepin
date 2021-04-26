@@ -11,7 +11,23 @@ import Paper from '@material-ui/core/Paper';
 import moment from "moment";
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 
-const AdvancedList = () => {
+const AdvancedList = (props) => {
+
+  console.log("advance",props.advance)
+  const [advance, setAdvance] =  React.useState(null)
+
+  React.useEffect(()=>{
+    setAdvance(props.advance)
+  },[props.advance])
+
+  if(!advance || advance.length===0 ){
+    return(<></>)
+  }
+
+  const handleDelete = (el) => {
+    console.log("el",el)
+    props.handlePosDelete(el);
+  }
 
   return (
     <DialogContent>
@@ -22,18 +38,24 @@ const AdvancedList = () => {
                 <TableRow>
                   <TableCell align="center">Date</TableCell>
                   <TableCell align="center">Advanced</TableCell>
-                  <TableCell align="center">Reference Number</TableCell>
+                  <TableCell align="center">Mode of Payment</TableCell>
+                  <TableCell align="center">Recipt Number</TableCell>
                   <TableCell align="center">Delete</TableCell>
                 </TableRow>
               </TableHead>
-              <TableBody>
+              {
+                advance && advance.map(el => {
+                  return(
                     <TableRow>
-                      <TableCell align="center">{moment().format("Do MMMM YYYY")}</TableCell>
-                      <TableCell align="center">{"1000"}</TableCell>
-                      <TableCell align="center">{"2453235"}</TableCell>
-                      <TableCell align="center">{""}</TableCell>
+                      <TableCell align="center">{moment(el.date).format("Do MMMM YYYY")}</TableCell>
+                      <TableCell align="center">{el.advance}</TableCell>
+                      <TableCell align="center">{el.modeofpayment}</TableCell>
+                      <TableCell align="center">{el.reciptNumber}</TableCell>
+                      <TableCell align="center"><DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(el)}/></TableCell>
                     </TableRow>
-              </TableBody>
+                  )
+                })
+              }
         </Table>
       </TableContainer>
       

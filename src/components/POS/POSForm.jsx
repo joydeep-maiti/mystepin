@@ -168,17 +168,15 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
   const setBookingId = async(option) => {
     // let updatedErrors = { ...errors };
     // delete updatedErrors[input.name];
-
     const bookingId = option.value;
     const filteredObj = posData.find(
       item => item.booking._id === bookingId
     );
     const minDate = utils.getDate(filteredObj.booking.checkIn);
-
     setData({ ...data, date: minDate, _id: option.value});
     setGuest(option.label)
     const response = await posService.getPosByBookingId(option.value);
-    // console.log("response",response)
+     console.log("posgetresponse",response)
     if(response){
       setPosDetails(response)
       setPos(response.pos)

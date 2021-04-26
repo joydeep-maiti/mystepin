@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState}from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
 import POSMenu from "../POS/POSMenu";
@@ -8,7 +8,8 @@ import BuildIcon from '@material-ui/icons/Build';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import LocalHotelSharpIcon from '@material-ui/icons/LocalHotelSharp';
 import AssessmentIcon from '@material-ui/icons/Assessment';
-
+import UpdateIcon from '@material-ui/icons/Update';
+import {Menu,MenuItem } from '@material-ui/core';
 const useStyles = makeStyles(theme => ({
   stepIn: {
     display: "inline-block",
@@ -37,6 +38,14 @@ const HeaderNavbar = ({
   ...props
 }) => {
   const classes = useStyles();
+  const [state,setState]=useState({open:false, anchorEl:null})
+  const handleClick = event => {
+    setState({ open: true, anchorEl: event.currentTarget });
+  };
+
+ const handleRequestClose = () => {
+    setState({ open: false });
+  };
 
   return (
     <div className={classes.root}>
@@ -48,6 +57,36 @@ const HeaderNavbar = ({
               StepInn
             </div>
           </Typography>
+          
+              
+                <Button color="inherit" onClick={onRefresh}
+                 aria-owns={state.open ? 'simple-menu' : null}
+                 aria-haspopup="true"
+                 onClick={handleClick}
+                 onMouseOver={handleClick} 
+                >
+                  <UpdateIcon/>
+                  Utility
+                </Button>
+                <Menu
+                autoWidth={false}
+          id="simple-menu"
+          anchorEl={state.anchorEl}
+          open={state.open}
+          onClose={handleRequestClose}
+          getContentAnchorEl={null}
+          anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+          transformOrigin={{vertical: 'top', horizontal: 'center'}}
+        >
+          <MenuItem onClick={handleRequestClose}>Advanced</MenuItem>
+          <MenuItem onClick={handleRequestClose}>Recent Checkout</MenuItem>
+          <MenuItem onClick={handleRequestClose}>Bill Settlement</MenuItem>
+          <MenuItem onClick={handleRequestClose}>Approximate Bill</MenuItem>
+          <MenuItem onClick={handleRequestClose}>Petty Cash</MenuItem>
+        </Menu>
+             
+            
+          
           <Button
             className="button-bg"
             color="inherit"

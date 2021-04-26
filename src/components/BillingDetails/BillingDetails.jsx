@@ -39,7 +39,9 @@ const BillingDetails = () => {
   const [billingCategory,setBillingCategory] = useState("");
   const [shouldDisable, setShouldDisable] = useState(false);
   const [billingTypes, setBillingTypes] = useState([]);
-  
+  const [generatedTime,setGeneratedTime] = useState(
+    moment().format('D/MMMM/YYYY')+'-'+moment().format('h:mm A')
+  )
   //getting options
   useEffect(()=>{
     fetchBillingTypes()
@@ -98,7 +100,6 @@ const BillingDetails = () => {
   //         }
   //       }
 
-        
     const exporttoPDF = () =>{
     const unit = "pt";
     const size = "A4"; // Use A1, A2, A3 or A4
@@ -107,7 +108,7 @@ const BillingDetails = () => {
     const marginLeft2 = 350;
     const doc = new jsPDF(orientation, unit, size);
         doc.setFontSize(20);
-        let title = "Billing Summary Report";
+        let title = "Billing Report";
         let headers = [["Bill No", "Name","Bill Date","Room Rate","Boarding","Tax","Food","Transport","Laundary","Misc","Phone","Total","Advance","Balance"]];
         let data = bookings
         let content = {
@@ -122,14 +123,17 @@ const BillingDetails = () => {
           margin: marginLeft,
           pageBreak:'auto'
         };
-        doc.text(title, 300, 30);
-        doc.text(billingCategory,320,60)
+        doc.text(title, 400, 40);
+        doc.setFontSize(10);
+        doc.text("Report Generated at "+generatedTime,600,40);
+        doc.setFontSize(15)
+        doc.text(billingCategory,380,60)
         doc.setFontSize(15);
-        doc.text("From : "+startDateString,100, 80);
-        doc.text("To : "+currentDateString,700, 80);
+        doc.text("From : "+startDateString,100, 90);
+        doc.text("To : "+currentDateString,230, 90);
         doc.setFontSize(12);
         doc.autoTable(content);
-        doc.save("hari.pdf")
+        doc.save(`${billingCategory}.pdf`)
 
   }
 

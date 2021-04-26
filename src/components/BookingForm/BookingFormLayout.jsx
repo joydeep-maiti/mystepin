@@ -5,6 +5,7 @@ import Card from "../../common/Card/Card";
 import BookingForm from "../BookingForm/BookingForm";
 import BookingFormHeader from "./BookingFormHeader";
 import LoaderDialog from "../../common/LoaderDialog/LoaderDialog";
+import Joi from "joi-browser";
 
 import moment from 'moment'
 import FormUtils from "../../utils/formUtils";
@@ -15,6 +16,7 @@ import roomService from "../../services/roomService";
 import bookingService from "../../services/bookingService";
 
 const schema = schemas.bookingFormSchema;
+const checkinSchema = schemas.checkInFormSchema;
 const { success, error } = constants.snackbarVariants;
 // const roomTypes = [
 //   { label: "AC", value: "AC" },
@@ -24,7 +26,7 @@ const { success, error } = constants.snackbarVariants;
 //   { label: "Dormitory", value: "Dormitory" }
 // ];
 
-const proofType=[
+const proofTypes=[
   {label:"Aadhar" ,value:"Aadhar"},
   {label:"Passport" ,value:"Passport"},
   {label:"PAN" ,value:"PAN"},
@@ -60,10 +62,11 @@ const BookingFormLayout = ({
     roomCharges: "",
     flatRoomRate:false,
     Idproof:"",
-    proofs:[proofType],
+    proofs: "",
     planType:"AP",
     advance: 0,
     bookingDate: null,
+    bookedBy: "",
     status: {
       cancel: false,
       checkedIn: false,
@@ -81,6 +84,7 @@ const BookingFormLayout = ({
   const [shouldDisable, setShouldDisable] = useState(false);
   const [loading, setLoading] = useState(false);
   const [enableFileUpload, setEnableFileUpload] = useState(false);
+  const [isCheckingIn, setIsCheckingIn] = useState(false);
 
   useEffect(() => {
     const { pathname } = location;
@@ -91,6 +95,34 @@ const BookingFormLayout = ({
     fetchRoomTypes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if(data.bookedBy === "Agent"){
+      schema.agent =  Joi.string().required().label("Agent")
+      schema.referencenumber =  Joi.number().required().label("Reference number")
+      schema.memberNumber = Joi.any()
+      let error = {...errors}
+      delete error.memberNumber
+      setErrors(error)
+    }else if (data.bookedBy === "Member"){
+      schema.memberNumber = Joi.number().required().label("Membership Number")
+      schema.agent = Joi.any()
+      schema.referencenumber = Joi.any()
+      let error = {...errors}
+      delete error.agent
+      delete error.referencenumber
+      setErrors(error)
+    }else {
+      schema.agent = Joi.any()
+      schema.referencenumber = Joi.any()
+      schema.memberNumber = Joi.any()
+      let error = {...errors}
+      delete error.agent
+      delete error.referencenumber
+      delete error.memberNumber
+      setErrors(error)
+    }
+  }, [data.bookedBy]);
 
   const setViewBookingData = async () => {
     const booking = { ...selectedBooking };
@@ -187,8 +219,9 @@ const BookingFormLayout = ({
     else openSnackBar("Error Occurred", error);
   };
 
-  const checkForErrors = () => {
-    let errors = FormUtils.validate(data, schema);
+  const checkForErrors = (_schema) => {
+    let errors = FormUtils.validate(data, _schema);
+    console.log("errors",errors)
     errors = errors || {};
     setErrors(errors);
     return Object.keys(errors).length;
@@ -206,7 +239,7 @@ const BookingFormLayout = ({
       input,
       data,
       errors,
-      schema
+      isCheckingIn?checkinSchema:schema
     );
     setData(updatedState.data);
     setErrors(updatedState.errors);
@@ -237,7 +270,7 @@ const BookingFormLayout = ({
     console.log("asDays",moment.duration(duration).asDays())
     let durationInDays = moment.duration(duration).days()+1;
     const dates = daysBetweenDates(updatedData["checkIn"],updatedData["checkOut"])
-    updatedData.nights = dates.length
+    updatedData.nights = dates.length>0?dates.length:1
     if (id === "checkIn") data["checkOut"] = data[id];
 
     let availableRooms = await getAvailableRooms(
@@ -333,27 +366,30 @@ const BookingFormLayout = ({
 
   const handleSelectChange1=(event,index)=>{
     let newErrors = { ...errors };
-    console.log("event",event.target.value);
-    if(event.target.name === "proofType"){
-      if (newErrors.proofs)
-        newErrors.proofs = newErrors.proofs.filter(error => error.index !== index);
-      console.log(event.target.value);
-      const proofs=event.target.value;
-      console.log(proofs)
-      setData({ ...data, proofs });
-      
-    }else if(event.target.name === "planType"){
+    console.log("event",event.currentTarget);
+    if(event.target.name === "planType"){
       console.log(event.target.value);
       setData({...data, planType:event.target.value})
+    }else {
+
+      const updatedState = FormUtils.handleInputChange(
+        {
+          name:event.target.name,
+          value:event.target.value
+        },
+        data,
+        errors,
+        isCheckingIn?checkinSchema:schema
+      );
+      setData(updatedState.data);
+      newErrors= updatedState.errors
     }
     setErrors(newErrors);
-    // console.log(newErrors);
-    // console.log(proofs);
    }
 
   const handleFormSubmit = event => {
     event.preventDefault();
-    const errors = checkForErrors();
+    const errors = checkForErrors(schema);
     if (errors) return;
 
     setLoading(true);
@@ -410,6 +446,12 @@ const BookingFormLayout = ({
   };
 
   const handleCheckIn = () => {
+    setIsCheckingIn(true)
+    const errors = checkForErrors(checkinSchema);
+    if (errors) {
+      handleEdit()
+      return;
+    }
     if(!data.idProofImage){
       alert("Please Upload Id Proof first in order to check in")
       setEnableFileUpload(true)
@@ -474,7 +516,7 @@ const BookingFormLayout = ({
               availableRooms={availableRooms}
               errors={errors}
               options={roomTypes}
-              options1={proofType}
+              options1={proofTypes}
               onSetPrice={(price,roomWiseRatesForBooking) => setData({...data,roomCharges:price,roomWiseRatesForBooking})}
               onFileSelect={onChangeHandler}
               shouldDisable={shouldDisable}
@@ -484,6 +526,7 @@ const BookingFormLayout = ({
               handleDatePicker={handleDatePicker}
               enableFileUpload={enableFileUpload}
               handleFlatRateChange={handleFlatRateChange}
+              updatedata={(val)=>setData({...data,...val})}
             />
           }
           maxWidth={700}

@@ -9,4 +9,19 @@ async function getTaxSlabs() {
   }
 }
 
-export default { getTaxSlabs };
+async function updatetaxDetails(data) {
+  try {
+    const response = await http.patch(
+      `${http.baseUrl}/taxSlabs`,
+      data
+    );
+    if(response.status === 200)
+      return true
+    return false
+  } catch (error) {
+    console.log(error);
+    return false
+  }
+}
+
+export default { getTaxSlabs , updatetaxDetails};

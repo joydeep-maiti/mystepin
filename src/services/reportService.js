@@ -11,4 +11,15 @@ async function getDailyOccupancyReport(optiontype) {
     console.log(error);
   }
 }
-export default { getDailyOccupancyReport };
+
+
+async function getMonthlyOccupancyReport(category,startDate,endDate) {
+  try {
+    const {data} = await http.get(`${http.baseUrl}/monthlyreport?reportType=${category}&fromDate=${startDate}&toDate=${endDate}`);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export default { getDailyOccupancyReport ,getMonthlyOccupancyReport};

@@ -51,6 +51,21 @@ async function updateRate(data) {
   }
 }
 
+async function updateRateByPercent(data) {
+  try {
+    const response = await http.patch(
+      `${http.baseUrl}/rateMaster/percentage`,
+      data
+    );
+    if(response.status === 200)
+      return true
+    return false
+  } catch (error) {
+    console.log(error);
+    return false
+  }
+}
+
 async function deleteRate(data) {
   try {
     const response = await http.delete(
@@ -65,4 +80,4 @@ async function deleteRate(data) {
   }
 }
 
-export default { getRate, addRate, updateRate, deleteRate , getDayWiseRate};
+export default { getRate, addRate, updateRate, deleteRate , getDayWiseRate, updateRateByPercent};

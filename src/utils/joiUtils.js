@@ -47,8 +47,55 @@ export default {
       .items(roomsSchema)
       .unique()
       .required(),
-      Idproof: Joi.string()
-      .label("ID_Proof"),
+    bookedBy: Joi.string()
+    .label("Booked By"),
+  },
+  checkInFormSchema: {
+    firstName: Joi.string()
+      .required()
+      .label("First Name"),
+    lastName: Joi.string()
+      .required()
+      .label("Last Name"),
+    address: Joi.string()
+      .required()
+      .label("Address"),
+    checkIn: Joi.date()
+      .required()
+      .label("Check In"),
+    checkOut: Joi.date()
+      .required()
+      .label("Check Out"),
+    adults: Joi.number()
+      .max(999)
+      .required()
+      .label("Adults"),
+    children: Joi.number()
+      .max(99)
+      .required()
+      .label("Children"),
+    contactNumber: Joi.string()
+      .length(10)
+      .required()
+      .label("Contact Number"),
+    roomCharges: Joi.number()
+      .required()
+      .label("Room Charges"),
+    advance: Joi.number()
+    .default(0)
+    .required()
+      .label("Advance"),
+    rooms: Joi.array()
+      .items(roomsSchema)
+      .unique()
+      .required(),
+    Idproof: Joi.string()
+    .label("ID_Proof"),
+    proofs: Joi.string()
+    .label("Proof Type"),
+    bookedBy: Joi.string()
+    .label("Booked By")
+
   },
   billingFormSchema: {
     cash: Joi.number(),

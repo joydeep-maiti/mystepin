@@ -31,7 +31,9 @@ const Occupancy = () => {
   const [occupancyCategory,setOccupancyCategory] = useState("");
   const [shouldDisable, setShouldDisable] = useState(false);
   const [occupancyTypes, setBillingTypes] = useState([]);
-  
+  const [generatedTime,setGeneratedTime] = useState(
+    moment().format('D.MMMM.YYYY h:mm A')
+  )
   //getting options
   useEffect(()=>{
     fetchBillingTypes()
@@ -45,7 +47,110 @@ const Occupancy = () => {
     })
     setBillingTypes(types)
   } 
-  const fetchAndGenerateReport = async()=>{
+    //Handle starting date Change
+  const handleStartingDateChange =(date)=>{
+    setStartingDate(utils.getDate(date));  
+        };
+  //Handle current date Change
+  const handleCurrentDateChange = (date) => {  
+    setCurrentDate(utils.getDate(date));
+    };
+  //Get Plan Options
+  const getPlanOptions = () => {
+      return occupancyTypes.map(type => {
+      return { label: type, value: type};
+    });
+  };
+  //Handle Select Change
+  const handleSelectChange=(event)=>{
+    setOccupancyCategory(event.target.value);
+    console.log("event",occupancyCategory);
+  }
+
+    const classes = useStyles();
+
+   const generateReport =()=>{
+
+    if(occupancyCategory === 'Daily Occupancy chart'){
+      fetchAndGenerateDailyOccupanyReport();
+    }
+   else if(occupancyCategory === 'Monthly Occupancy'){
+    fetchAndGenerateMonthlyOccupanyReport();
+    }
+    else{
+      alert("Please Select a category")
+    }
+
+   }
+   //**************************************Monthly Occupancy Report*************************************
+  const fetchAndGenerateMonthlyOccupanyReport = async()=>{
+
+    let startD = moment(startingDate).format('yyyy-M-D')
+    let currentD = moment(currentDate).format('yyyy-M-D')
+    console.log("Start",startD)
+    console.log("End",currentD)
+
+    let options = await reportService.getMonthlyOccupancyReport(occupancyCategory,startD,currentD)
+
+
+    console.log("Catergory",occupancyCategory)
+
+    console.log("monthly report ",options)
+    let data = options.map(option=>{
+      let date = moment(option.date).format('D-MMMM-YYYY');
+      return([
+        date,
+        option.TotalRooms,
+        option.OccupiedRooms,
+        option.Adults,
+        option.Children,
+        option.Pax,
+        option.OccupancyPercent,
+      ])
+    })
+    exportMonthlyOccupantToPDF(data)
+  } 
+  
+
+//Export Monthly occupancy pdf
+    const exportMonthlyOccupantToPDF = (reportData) =>{
+    const unit = "pt";
+    const size = "A4"; // Use A1, A2, A3 or A4
+    const orientation = "landscape"; // portrait or landscape
+    const marginLeft = 20;
+    const marginLeft2 = 350;
+    const date = moment().format('D.MMM.YYYY')
+    const day = moment().format('dddd')
+    const doc = new jsPDF(orientation, unit, size);
+    doc.setFontSize(20);
+    let title = "MONTHLY OCCUPANCY REPORT";
+    let headers = [["DATE","TOTAL ROOMS","OCCUPIED ROOMS","ADULT","CHILD","TOTAL PAX","OCCUPANCY %"]];
+    let content = {
+      startY: 120,
+      head: headers,
+      body: reportData,
+      theme: 'grid',
+      styles: {
+        cellWidth:'wrap',
+        halign: 'center',
+      },
+      margin: marginLeft,
+      pageBreak:'auto'
+    };
+    doc.text(title, 300, 80);
+    doc.setFontSize(10);
+    doc.text("Report Generated at "+generatedTime,600,20);
+    doc.setFontSize(12);
+    doc.text("MONTH : "+ "APRIL 21",100,100)
+    doc.setFontSize(12);
+    doc.autoTable(content);
+    doc.setTextColor("#fb3640");
+    doc.save("Monthly Occupancy Report.pdf")
+  }
+  
+
+  //************************Daily Occupancy Report****************************
+  const fetchAndGenerateDailyOccupanyReport = async()=>{
     let options = await reportService.getDailyOccupancyReport();
     let adults = 0
     let children = 0
@@ -79,39 +184,20 @@ const Occupancy = () => {
         ])
       })
       console.log("plans",plans,adults,children)
-      data.push(["","TOTAL NO OF PAX :",adults+children])
-      data.push(["","ADULTS :",adults])
-      data.push(["","CHILDREN :",children])
+      let data2 =[]
+      data2.push(["TOTAL NO OF PAX :",adults+children+`(${adults}+${children})`])
+      data2.push(["ADULTS :",adults])
+      data2.push(["CHILDREN :",children])
       Object.keys(plans[0]).map(el=>{
-        data.push(["",el+":",plans[0][el]+"+"+plans[1][el]])
+        data2.push([el+":",Number(plans[0][el])+Number(plans[1][el])+"("+plans[0][el]+"+"+plans[1][el]+")"])
       })
-      exportToPDF(data,Number(occupied)+Number(continuing),continuing)
+      exportDailyOccupantToPDF(data,data2,Number(occupied)+Number(continuing),occupied)
     }
   } 
   
-    //Handle starting date Change
-  const handleStartingDateChange =(date)=>{
-    setStartingDate(utils.getDate(date));  
-        };
-  //Handle current date Change
-  const handleCurrentDateChange = (date) => {  
-    setCurrentDate(utils.getDate(date));
-    };
-  //Get Plan Options
-  const getPlanOptions = () => {
-      return occupancyTypes.map(type => {
-      return { label: type, value: type};
-    });
-  };
-  //Handle Select Change
-  const handleSelectChange=(event)=>{
-    setOccupancyCategory(event.target.value);
-    console.log("event",occupancyCategory);
-  }
 
-  const classes = useStyles();
-
-  const exportToPDF = (reportData,occupied,continuing) =>{
+//Export Daily occupancy pdf
+    const exportDailyOccupantToPDF = (reportData,data2,occupied,continuing) =>{
     const unit = "pt";
     const size = "A4"; // Use A1, A2, A3 or A4
     const orientation = "landscape"; // portrait or landscape
@@ -120,38 +206,60 @@ const Occupancy = () => {
     const date = moment().format('D.MMM.YYYY')
     const day = moment().format('dddd')
     const doc = new jsPDF(orientation, unit, size);
-        doc.setFontSize(20);
-        let title = "DAILY OCCUPANCY CHART";
-        let headers = [["ROOM NO", "NAME OF GUEST","PLAN TYPE","PAX","DT. OF ARR","DT. OF DEPT","STAY"]];
-        let content = {
-          startY: 120,
-          head: headers,
-          body: reportData,
-          theme: 'grid',
-          styles: {
-            cellWidth:'wrap',
-            halign: 'center',
-          },
-          margin: marginLeft,
-          pageBreak:'auto'
-        };
-        doc.text(title, 300, 30);
-        doc.setFontSize(12);
-        doc.text("DATE : "+ date,30,60)
-        doc.text("DAY : "+ day,30,80)
-        doc.text("TOTAL OCCUPIED : "+ occupied,650,60)
-        doc.text("OCCUPIED CONT. : "+ continuing,650,80)
-        doc.setFontSize(12);
-        doc.autoTable(content);
-        doc.save("Daily Occupancy Report.pdf")
-
+    doc.setFontSize(20);
+    let title = "DAILY OCCUPANCY CHART";
+    let headers = [["ROOM NO", "NAME OF GUEST","PLAN TYPE","PAX","DT. OF ARR","DT. OF DEPT","STAY"]];
+    let content = {
+      startY: 120,
+      head: headers,
+      body: reportData,
+      theme: 'grid',
+      styles: {
+        cellWidth:'wrap',
+        halign: 'center',
+      },
+      headerStyles: {
+        fillColor: "#0088bc",
+      },
+      margin: marginLeft,
+      pageBreak:'auto'
+    };
+    doc.text(title, 300, 80);
+    doc.setFontSize(10);
+    doc.text("Report Generated at "+generatedTime,600,20);
+    doc.setFontSize(12);
+    doc.text("DATE : "+ date,30,60)
+    doc.text("DAY : "+ day,30,80)
+    doc.text("TOTAL OCCUPIED : "+ occupied,650,60)
+    doc.text("TODAY'S CHECKIN : "+ continuing,650,80)
+    doc.setFontSize(12);
+    doc.autoTable(content);
+    doc.setTextColor("#fb3640");
+    doc.autoTable({
+      startY: doc.lastAutoTable.finalY,
+      // head: headers,
+      body: data2,
+      theme: 'grid',
+      styles: {
+        cellWidth:'wrap',
+        halign: 'center',
+      },
+      bodyStyles: {
+        textColor: "#e84545"
+      },
+      margin: marginLeft,
+      pageBreak:'auto'
+    });
+    doc.save("Daily Occupancy Report.pdf")
   }
+
+
 
   return (
     <div>
             <div className={classes.root}>
           <Typography variant="h6" className={classes.title}>
-            Booking
+            Occupancy
           </Typography>
     </div>
     <div className="container">   
@@ -202,7 +310,7 @@ const Occupancy = () => {
           </MuiPickersUtilsProvider>
           </div>  
         <div className="buttoncontainer"> 
-      <Button  type="submit" className="button" onClick={fetchAndGenerateReport}>
+      <Button  type="submit" className="button" onClick={generateReport}>
         Generate
       </Button>
         </div>

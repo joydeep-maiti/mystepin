@@ -34,6 +34,7 @@ import constants from "../../utils/constants";
 import utils from "../../utils/utils";
 import "./Dashboard.scss";
 import ReportComponent from '../ReportComponent/ReportComponent'
+import AdvancedDialog from '../AdvancedTab/AdvancedDialog'
 const useStyles = makeStyles((theme) => ({
   formControl: {
     marginTop: "20px",
@@ -65,6 +66,7 @@ const Dashboard = props => {
   );
 
   const [posDialogTitle, setPosDialogTitle] = useState("");
+  const [advancedDialogTitle, setAdvancedDialogTitle] = useState("");
   const [dialog, setDialog] = useState({
     open: false,
     contentOf: "",
@@ -232,7 +234,11 @@ const Dashboard = props => {
     setPosDialogTitle(title);
     handleDialog("pos");
   };
-
+  //Advance
+  const handleShowAdvancedDialog = title => {
+    setAdvancedDialogTitle(title);
+    handleDialog("advanced");
+  };
   const handleRedirectFromNavbar = () => {
     props.history.replace("/");
   };
@@ -293,6 +299,7 @@ const Dashboard = props => {
           onRefresh={handleRefresh}
           showTaxes={handleShowTaxes}
           showPOSDialog={handleShowPOSDialog}
+          showAdvancedDialog = {handleShowAdvancedDialog}
           path={props.location.pathname}
           onRedirectFromNavbar={handleRedirectFromNavbar}
         />
@@ -312,6 +319,15 @@ const Dashboard = props => {
             // onSnackbarEvent={handleSnackbarEvent}
             />
           )}
+          {
+            dialog.openFor.advanced && (
+              <AdvancedDialog
+                allBookings={allBookings}
+                title={advancedDialogTitle}
+                onClose={() => handleDialog(dialog.contentOf)}
+              // onSnackbarEvent={handleSnackbarEvent}
+              />
+            )}
         </Dialog>
 
         <div className="subContainer"  >

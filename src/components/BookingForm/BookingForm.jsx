@@ -243,7 +243,7 @@ const BookingForm = props => {
       value: data[id],
       onChange: inputfun,
       error: errors[id],
-      disabled: shouldDisable
+      disabled: shouldDisable,
     };
   };
 
@@ -296,12 +296,41 @@ const BookingForm = props => {
   };
 
   console.log("*******formattedRates",formattedRates)
+  //Type
+  useEffect(()=>{
+    if(data.bookedBy === "Agent"){
+      setIsAgent(true);
+      setIsMember(false);
+      setHeadOffice(false)
+      console.log("Hello Agent")
+    }
+    else if(data.bookedBy === "Member"){
+      setIsMember(true)
+      setIsAgent(false)
+      setHeadOffice(false)
+      console.log("Hello member")
+    }
+    else if(data.bookedBy === "Head Office"){
+      setIsMember(false)
+      setIsAgent(false)
+      setHeadOffice(true)
+      console.log("Hello member")
+    }
+    else{
+      setIsAgent(false)
+      setIsMember(false)
+      setHeadOffice(false)
+
+    }
+  },[data.bookedBy])
   //Adding BookedOptions
   const [bookedBy,setBookedBy] = useState("")
   const [agent,setAgent] = useState("")
+  const [nationality,setNationality] = useState("")
   const [memberShipNumber,setMembershipNumber]=useState()
   const [isAgent,setIsAgent] = useState(false);
   const [isMember,setIsMember] = useState(false);
+  const [isHeadOffice,setHeadOffice] = useState(false)
   const bookedByOptions=[
     {label:"Walk In" ,value:"Walk In"},
     {label:"Agent" ,value:"Agent"},
@@ -316,6 +345,16 @@ const BookingForm = props => {
     {label:"Local Agent" ,value:"Local Agent"},
   
   ]
+  //Adding Nationality
+ 
+  const nationalityOptions = [
+    {label : "Indian",value : "Indian"}
+    ,{label : "UK",value : "UK"}
+    ,{label : "USA",value : "USA"}
+    ,{label : "Australia",value : "Australia"}
+    ,{label : "Japan",value : "Japan"}
+ ]
+
   console.log(memberShipNumber)
   //BookedByType
   const selectBookedByOption = (event) => {
@@ -330,23 +369,13 @@ const BookingForm = props => {
       agent: event.target.value
     })
   }
-  //Type
-  useEffect(()=>{
-    if(data.bookedBy === "Agent"){
-      setIsAgent(true);
-      setIsMember(false);
-      console.log("Hello Agent")
-    }
-    else if(data.bookedBy === "Member"){
-      setIsMember(true)
-      setIsAgent(false)
-      console.log("Hello member")
-    }
-    else{
-      setIsAgent(false)
-      setIsMember(false)
-    }
-  },[data.bookedBy])
+  const selectNationalityOption = (event) => {
+    setNationality(event.target.value);
+    updatedata({
+      nationality : event.target.value
+    })
+  }
+
   return (
     <form onSubmit={event => onFormSubmit(event)}>
       {loading && <Loader color="#0088bc" />}
@@ -367,10 +396,19 @@ const BookingForm = props => {
         )}
       </div>
       <div className="form-group">
-        {FormUtils.renderInput(
+        {FormUtils.renderAddressInput(
           getInputArgObj("address", "Address", "text", shouldDisable)
         )}
-      </div>
+        {FormUtils.renderNationality({
+          id: "nationality",
+          label: "Nationality",
+          name:"nationality",
+          value: data.nationality,
+          onChange: event => selectNationalityOption(event),
+          nationalityOptions,
+          disabled: shouldDisable
+        })}
+          </div>
       <div className="form-group">
         <div
           className={classes.datePicker}
@@ -469,7 +507,7 @@ const BookingForm = props => {
           disabled: shouldDisable,
           error: errors["agent"]
         })}
-        {isAgent && FormUtils.renderInput(
+        {isAgent || isHeadOffice && FormUtils.renderInput(
           getInputArgObj("referencenumber", "Reference number", "number", shouldDisable)
         )}
         {

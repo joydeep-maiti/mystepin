@@ -50,6 +50,7 @@ const BookingFormLayout = ({
     firstName: "",
     lastName: "",
     address: "",
+    nationality:"Indian",
     checkIn: utils.getDate(),
     checkOut: moment().add(1, 'days').toDate(),
     checkedInTime: "",

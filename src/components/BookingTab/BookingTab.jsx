@@ -29,6 +29,7 @@ const BookingTab = () => {
   const [bookingCategory,setBookingCategory] = useState("");
   const [shouldDisable, setShouldDisable] = useState(false);
   const [bookingTypes, setBookingTypes] = useState([]);
+  const [dailyview,setDailyView] = useState(false)
   
   //getting options
   useEffect(()=>{
@@ -64,7 +65,77 @@ const BookingTab = () => {
       console.log("event",bookingCategory);
       }
   
+
+      useEffect(()=>{
+        if(bookingCategory === "Daily Booking Chart"){
+         setDailyView(false)  
+        }
+        else{
+         setDailyView(true)
+        }
+      },[bookingCategory])
   const classes = useStyles();
+  const renderFromtoCalender=()=>{
+    return (
+      <div className="formdates">         
+      < MuiPickersUtilsProvider utils={DateFnsUtils}>
+           <KeyboardDatePicker
+               disableToolbar
+               format="dd/MMMM/yyyy"
+               margin="normal"
+               id="date-picker-dialog"
+             label="From"
+             value={startingDate}              
+             onChange={handleStartingDateChange}
+             KeyboardButtonProps={{
+               'aria-label': 'change date',
+             }}
+             style={{ width:'150px'}}
+               />
+             </MuiPickersUtilsProvider>
+             <MuiPickersUtilsProvider utils={DateFnsUtils} 
+                           style={{ marginLeft: "rem"}}>
+           <KeyboardDatePicker
+               disableToolbar
+               format="dd/MMMM/yyyy"
+               margin="normal"
+               id="date-picker-dialog"
+             label="To"
+             maxDate={currentDate}
+             value={currentDate}              
+             onChange={handleCurrentDateChange}
+             KeyboardButtonProps={{
+               'aria-label': 'change date',
+             }}
+             style={{ marginLeft: "3.5rem",width:'150px'}}
+                             />
+             </MuiPickersUtilsProvider>
+             
+             </div>  
+    )
+  }
+  //
+  
+  const renderDailyCalender=()=>{
+   return( 
+   <MuiPickersUtilsProvider utils={DateFnsUtils} 
+    style={{ marginLeft: "rem"}}>
+  <KeyboardDatePicker
+  disableToolbar
+  format="dd/MMMM/yyyy"
+  margin="normal"
+  id="date-picker-dialog"
+  label="Date Picker"
+  value={currentDate}              
+  KeyboardButtonProps={{
+  'aria-label': 'change date',
+  }}
+  readOnly
+  style={{ width:'350px'}}
+      />
+  </MuiPickersUtilsProvider>)
+  }
+  //Booking Tab render
     return (
       <div>
              <div className={classes.root}>
@@ -83,42 +154,7 @@ const BookingTab = () => {
             options: getPlanOptions(),
             disabled: shouldDisable
           })}
-         
-          <div className="formdates"> 
-              
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-         <KeyboardDatePicker
-              disableToolbar
-              format="dd/MMMM/yyyy"
-             margin="normal"
-             id="date-picker-dialog"
-            label="From"
-            value={startingDate}              
-            onChange={handleStartingDateChange}
-            KeyboardButtonProps={{
-             'aria-label': 'change date',
-            }}
-           style={{ width:'150px'}}
-             />
-            </MuiPickersUtilsProvider>
-            <MuiPickersUtilsProvider utils={DateFnsUtils} 
-                          style={{ marginLeft: "rem"}}>
-         <KeyboardDatePicker
-              disableToolbar
-              format="dd/MMMM/yyyy"
-             margin="normal"
-             id="date-picker-dialog"
-            label="To"
-            maxDate={currentDate}
-            value={currentDate}              
-            onChange={handleCurrentDateChange}
-            KeyboardButtonProps={{
-             'aria-label': 'change date',
-            }}
-           style={{ marginLeft: "3.5rem",width:'150px'}}
-                            />
-            </MuiPickersUtilsProvider>
-            </div>  
+          { dailyview ? renderFromtoCalender() : renderDailyCalender()}
           <div className="buttoncontainer"> 
         <Button  type="submit" className="button">
           Generate

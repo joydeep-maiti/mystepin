@@ -30,8 +30,8 @@ const AdvancedList = () => {
                     <TableRow>
                       <TableCell align="center">{moment().format("Do MMMM YYYY")}</TableCell>
                       <TableCell align="center">{"1000"}</TableCell>
-                      <TableCell align="center">{"1000"}</TableCell>
-                      <TableCell align="center">{"1000"}</TableCell>
+                      <TableCell align="center">{"2453235"}</TableCell>
+                      <TableCell align="center">{""}</TableCell>
                     </TableRow>
               </TableBody>
         </Table>

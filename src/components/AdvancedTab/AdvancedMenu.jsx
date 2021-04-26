@@ -31,7 +31,7 @@ const AdvancedMenu = ({ showAdvancedDialog }) => {
         aria-haspopup="true"
         className={classes.btnPOS}
         color="inherit"
-        onClick={event => handleOpenAdvanceMenu(event)}
+        onMouseOver={event => handleOpenAdvanceMenu(event)}
       >
         <UpdateIcon/>
         Utility
@@ -43,7 +43,7 @@ const AdvancedMenu = ({ showAdvancedDialog }) => {
         open={Boolean(anchorEl)}
         onClose={handleCloseAdvanceMenu}
        >
-          <MenuItem onClick={()=>handleOpenAdvanceTabMenu("Advanced")}>Advanced</MenuItem>
+          <MenuItem onClick={()=>handleOpenAdvanceTabMenu("Advance Collection")}>Advanced</MenuItem>
           <MenuItem onClick={()=>handleCloseAdvanceMenu}>Recent Checkout</MenuItem>
           <MenuItem onClick={()=>handleCloseAdvanceMenu}>Bill Settlement</MenuItem>
           <MenuItem onClick={()=>handleCloseAdvanceMenu}>Approximate Bill</MenuItem>

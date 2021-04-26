@@ -8,5 +8,10 @@ export default makeStyles(theme => ({
   },
   menu: {
     width: 200
-  }
+  },
+  inputNationality: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    width: "45%"
+  },
 }));

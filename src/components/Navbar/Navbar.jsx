@@ -50,13 +50,11 @@ const HeaderNavbar = ({
               StepInn
             </div>
           </Typography>
-          {
-           path === "/reports" && (
+          
               <React.Fragment>
                 <AdvanceMenu showAdvancedDialog={showAdvancedDialog}  />
               </React.Fragment>
-            )
-          }
+           
           <Button
             className="button-bg"
             color="inherit"

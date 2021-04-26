@@ -34,11 +34,19 @@ const Occupancy = () => {
   const [generatedTime,setGeneratedTime] = useState(
     moment().format('D/MMMM/YYYY')+'-'+moment().format('h:mm A')
   )
+  const [dailyview,setDailyView] = useState(false)
   //getting options
   useEffect(()=>{
     fetchBillingTypes()
    },[])
-
+   useEffect(()=>{
+     if(occupancyCategory === "Daily Occupancy chart"){
+      setDailyView(false)  
+     }
+     else{
+      setDailyView(true)
+     }
+   },[occupancyCategory])
   const fetchBillingTypes = async()=>{
     let options = await reportOptions.getBillingOptions("Occupancy");
     const types = []
@@ -251,14 +259,76 @@ const Occupancy = () => {
   }
 
 
+const renderFromtoCalender=()=>{
+  return (
+    <div className="formdates">         
+    < MuiPickersUtilsProvider utils={DateFnsUtils}>
+         <KeyboardDatePicker
+             disableToolbar
+             format="dd/MMMM/yyyy"
+             margin="normal"
+             id="date-picker-dialog"
+           label="From"
+           value={startingDate}              
+           onChange={handleStartingDateChange}
+           KeyboardButtonProps={{
+             'aria-label': 'change date',
+           }}
+           style={{ width:'150px'}}
+             />
+           </MuiPickersUtilsProvider>
+           <MuiPickersUtilsProvider utils={DateFnsUtils} 
+                         style={{ marginLeft: "rem"}}>
+         <KeyboardDatePicker
+             disableToolbar
+             format="dd/MMMM/yyyy"
+             margin="normal"
+             id="date-picker-dialog"
+           label="To"
+           maxDate={currentDate}
+           value={currentDate}              
+           onChange={handleCurrentDateChange}
+           KeyboardButtonProps={{
+             'aria-label': 'change date',
+           }}
+           style={{ marginLeft: "3.5rem",width:'150px'}}
+                           />
+           </MuiPickersUtilsProvider>
+           
+           </div>  
+  )
+}
+//
 
+const renderDailyCalender=()=>{
+ return( 
+ <MuiPickersUtilsProvider utils={DateFnsUtils} 
+  style={{ marginLeft: "rem"}}>
+<KeyboardDatePicker
+disableToolbar
+format="dd/MMMM/yyyy"
+margin="normal"
+id="date-picker-dialog"
+label="Date Picker"
+value={currentDate}              
+KeyboardButtonProps={{
+'aria-label': 'change date',
+}}
+readOnly
+style={{ width:'350px'}}
+    />
+</MuiPickersUtilsProvider>)
+}
+
+//Occupancy Render
   return (
     <div>
             <div className={classes.root}>
           <Typography variant="h6" className={classes.title}>
             Occupancy
           </Typography>
-    </div>
+         </div>
+        
     <div className="container">   
     
         {FormUtils.renderSelect({
@@ -271,41 +341,10 @@ const Occupancy = () => {
           disabled: shouldDisable
         })}
         
-        <div className="formdates"> 
-            
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <KeyboardDatePicker
-            disableToolbar
-            format="dd/MMMM/yyyy"
-            margin="normal"
-            id="date-picker-dialog"
-          label="From"
-          value={startingDate}              
-          onChange={handleStartingDateChange}
-          KeyboardButtonProps={{
-            'aria-label': 'change date',
-          }}
-          style={{ width:'150px'}}
-            />
-          </MuiPickersUtilsProvider>
-          <MuiPickersUtilsProvider utils={DateFnsUtils} 
-                        style={{ marginLeft: "rem"}}>
-        <KeyboardDatePicker
-            disableToolbar
-            format="dd/MMMM/yyyy"
-            margin="normal"
-            id="date-picker-dialog"
-          label="To"
-          maxDate={currentDate}
-          value={currentDate}              
-          onChange={handleCurrentDateChange}
-          KeyboardButtonProps={{
-            'aria-label': 'change date',
-          }}
-          style={{ marginLeft: "3.5rem",width:'150px'}}
-                          />
-          </MuiPickersUtilsProvider>
-          </div>  
+  
+        { dailyview ? renderFromtoCalender() : renderDailyCalender()}
+    
+   
         <div className="buttoncontainer"> 
       <Button  type="submit" className="button" onClick={generateReport}>
         Generate

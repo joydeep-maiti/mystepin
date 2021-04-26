@@ -3,13 +3,14 @@ import Joi from "joi-browser";
 import { Button } from "@material-ui/core";
 
 import Input from "../common/Input/Input";
+import InputAddress from '../common/Input/InputAddress'
 import Select from "../common/Select/Select";
 import Select1 from "../common/Select/Select1";
 import Select2 from "../common/Select/Select2";
 import Select3 from "../common/Select/Select3";
 import Select4 from "../common/Select/Select4";
 import Select5 from "../common/Select/Select5";
-
+import Select6 from '../common/Select/Select6';
 
 
 import DatePicker from "../common/DatePicker/DatePicker";
@@ -64,6 +65,7 @@ const validateProperty = ({ name, value }, formSchema) => {
           error: string
 */
 const renderInput = args => <Input name={args.id} {...args} />;
+const renderAddressInput = args => <InputAddress name = {args.id} {...args}/>;
 const renderDatepicker = args => <DatePicker name={args.id} {...args} />;
 
 /*
@@ -80,7 +82,7 @@ const renderBookedBy = args => <Select2 name={args.id} {...args}/>;
 const renderAgent = args => <Select3 name={args.id} {...args}/>;
 const renderBillingStatus = args => <Select4 name= {args.id} {...args}/>;
 const renderCardStatus = args => <Select5 name= {args.id} {...args}/>;
-
+const renderNationality = args => <Select6 name = {args.id} {...args}/>
 /*
   renderButton
   args:   type: string,
@@ -116,6 +118,7 @@ export default {
   validate,
   validateProperty,
   renderInput,
+  renderAddressInput,
   renderSelect,
   renderDatepicker,
   renderButton,
@@ -124,5 +127,6 @@ export default {
   renderBookedBy,
   renderBillingStatus,
   renderCardStatus,
-  renderAgent
+  renderAgent,
+  renderNationality
 };

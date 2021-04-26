@@ -295,7 +295,7 @@ const AdvancedForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
             )}
           </div>
           {FormUtils.renderInput(
-            getInputArgObj("amount", "Amount", "text", disable)
+            getInputArgObj("Advance", "Advance", "text", disable)
           )}
         </div>
       </DialogContent>

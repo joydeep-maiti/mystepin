@@ -100,6 +100,7 @@ const ReportComponent = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [popno, setpopno] = useState(-1)
   const [id, setid] = useState(0)
+  const [fetchtypes, setFetchtypes] = useState([])
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -132,6 +133,7 @@ const ReportComponent = () => {
   //const  value  = state[0];
   // options
  //Adding Hover
+ let i=0;
  
  let types=["Billing Details","Booking","POS Sales","Agent","Occupancy","Collection","Guest Report"]
   const fetchBillingTypes = async(index)=>{
@@ -149,7 +151,6 @@ const ReportComponent = () => {
     }
     setid(id);
   }
-  
   
   return (
     <div className={classes.root} style={{backgroundColor:'#D6EAF8',height:"100vh"}}>
@@ -189,8 +190,8 @@ const ReportComponent = () => {
           >
             {popno === 1 && (
               <MenuList>
-                <MenuItem>{billingTypes[0]}</MenuItem>
-                <MenuItem>{billingTypes[1]}</MenuItem>
+                <MenuItem>{billingTypes}</MenuItem>
+                 {/* <MenuItem>{billingTypes[1]}</MenuItem>
                 <MenuItem>{billingTypes[2]}</MenuItem>
                 <MenuItem>{billingTypes[3]}</MenuItem>
                 <MenuItem>{billingTypes[4]}</MenuItem>
@@ -198,8 +199,8 @@ const ReportComponent = () => {
                 <MenuItem>{billingTypes[6]}</MenuItem>
                 <MenuItem>{billingTypes[7]}</MenuItem>
                 <MenuItem>{billingTypes[8]}</MenuItem>
-                <MenuItem>{billingTypes[9]}</MenuItem>
-              </MenuList>
+                <MenuItem>{billingTypes[9]}</MenuItem> */}
+              </MenuList> 
             )}
             {/* {popno === 2 && (
               <MenuList>

@@ -194,7 +194,8 @@ const getStandardCell = (...argument) => {
 
 const getArgObj = (column, index, classes, dateObj, view, presentDate) => {
   let { show, room, booking, handleRedirect, color } = column;
-  // console.log("column",column)
+  //console.log("hima",column)
+  color=column.isInactive? "#95a3ad" : color;
   const currentDate = moment().date();
   const name = booking && getShortName(booking.firstName, booking.lastName);
   const key = `column_${index}`;

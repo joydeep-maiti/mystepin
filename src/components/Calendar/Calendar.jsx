@@ -62,8 +62,8 @@ const Calendar = props => {
 
   const showBookings = (dateObj, bookings, allRooms) => {
     tempRows = getTableRows(allRooms, dateObj);
-    
-    
+    console.log("bookings",bookings);
+    console.log("allrooms",allRooms);
     bookings &&
       bookings.forEach(booking => {
         let { checkIn, checkOut, months , status} = booking;
@@ -71,7 +71,7 @@ const Calendar = props => {
         
         //Changing Color according to Booking && Checkedin
          let color="";
-         color= "#D6EAF8"; 
+         color= "#D6EAF8";
 
          if(status.checkedIn){
           color='#eaaec2';
@@ -84,11 +84,10 @@ const Calendar = props => {
           const updatedValue = getUpdatedValues(booking, dateObj);
           checkIn = updatedValue.checkIn;
           checkOut = updatedValue.checkOut;        
-         }      
+         }        
         booking.rooms.forEach(bookedRoom => {
           
           const res = allRooms.find(room => {          
-            
             return room._id === bookedRoom._id;
           });
           if(res){
@@ -112,11 +111,14 @@ const Calendar = props => {
     
     if(view === "day"){
       tempRows.forEach((rows,i)=>{
+        //console.log("uniquerows",rows);
+        
         let subindex = rows.findIndex(
           row => row.room.roomNumber === roomNumber
         )
         if(subindex !== -1){
           // console.log("subindex",subindex,i)
+          color=rows[subindex].isinactive? "#95a3ad" : color;
           rowIndex = (i*10)+subindex
         }
       })
@@ -189,9 +191,11 @@ const Calendar = props => {
           if(i===0){
             rows[index] = index===len-1?new Array(rem).fill():new Array(10).fill()
           }
+          console.log("allroomsindex",allRooms[roomIndex])
           rows[index][i] = {
             room: { ...allRooms[roomIndex] },
-            handleRedirect: handleRedirect,
+            handleRedirect: !!allRooms[roomIndex].inactive ? ()=>{} :handleRedirect ,
+            isInactive: !!allRooms[roomIndex].inactive,
             show: false
           }
           roomIndex++
@@ -202,7 +206,8 @@ const Calendar = props => {
       rows.forEach((row, index) => {
         rows[index] = new Array(dateObj.days + 1).fill({
           room: { ...allRooms[index] },
-          handleRedirect: handleRedirect
+          handleRedirect: !!allRooms[index].inactive ? ()=>{} :handleRedirect ,
+          isInactive: !!allRooms[index].inactive,
         });
         rows[index][0] = { room: { ...allRooms[index] }, show: true };
       });
@@ -226,7 +231,6 @@ const Calendar = props => {
     let { checkIn, checkOut, months } = booking;
     const { month, year, days } = dateObj;
     const index = months.findIndex(month => month.month === dateObj.month);
-
     if (index === 0) {
       checkIn = utils.getDate(checkIn);
       checkOut = new Date(`${month + 1}/${days}/${year}`);

@@ -7,8 +7,10 @@ import './BookingTab.css'
 import moment from "moment";
 import utils from "../../utils/utils";
 import FormUtils from "../../utils/formUtils";
+import bookingReport from '../../services/bookingReport'
 import reportOptions from '../../services/reportOptions'
-
+import jsPDF from 'jspdf';
+import "jspdf-autotable";
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
@@ -30,7 +32,9 @@ const BookingTab = () => {
   const [shouldDisable, setShouldDisable] = useState(false);
   const [bookingTypes, setBookingTypes] = useState([]);
   const [dailyview,setDailyView] = useState(false)
-  
+  const [generatedTime,setGeneratedTime] = useState(
+    moment().format('D.MMMM.YYYY h:mm A')
+  )
   //getting options
   useEffect(()=>{
     fetchBillingTypes()
@@ -74,6 +78,77 @@ const BookingTab = () => {
          setDailyView(true)
         }
       },[bookingCategory])
+
+///Fetching Data from backend
+const fetchAndGenerateMonthlyOccupanyReport = async()=>{
+
+  let startD = moment(startingDate).format('yyyy-M-D')
+  let currentD = moment(currentDate).format('yyyy-M-D')
+  console.log("Start",startD)
+  console.log("End",currentD)
+
+  let options = await bookingReport.getBookingReport(bookingCategory,startD,currentD)
+
+
+  console.log("Response",options)
+
+  console.log("monthly report ",options)
+  let data = options.map(option=>{
+    let booDate = moment(option.bookingDate).format('D-MMMM-YYYY');
+    let arriDate = moment(option.dateOfArrival).format('D-MMMM-YYYY');
+    let depDate = moment(option.dateOfDeparture).format('D-MMMM-YYYY');
+    return([
+      option.bookingId,
+      booDate,
+      option.guestName,
+      arriDate,
+      depDate,
+      option.nights,
+      option.NoofRooms,
+      option.bookedBy,
+      option.referenceNumber,
+      option.Amount,
+      option.Advance
+    ])
+  })
+  exportBookingReportToPDF(data)
+ } 
+
+ const exportBookingReportToPDF = (reportData) =>{
+  const unit = "pt";
+  const size = "A2"; // Use A1, A2, A3 or A4
+  const orientation = "landscape"; // portrait or landscape
+  const marginLeft = 20;
+  const marginLeft2 = 350;
+  const date = moment().format('D.MMM.YYYY')
+  const day = moment().format('dddd')
+  const doc = new jsPDF(orientation, unit, size);
+  doc.setFontSize(20);
+  let title = `${bookingCategory}  REPORT`;
+  let headers = [["BOOKING ID","BOOKING DATE","NAME OF THE GUEST","DATE OF ARRIVAL","DATE OF DEPARTURE","NIGHTS","NO OF ROOMS","BOOKED BY","REFERENCE NUMBER","AMOUNT","ADVANCE"]];
+  let content = {
+    startY: 120,
+    head: headers,
+    body: reportData,
+    theme: 'grid',
+    styles: {
+      cellWidth:'wrap',
+      halign: 'center',
+    },
+    margin: marginLeft,
+    pageBreak:'auto'
+  };
+  doc.text(title, 700, 40);
+  doc.setFontSize(10);
+  doc.text("Report Generated at "+generatedTime,1400,20);
+  doc.setFontSize(12);
+  doc.text("MONTH : "+ "APRIL 21",100,100)
+  doc.setFontSize(12);
+  doc.autoTable(content);
+  doc.setTextColor("#fb3640");
+  doc.save(`${bookingCategory} BOOKING REPORT`)
+}
+
   const classes = useStyles();
   const renderFromtoCalender=()=>{
     return (
@@ -156,13 +231,10 @@ const BookingTab = () => {
           })}
           { dailyview ? renderFromtoCalender() : renderDailyCalender()}
           <div className="buttoncontainer"> 
-        <Button  type="submit" className="button">
+        <Button  type="submit" className="button" onClick={fetchAndGenerateMonthlyOccupanyReport}>
           Generate
         </Button>
           </div>
-
-
-
           </div> 
           
       </div>

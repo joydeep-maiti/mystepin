@@ -212,15 +212,17 @@ const ReportGenerator = ({ booking }) => {
           <div className="report-row">
               <span className="report-key">Billing Status</span>
               <span className="report-value">
-                {booking.paymentData.billingStatus}
+                <b>{booking.paymentData.billingStatus}</b>
               </span>
             </div>
+            { booking.billingStatus==="paid" &&
             <div className="report-row">
               <span className="report-key">Due Amount</span>
               <span className="report-value">
                 &#8377; {balance}
               </span>
             </div>
+            }
             </div>
 
         </div>

@@ -25,6 +25,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import Select from '@material-ui/core/Select';
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
 import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
@@ -66,7 +68,6 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "center"
   }
 }));
-
 const RoomCategory = ({ onClose }) => {
   const classes = useStyles();
   const [rooms, setRooms] = useState([]);
@@ -74,6 +75,7 @@ const RoomCategory = ({ onClose }) => {
   const [loading, setLoading] = useState(false);
   const [newDoc, setNewDoc] = useState({});
   const [editingRow, setEditingRow] = useState({});
+  const [checkbox,setCheckbox]=useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -81,12 +83,21 @@ const RoomCategory = ({ onClose }) => {
     fetchRoomTypes();
   }, []);
 
+  const handleCheckBoxChange = async(e) =>{
+    //setCheckbox(!checkbox);
+    console.log("e.checked",e.target.checked)
+    setEditingRow({
+      ...editingRow,
+      inactive: e.target.checked
+    })
+  }
+
   const fetchData = async () => {
     const rooms = await roomService.getRooms();
     setRooms(rooms);
     setLoading(false);
   };
-
+  
   const fetchRoomTypes = async () => {
     const rooms = await roomTypeService.getRoomsTypes();
     setRoomTypes(rooms);
@@ -119,7 +130,9 @@ const RoomCategory = ({ onClose }) => {
 
   const handleEdit = (row) => {
     setEditingRow(row)
+    console.log("row",row);
   }
+  
 
   const handleUndo = () => {
     setEditingRow({})
@@ -195,6 +208,7 @@ const RoomCategory = ({ onClose }) => {
                 <TableCell style={tablestyles}>ID</TableCell>
                 <TableCell align="center" style={tablestyles}>Room Number</TableCell>
                 <TableCell align="center" style={tablestyles}>Room Type</TableCell>
+                <TableCell align="center" style={tablestyles}>Blocked</TableCell>
                 <TableCell align="center" style={tablestyles}>Edit</TableCell>
                 <TableCell align="center" style={tablestyles}>Delete</TableCell>
               </TableRow>
@@ -226,6 +240,23 @@ const RoomCategory = ({ onClose }) => {
                     </Select>
                   </FormControl>
                   </TableCell>}
+                  {/*editingRow._id !== row._id && <TableCell align="center"><p>No</p></TableCell>*/}
+                  <TableCell align="center">
+                  <FormControl style={{width:"100%"}}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={editingRow._id === row._id ? !!editingRow.inactive : !!row.inactive}
+                        onChange={handleCheckBoxChange}
+                        name="active"
+                        color="primary"
+                      />
+                    }
+                    label="Blocked"
+                    style={{minWidth:"max-content", marginLeft:"0.3rem"}}
+                    ></FormControlLabel>
+                    </FormControl>
+                  </TableCell>
                   {editingRow._id !== row._id && <TableCell align="center"><EditOutlinedIcon style={{cursor:"pointer"}} onClick={()=>handleEdit(row)}/></TableCell>}
                   {editingRow._id === row._id && <TableCell align="center">
                     <ReplayOutlinedIcon style={{cursor:"pointer"}} onClick={handleUndo}/>

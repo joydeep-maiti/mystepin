@@ -8,6 +8,7 @@ import posService from "../../services/posService";
 import LoaderDialog from "../../common/LoaderDialog/LoaderDialog";
 import TextField from '@material-ui/core/TextField';
 import { YearSelection } from "@material-ui/pickers/views/Year/YearView";
+import { InputLabel} from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   formGroup: {
@@ -66,6 +67,13 @@ const BillingForm = props => {
   const [billingst,setBillingst] = React.useState("Due");
   const[cardnum,setCardnum]=React.useState("");
   const[wallet,setWallet]=React.useState("");  
+  const [rooms, setRooms] = React.useState("");
+  React.useEffect(()=>{
+    const bookedRooms = booking.rooms && booking.rooms.map(el=>el.roomNumber)
+    if(bookedRooms)
+      setRooms(bookedRooms.toString())
+  },[booking])
+
   const billingStatus=due?[
     {label:"Due" ,value:"Due"},
     {label:"Bill to Company" ,value:"Bill to Company"},
@@ -79,6 +87,7 @@ const BillingForm = props => {
       {label:"Paytm" ,value:"Paytm"},
       {label:"Others" ,value:"others"}
   ]
+  const getFullName = booking.firstName+" "+booking.lastName;
   const handleCardNum = (event)=>{
     setCardnum(event.target.value)
     onChangeData({cardNum:event.target.value})
@@ -197,7 +206,6 @@ const BillingForm = props => {
           {FormUtils.renderInput({
             id: inputId,
             label: null,
-            type: "number",
             value: value || "",
             onChange: () => {},
             error: null,
@@ -260,6 +268,9 @@ const BillingForm = props => {
           })}
         </div> */}
         <div style={{display:"flex", flexWrap:"wrap"}}>
+          {renderInputItems("Name of Guest", getFullName, "name")}
+          {renderInputItems("Room Numbers", rooms, "room numbers")}
+          {renderInputItems("Tax", data.tax, "tax")}
           {renderInputItems("Room Charges", booking.roomCharges, "roomCharges")}
           {renderInputItems("Tax", data.tax, "tax")}
           {renderInputItems("Misllaneous", postotal, "misllaneous")}

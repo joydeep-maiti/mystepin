@@ -84,11 +84,12 @@ const useStyles = makeStyles(theme => ({
 const RateMaster = ({ onClose }) => {
   const classes = useStyles();
   const [rooms, setRooms] = useState([]);
-  const [newDoc, setNewDoc] = useState({});
+  const [newDoc, setNewDoc] = useState({percent:null});
   const [editingRow, setEditingRow] = useState({});
   const [loading, setLoading] = useState(false);
   const [percentView, setPercentView] = useState(false);
   const [roomTypes, setRoomTypes] = useState([]);
+  const [ratePercents, setRatePercents] = useState(null);
   const [seasons, setSeasons] = useState([]);
   const [planTypes, setPlanTypes] = useState([
     {planType:"AP"},
@@ -101,8 +102,16 @@ const RateMaster = ({ onClose }) => {
     setLoading(true);
     fetchData();
     fetchRoomTypes();
-    fetchSeasons()
+    fetchSeasons();
+    fetchRatePercent();
   }, []);
+
+  // useEffect(() => {
+  //   let obj = {}
+  //   seasons && ratePercents && seasons.forEach(el=>{
+  //     sratePercents.find()
+  //   })
+  // },[ratePercents]);
 
   const fetchData = async () => {
     const rooms = await ratemasterService.getRate();
@@ -121,6 +130,14 @@ const RateMaster = ({ onClose }) => {
     setLoading(true);
     const rooms = await roomTypeService.getRoomsTypes();
     setRoomTypes(rooms);
+    setLoading(false);
+  };
+
+  const fetchRatePercent = async () => {
+    setLoading(true);
+    const rooms = await ratemasterService.getRatepercent();
+    // console.log("fetchRatePercent",rooms)
+    setRatePercents(rooms);
     setLoading(false);
   };
 
@@ -168,6 +185,7 @@ const RateMaster = ({ onClose }) => {
       setEditingRow({})
       setLoading(true);
       fetchData()
+      fetchRatePercent()
     }
   }
 
@@ -187,6 +205,14 @@ const RateMaster = ({ onClose }) => {
       ...newDoc,
       [e.target.name]:e.target.value
     })
+    if(e.target.name === "seasonId"){
+      let obj = ratePercents.find(el => el.seasonId === e.target.value)
+      console.log("obj",obj)
+      setNewDoc({
+        ...newDoc,
+        percent: obj.percent
+      })
+    }
   }
 
   const handleInputChange = (e) => {
@@ -325,12 +351,14 @@ const RateMaster = ({ onClose }) => {
           </FormControl>
           <TextField 
             type="number" 
-            value={newDoc.percent} 
+            value={newDoc.percent === 0?"0":newDoc.percent} 
             required id="standard-required" 
             label="Percentage" 
             name="percent" 
             inputProps={{min:0, max:100, step:.01}} 
-            onChange={handleInput}/>
+            onChange={handleInput}
+            InputLabelProps={{ shrink: newDoc.percent===0?true:newDoc.percent }}
+          />
           <Button 
           type="submit" 
           variant="contained"

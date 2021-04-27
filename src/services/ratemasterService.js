@@ -9,6 +9,15 @@ async function getRate() {
   }
 }
 
+async function getRatepercent() {
+  try {
+    const { data: rooms } = await http.get(`${http.baseUrl}/rateMaster/percentage`);
+    return rooms;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 async function getDayWiseRate(from, to) {
   try {
     const { data: rooms } = await http.get(`${http.baseUrl}/rate`,{
@@ -80,4 +89,4 @@ async function deleteRate(data) {
   }
 }
 
-export default { getRate, addRate, updateRate, deleteRate , getDayWiseRate, updateRateByPercent};
+export default { getRate, addRate, updateRate, deleteRate , getDayWiseRate, updateRateByPercent, getRatepercent };

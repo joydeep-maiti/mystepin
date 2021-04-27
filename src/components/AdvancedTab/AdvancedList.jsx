@@ -10,15 +10,20 @@ import TableContainer from '@material-ui/core/TableContainer';
 import Paper from '@material-ui/core/Paper';
 import moment from "moment";
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
-
+import "./Advanced.scss";
 const AdvancedList = (props) => {
 
   console.log("advance",props.advance)
   const [advance, setAdvance] =  React.useState(null)
-
+  const [total,setTotal] = React.useState(null)
   React.useEffect(()=>{
     setAdvance(props.advance)
   },[props.advance])
+  React.useEffect(()=>{
+    let total = 0
+    props.advance.map(el => total+= parseInt(el.advanceP))
+    setTotal(total);
+  },[advance])
 
   if(!advance || advance.length===0 ){
     return(<></>)
@@ -28,6 +33,7 @@ const AdvancedList = (props) => {
     console.log("el",el)
     props.handlePosDelete(el);
   }
+
 
   return (
     <DialogContent>
@@ -56,9 +62,10 @@ const AdvancedList = (props) => {
                   )
                 })
               }
+
         </Table>
       </TableContainer>
-      
+      <div className="total">{`Total Advance : ${total}`}</div>
     </DialogContent>
   );
 };

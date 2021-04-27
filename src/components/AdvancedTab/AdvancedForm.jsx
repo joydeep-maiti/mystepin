@@ -209,17 +209,16 @@ const changePaymentOptions=(event)=>{
     // console.log("in")
     const errors = checkForErrors();
     if (errors) return;
-
-    const { _id,date, advanceP,modeofpayment,reciptNumber} = data;
+    const {_id,date,advanceP,modeofpayment,reciptNumber} = data;
     const booking = {
       ...allBookings.find(booking => booking._id === _id)
     };
-    if (advance) {
-      let _advance = { ...advance };
-      _advance = _advance
-        ? [..._advance, { date, advanceP,modeofpayment,reciptNumber}]
-        : [{ date, advance,modeofpayment,reciptNumber}];
-      const response = await advanceService.updatePos({
+    if(advance) {
+      console.log("Response Advance",advance)
+      let _advance =[...advance];
+      console.log("_advance",_advance)
+       _advance.push({date,advanceP,modeofpayment,reciptNumber})
+      const response = await advanceService.updateAdvance({
         ...advanceDetails,
         advance:_advance
       });
@@ -228,9 +227,10 @@ const changePaymentOptions=(event)=>{
         setAdvance(_advance)
       } 
       else openSnackBar("Error Occurred", error);
-    } else {
+    }
+     else {
       let _advance = {};
-      _advance = [{ date, advanceP,modeofpayment,reciptNumber}];
+      _advance = [{date, advanceP,modeofpayment,reciptNumber}];
       const advanceDetails = {
         advance:_advance,
         bookingId:booking._id,
@@ -247,8 +247,7 @@ const changePaymentOptions=(event)=>{
     }
    
   };
-  console.log("SetAdvance",advance)
-  console.log("SetAdvanceDetails",advanceDetails)
+ 
   const openSnackBar = (message, variant) => {
     const snakbarObj = { open: true, message, variant, resetBookings: false };
     handleSnackbarEvent(snakbarObj);
@@ -268,7 +267,7 @@ const changePaymentOptions=(event)=>{
       ...advanceDetails,
       advance:temp
     }
-    const response = await advanceService.updatePos(_advanceDetails);
+    const response = await advanceService.updateAdvance(_advanceDetails);
     if (response) {
       openSnackBar("Updated Successfully", success);
       setAdvance(temp)
@@ -337,7 +336,7 @@ const changePaymentOptions=(event)=>{
       </DialogActions>
       {advance && <AdvancedList
         advance ={advance}
-        title={title}
+        booking = {allBookings}
         handlePosDelete={handlePosDelete}
       />}
        

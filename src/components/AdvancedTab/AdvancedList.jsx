@@ -48,7 +48,7 @@ const AdvancedList = (props) => {
                   return(
                     <TableRow>
                       <TableCell align="center">{moment(el.date).format("Do MMMM YYYY")}</TableCell>
-                      <TableCell align="center">{el.advance}</TableCell>
+                      <TableCell align="center">{el.advanceP}</TableCell>
                       <TableCell align="center">{el.modeofpayment}</TableCell>
                       <TableCell align="center">{el.reciptNumber}</TableCell>
                       <TableCell align="center"><DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(el)}/></TableCell>

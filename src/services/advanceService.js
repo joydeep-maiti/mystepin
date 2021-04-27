@@ -1,7 +1,7 @@
 import http from "./httpService";
 async function getAdvanceByBookingId(id) {
   try {
-    const { data: rooms } = await http.get(`http://localhost:5000/advance/${id}`);
+    const { data: rooms } = await http.get(`${http.baseUrl}/advance/${id}`);
     return rooms;
   } catch (error) {
     console.log(error);
@@ -11,7 +11,7 @@ async function getAdvanceByBookingId(id) {
 async function addAdvance(data) {
   try {
     const response = await http.post(
-      `http://localhost:5000/advance`,
+      `${http.baseUrl}/advance`,
       data
     );
     return response
@@ -24,7 +24,7 @@ async function addAdvance(data) {
 async function updateAdvance(data) {
   try {
     const response = await http.patch(
-      `http://localhost:5000/advance`,
+      `${http.baseUrl}/advance`,
       data
     );
     if(response.status === 200)

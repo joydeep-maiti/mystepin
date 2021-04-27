@@ -265,7 +265,7 @@ const changePaymentOptions=(event)=>{
     //   ...allBookings.find(booking => booking._id === _id)
     // };
     const _advanceDetails= {
-      ..._advanceDetails,
+      ...advanceDetails,
       advance:temp
     }
     const response = await advanceService.updatePos(_advanceDetails);

@@ -137,7 +137,7 @@ const Occupancy = () => {
       startY: 120,
       head: headers,
       body: reportData,
-      theme: 'grid',
+      theme: 'striped',
       styles: {
         cellWidth:'wrap',
         halign: 'center',
@@ -221,7 +221,7 @@ const Occupancy = () => {
       startY: 120,
       head: headers,
       body: reportData,
-      theme: 'grid',
+      theme: 'striped',
       styles: {
         cellWidth:'wrap',
         halign: 'center',

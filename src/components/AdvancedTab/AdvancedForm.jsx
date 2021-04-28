@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import SnackBarContext from "./../../context/snackBarContext";
 import {DialogActions, DialogContent, Button } from "@material-ui/core";
 import moment from "moment";
-import posService from "../../services/posService";
 import FormUtils from "../../utils/formUtils";
 import utils from "../../utils/utils";
 import schemas from "../../utils/joiUtils";
@@ -10,33 +9,55 @@ import schemas from "../../utils/joiUtils";
 import constants from "../../utils/constants";
 import "./Advanced.scss";
 import AdvancedList from "./AdvancedList";
+import advanceService from "../../services/advanceService";
 const { success, error } = constants.snackbarVariants;
-const schema = schemas.POSFormSchema;
+const schema = schemas.ADVANCESchema;
 
 const AdvancedForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
+
+  //Main Data
   const [data, setData] = useState({
     roomNumber: "",
     bookingId: "",
     date: utils.getDate(),
-    amount: "",
-    remarks: ""
+    advanceP:"",
+    modeofpayment:"",
+    reciptNumber:""
   });
   const [errors, setErrors] = useState({});
   const [openDatePicker, setOpenDatePicker] = useState(false);
   const [minDate, setMinDate] = useState(utils.getDate());
-  const [posData, setPosData] = useState([]);
-  const [pos, setPos] = useState(null);
-  const [posDetails, setPosDetails] = useState(null);
+  const [advanceData, setAdvanceData] = useState([]);
+  const [advance,setAdvance]=useState(null);
+  const [advanceDetails, setAdvanceDetails] = useState(null);
   const [guest, setGuest] = useState("");
   const [bookingOptions, setBookingOptions] = useState([]);
   const [roomOptions, setRoomOptions] = useState([]);
   const [disable] = useState(false);
-
   const handleSnackbarEvent = useContext(SnackBarContext);
+  const [paymentMethod,setPaymentMethod] = useState("")
+  const paymentMethodOptions=[
+    {label:"Cash",value:"Cash"},
+    {label:"Card",value:"Card"},
+    {label:"Wallet",value:"Wallet"}
+  ]
+
+  const getPaymentOptions = () => {
+    return paymentMethodOptions.map(type => {
+    return { label: type, value: type};
+  });
+};
+const changePaymentOptions=(event)=>{
+  setPaymentMethod(event.target.value);
+  setData({
+    ...data,modeofpayment:event.target.value
+  })
+}
+
+  // To get all the booking
 
   useEffect(() => {
-    
-    let POSData = [];
+    let ADVDATA = [];
     const filteredBookings = allBookings.filter(
       booking => booking.status.checkedIn && !booking.status.checkedOut
     );
@@ -50,27 +71,23 @@ const AdvancedForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
       const dates = utils.daysBetweenDates(checkIn, checkOut);
       const today = dates.find(el => moment(el).isSame(new Date(), 'day'))
       if (today) {
-        // console.log("setOccupiedRooms", booking)
         booking.rooms.forEach(room => {
-          POSData.push({ room, booking });
+          ADVDATA.push({ room, booking });
         });
       }
-      // booking.rooms.forEach(room => {
-      //   POSData.push({ room, booking });
-      // });
     });
-    setPosData(POSData);
+    setAdvanceData(ADVDATA);
   }, [allBookings]);
-
+  //Rendering room number
   useEffect(() => {
-    // console.log("posData",posData)
-    const options = posData.map(data => ({
+    const options = advanceData.map(data => ({
       label: data.room.roomNumber,
       value: data.room.roomNumber
     }));
     setRoomOptions(options);
-  }, [posData]);
+  }, [advanceData]);
 
+  //UPDATED Values
   const getUpdatedValues = (booking, dateObj) => {
     let { checkIn, checkOut, months } = booking;
     const { month, year, days } = dateObj;
@@ -86,7 +103,6 @@ const AdvancedForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
       checkIn = new Date(`${month + 1}/1/${year}`);
       checkOut = new Date(`${month + 1}/${days}/${year}`);
     }
-
     return { checkIn, checkOut };
   };
 
@@ -146,7 +162,7 @@ const AdvancedForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
     delete updatedErrors[input.name];
 
     const roomNo = input.value;
-    const filteredArray = posData.filter(
+    const filteredArray = advanceData.filter(
       data => data.room.roomNumber === roomNo
     );
     console.log("filteredArray",filteredArray)
@@ -163,22 +179,17 @@ const AdvancedForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
   };
 
   const setBookingId = async(option) => {
-    // let updatedErrors = { ...errors };
-    // delete updatedErrors[input.name];
-
     const bookingId = option.value;
-    const filteredObj = posData.find(
+    const filteredObj = advanceData.find(
       item => item.booking._id === bookingId
     );
     const minDate = utils.getDate(filteredObj.booking.checkIn);
-
     setData({ ...data, date: minDate, _id: option.value});
     setGuest(option.label)
-    const response = await posService.getPosByBookingId(option.value);
-    // console.log("response",response)
+    const response = await advanceService.getAdvanceByBookingId(option.value);
     if(response){
-      setPosDetails(response)
-      setPos(response.pos)
+      setAdvanceDetails(response)
+      setAdvance(response.advance)
     }
     console.log("bookingId",data)
     setMinDate(minDate);
@@ -198,69 +209,70 @@ const AdvancedForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
     // console.log("in")
     const errors = checkForErrors();
     if (errors) return;
-
-    const { _id, date, amount, remarks } = data;
+    const {_id,date,advanceP,modeofpayment,reciptNumber} = data;
     const booking = {
       ...allBookings.find(booking => booking._id === _id)
     };
-
-    if (pos) {
-      let _pos = { ...pos };
-      _pos[title] = _pos[title]
-        ? [..._pos[title], { date, amount, remarks }]
-        : [{ date, amount, remarks }];
-      // booking.pos = _pos;
-      const response = await posService.updatePos({
-        ...posDetails,
-        pos:_pos
+    if(advance) {
+      console.log("Response Advance",advance)
+      let _advance =[...advance];
+      console.log("_advance",_advance)
+       _advance.push({date,advanceP,modeofpayment,reciptNumber})
+      const response = await advanceService.updateAdvance({
+        ...advanceDetails,
+        advance:_advance
       });
       if (response){
         openSnackBar("Updated Successfully", success);
-        setPos(_pos)
+        setAdvance(_advance)
       } 
       else openSnackBar("Error Occurred", error);
-    } else {
-      let _pos = {};
-      _pos[title] = [{ date, amount, remarks }];
-      const _posDetails = {
-        pos:_pos,
+    }
+     else {
+      let _advance = {};
+      _advance = [{date, advanceP,modeofpayment,reciptNumber}];
+      const advanceDetails = {
+        advance:_advance,
         bookingId:booking._id,
         guestName: guest,
         rooms:booking.rooms
       }
-      const response = await posService.addPos(_posDetails);
+      const response = await advanceService.addAdvance(advanceDetails);
       if (response.status === 201){
         openSnackBar("Updated Successfully", success);
-        setPos(_pos)
-        setPosDetails(_posDetails)
+        setAdvance(_advance)
+        setAdvanceDetails(advanceDetails)
       } 
       else openSnackBar("Error Occurred", error);
     }
+   
   };
-
+ 
   const openSnackBar = (message, variant) => {
     const snakbarObj = { open: true, message, variant, resetBookings: false };
     handleSnackbarEvent(snakbarObj);
   };
 
   const handlePosDelete = async (obj) => {
-    let index = pos[title].findIndex(e => e.date === obj.date)
-    let temp = JSON.parse(JSON.stringify(pos))
-    temp[title].splice(index,1)
+    let index = advance.findIndex(e => e.date === obj.date)
+    let temp = JSON.parse(JSON.stringify(advance))
+    temp.splice(index,1)
     // console.log("pos",pos, temp)
-    setPos(temp)
-
-    const _posDetails = {
-      ...posDetails,
-      pos:temp
+    setAdvance(temp)
+    // const { _id, date, amount, remarks } = data;
+    // const booking = {
+    //   ...allBookings.find(booking => booking._id === _id)
+    // };
+    const _advanceDetails= {
+      ...advanceDetails,
+      advance:temp
     }
-    const response = await posService.updatePos(_posDetails);
+    const response = await advanceService.updateAdvance(_advanceDetails);
     if (response) {
       openSnackBar("Updated Successfully", success);
-      setPos(temp)
+      setAdvance(temp)
     }
     else openSnackBar("Error Occurred", error);
-    // onClose();
   };
 
   return (
@@ -295,9 +307,24 @@ const AdvancedForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
             )}
           </div>
           {FormUtils.renderInput(
-            getInputArgObj("Advance", "Advance", "text", disable)
+            getInputArgObj( "advanceP", "Advance","text", disable)
           )}
         </div>
+        <div className="form-group">
+          {FormUtils.renderSelect({
+            id: "modeofpayment",
+            label: "Mode of Payment",
+            name: "modeofpayment",
+            value: data.modeofpayment,
+            onChange: event => changePaymentOptions(event),
+            options: paymentMethodOptions,
+            error: errors.modeofpayment,
+            disabled: disable
+          })}
+          {FormUtils.renderInput(
+            getInputArgObj( "reciptNumber","Recipt Number", "text", disable)
+          )}
+          </div>
       </DialogContent>
       <DialogActions style={{paddingRight:"2rem"}}>
         <Button onClick={onClose} color="secondary" variant="contained">
@@ -307,7 +334,12 @@ const AdvancedForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
           Save
         </Button>
       </DialogActions>
-       <AdvancedList/>
+      {advance && <AdvancedList
+        advance ={advance}
+        booking = {allBookings}
+        handlePosDelete={handlePosDelete}
+      />}
+       
     </form>
   );
 };

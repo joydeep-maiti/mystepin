@@ -122,4 +122,25 @@ export default {
       .required()
       .label("Remarks")
   }
+  ,
+  ADVANCESchema: {
+    roomNumber: Joi.string()
+      .required()
+      .label("Room Number"),
+    _id: Joi.string()
+      .required()
+      .label("Booking"),
+    date: Joi.date()
+      .required()
+      .label("Date"),
+    advanceP: Joi.number()
+      .required()
+      .label("Advance"),
+   modeofpayment: Joi.string()
+      .required()
+      .label("Mode of Payment"),
+   reciptNumber :Joi.string()
+      .required()
+      .label("Recipt Number")
+  }
 };

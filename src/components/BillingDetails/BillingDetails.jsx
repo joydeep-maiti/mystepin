@@ -31,16 +31,16 @@ const BillingDetails = () => {
   const classes = useStyles();
   const [startingDate,setStartingDate]=useState(utils.getDate(moment().startOf('month')));
   var sdate=moment(startingDate);
-  const [startDateString,setStartDateString]=useState(sdate.format('D')+"/"+sdate.format('M')+"/"+sdate.format('YYYY'));
+  const [startDateString,setStartDateString]=useState(sdate.format('D')+"-"+sdate.format('MMMM')+"-"+sdate.format('YYYY'));
   const [currentDate, setCurrentDate] = useState(utils.getDate());
-  var cdate=moment(currentDate);
-  const [currentDateString,setCurrentDateString]=useState(cdate.format('D')+"/"+cdate.format('M')+"/"+cdate.format('YYYY'));
+  var    cdate=moment(currentDate);
+  const [currentDateString,setCurrentDateString]=useState(cdate.format('D')+"-"+cdate.format('MMMM')+"-"+cdate.format('YYYY'));
   const [bookings, setBookings] = useState([]);
   const [billingCategory,setBillingCategory] = useState("");
   const [shouldDisable, setShouldDisable] = useState(false);
   const [billingTypes, setBillingTypes] = useState([]);
   const [generatedTime,setGeneratedTime] = useState(
-    moment().format('D/MMMM/YYYY')+'-'+moment().format('h:mm A')
+    moment().format('D-MMMM-YYYY')+'-'+moment().format('h:mm A')
   )
   //getting options
   useEffect(()=>{
@@ -60,14 +60,14 @@ const BillingDetails = () => {
   const handleStartingDateChange =(date)=>{
     setStartingDate(utils.getDate(date));  
     var d = moment(date);
-    setStartDateString(d.format('D')+"/"+d.format('M')+"/"+d.format('YYYY'));
+    setStartDateString(d.format('D')+"-"+d.format('MMMM')+"-"+d.format('YYYY'));
 
   };
   //Handle current date Change
   const handleCurrentDateChange = (date) => {  
     setCurrentDate(utils.getDate(date));
     var d = moment(date);
-    setCurrentDateString(d.format('D')+"/"+d.format('M')+"/"+d.format('YYYY'));
+    setCurrentDateString(d.format('D')+"-"+d.format('MMMM')+"-"+d.format('YYYY'));
 
   };
   //Get Plan Options
@@ -108,7 +108,7 @@ const BillingDetails = () => {
     const marginLeft2 = 350;
     const doc = new jsPDF(orientation, unit, size);
         doc.setFontSize(20);
-        let title = "Billing Report";
+        let title = `${billingCategory} Report`;
         let headers = [["Bill No", "Name","Bill Date","Room Rate","Boarding","Tax","Food","Transport","Laundary","Misc","Phone","Total","Advance","Balance"]];
         let data = bookings
         let content = {
@@ -126,11 +126,9 @@ const BillingDetails = () => {
         doc.text(title, 400, 40);
         doc.setFontSize(10);
         doc.text("Report Generated at "+generatedTime,600,40);
-        doc.setFontSize(15)
-        doc.text(billingCategory,380,60)
         doc.setFontSize(15);
         doc.text("From : "+startDateString,100, 90);
-        doc.text("To : "+currentDateString,230, 90);
+        doc.text("To : "+currentDateString,250, 90);
         doc.setFontSize(12);
         doc.autoTable(content);
         doc.save(`${billingCategory}.pdf`)

@@ -89,29 +89,32 @@ const fetchAndGenerateMonthlyOccupanyReport = async()=>{
 
   let options = await bookingReport.getBookingReport(bookingCategory,startD,currentD)
 
-
   console.log("Response",options)
-
+  console.log("Category",bookingCategory)
   console.log("monthly report ",options)
+  if(options){
   let data = options.map(option=>{
     let booDate = moment(option.bookingDate).format('D-MMMM-YYYY');
     let arriDate = moment(option.dateOfArrival).format('D-MMMM-YYYY');
     let depDate = moment(option.dateOfDeparture).format('D-MMMM-YYYY');
     return([
-      option.bookingId,
       booDate,
       option.guestName,
       arriDate,
       depDate,
       option.nights,
       option.NoofRooms,
-      option.bookedBy,
-      option.referenceNumber,
-      option.Amount,
+      option.bookedBy !==null ? option.reference !== null  ? `${option.bookedBy} ${"\n"} ${option.referenceNumber}`: option.bookedBy :"",
+      option.Amount, 
       option.Advance
     ])
   })
   exportBookingReportToPDF(data)
+}
+else{
+  alert("No Booking in specfied Category")
+}
+  
  } 
 
  const exportBookingReportToPDF = (reportData) =>{
@@ -125,12 +128,12 @@ const fetchAndGenerateMonthlyOccupanyReport = async()=>{
   const doc = new jsPDF(orientation, unit, size);
   doc.setFontSize(20);
   let title = `${bookingCategory}  REPORT`;
-  let headers = [["BOOKING ID","BOOKING DATE","NAME OF THE GUEST","DATE OF ARRIVAL","DATE OF DEPARTURE","NIGHTS","NO OF ROOMS","BOOKED BY","REFERENCE NUMBER","AMOUNT","ADVANCE"]];
+  let headers = [["BOOKING DATE","NAME OF THE GUEST","DATE OF ARRIVAL","DATE OF DEPARTURE","NIGHTS","NO OF ROOMS","BOOKED BY","AMOUNT","ADVANCE"]];
   let content = {
     startY: 120,
     head: headers,
     body: reportData,
-    theme: 'grid',
+    theme: 'striped',
     styles: {
       cellWidth:'wrap',
       halign: 'center',

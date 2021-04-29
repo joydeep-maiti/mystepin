@@ -90,27 +90,29 @@ const Configuration = () => {
           scrollButtons="auto"
           aria-label="scrollable auto tabs example"
         >
-          <Tab label="Taxes" {...a11yProps(0)} />
-          <Tab label="Rooms" {...a11yProps(1)} />
-          <Tab label="Room Category" {...a11yProps(2)} />
-          <Tab label="Rate Master" {...a11yProps(3)} />
-          <Tab label="Season Master" {...a11yProps(4)} />
+          
+          <Tab label="Rooms" {...a11yProps(0)} />
+          <Tab label="Room Category" {...a11yProps(1)} />
+          <Tab label="Rate Master" {...a11yProps(2)} />
+          <Tab label="Season Master" {...a11yProps(3)} />
+          <Tab label="Taxes" {...a11yProps(4)} />
         </Tabs>
       </AppBar>
+      
       <TabPanel className={classes.tabDiv} value={value} index={0}>
-        <Taxes />
-      </TabPanel>
-      <TabPanel className={classes.tabDiv} value={value} index={1}>
         <Rooms />
       </TabPanel>
-      <TabPanel className={classes.tabDiv} value={value} index={2}>
+      <TabPanel className={classes.tabDiv} value={value} index={1}>
         <RoomCategory />
       </TabPanel>
-      <TabPanel className={classes.tabDiv} value={value} index={3}>
+      <TabPanel className={classes.tabDiv} value={value} index={2}>
         <RateMaster />
       </TabPanel>
-      <TabPanel className={classes.tabDiv} value={value} index={4}>
+      <TabPanel className={classes.tabDiv} value={value} index={3}>
         <SeasonMaster />
+      </TabPanel>
+      <TabPanel className={classes.tabDiv} value={value} index={4}>
+        <Taxes />
       </TabPanel>
     </div>
   );

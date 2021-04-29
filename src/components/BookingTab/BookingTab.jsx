@@ -82,8 +82,8 @@ const BookingTab = () => {
 ///Fetching Data from backend
 const fetchAndGenerateMonthlyOccupanyReport = async()=>{
 
-  let startD = moment(startingDate).format('yyyy-M-D')
-  let currentD = moment(currentDate).format('yyyy-M-D')
+  let startD = moment(startingDate).format('yyyy-MM-DD')
+  let currentD = moment(currentDate).format('yyyy-MM-DD')
   console.log("Start",startD)
   console.log("End",currentD)
 
@@ -119,7 +119,7 @@ else{
 
  const exportBookingReportToPDF = (reportData) =>{
   const unit = "pt";
-  const size = "A2"; // Use A1, A2, A3 or A4
+  const size = "A4"; // Use A1, A2, A3 or A4
   const orientation = "landscape"; // portrait or landscape
   const marginLeft = 20;
   const marginLeft2 = 350;
@@ -127,7 +127,7 @@ else{
   const day = moment().format('dddd')
   const doc = new jsPDF(orientation, unit, size);
   doc.setFontSize(20);
-  let title = `${bookingCategory}  REPORT`;
+  let title = `${bookingCategory} REPORT`;
   let headers = [["BOOKING DATE","NAME OF THE GUEST","DATE OF ARRIVAL","DATE OF DEPARTURE","NIGHTS","NO OF ROOMS","BOOKED BY","AMOUNT","ADVANCE"]];
   let content = {
     startY: 120,
@@ -141,7 +141,7 @@ else{
     margin: marginLeft,
     pageBreak:'auto'
   };
-  doc.text(title, 700, 40);
+  doc.text(title, 300, 40);
   doc.setFontSize(10);
   doc.text("Report Generated at "+generatedTime,1400,20);
   doc.setFontSize(12);

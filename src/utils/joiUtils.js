@@ -18,9 +18,6 @@ export default {
     address: Joi.string()
       .required()
       .label("Address"),
-    nationality : Joi.string()
-      .required()
-      .label("Nationality"),
     checkIn: Joi.date()
       .required()
       .label("Check In"),

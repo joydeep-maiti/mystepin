@@ -40,5 +40,14 @@ async function addBilling(data) {
 //   }
 // }
 
-export default { getBillByBookingId,addBilling };
+async function getRecentCheckouts() {
+  try {
+    const { data: bills } = await http.get(`${http.baseUrl}/checkouts`);
+    return bills;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export default { getBillByBookingId,addBilling, getRecentCheckouts };
 

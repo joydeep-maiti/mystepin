@@ -270,7 +270,6 @@ const BillingForm = props => {
         <div style={{display:"flex", flexWrap:"wrap"}}>
           {renderInputItems("Name of Guest", getFullName, "name")}
           {renderInputItems("Room Numbers", rooms, "room numbers")}
-          {renderInputItems("Tax", data.tax, "tax")}
           {renderInputItems("Room Charges", booking.roomCharges, "roomCharges")}
           {renderInputItems("Tax", data.tax, "tax")}
           {renderInputItems("Misllaneous", postotal, "misllaneous")}

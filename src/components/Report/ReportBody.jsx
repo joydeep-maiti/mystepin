@@ -231,12 +231,26 @@ const ReportGenerator = ({ booking }) => {
   );
 };
 
-const ReportBody = ({ booking }) => {
+const ReportBody = ({ booking, billData }) => {
+
+  console.log("billData",billData)
+
   const classes = useStyles();
   const [bill, setBill] = React.useState(null);
+  
   React.useEffect(() => {
-    fetchBill(booking._id);
-  }, [booking._id]);
+    booking && !billData && fetchBill(booking._id);
+  }, [booking]);
+  
+  React.useEffect(() => {
+    if(billData){
+      const {bookingDetails, ...data} = billData
+      setBill({
+        ...bookingDetails,
+        ...data
+      })
+    }
+  }, [billData]);
 
   const fetchBill = async (id) => {
     const response = await billingService.getBillByBookingId(id);
@@ -244,10 +258,9 @@ const ReportBody = ({ booking }) => {
   };
 
 
-
   return (
     <div>
-      {bill && <ReportGenerator booking={Object.assign({}, bill, booking)} />}
+      {(bill || booking) && <ReportGenerator booking={Object.assign({}, bill, booking)} />}
       <div className={classes.btnGroup}>
         <ReactToPrint
           trigger={() =>

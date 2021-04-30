@@ -35,6 +35,8 @@ import utils from "../../utils/utils";
 import "./Dashboard.scss";
 import ReportComponent from '../ReportComponent/ReportComponent'
 import AdvancedDialog from '../AdvancedTab/AdvancedDialog'
+import RecentCheckouts from '../RecentCheckouts/RecentCheckouts'
+
 const useStyles = makeStyles((theme) => ({
   formControl: {
     marginTop: "20px",
@@ -235,9 +237,9 @@ const Dashboard = props => {
     handleDialog("pos");
   };
   //Advance
-  const handleShowAdvancedDialog = title => {
+  const handleShowAdvancedDialog = (title,size) => {
     setAdvancedDialogTitle(title);
-    handleDialog("advanced");
+    handleDialog("advanced",size);
   };
   const handleRedirectFromNavbar = () => {
     props.history.replace("/");
@@ -320,14 +322,23 @@ const Dashboard = props => {
             />
           )}
           {
-            dialog.openFor.advanced && (
+            dialog.openFor.advanced && advancedDialogTitle==="Advance Collection" &&(
               <AdvancedDialog
                 allBookings={allBookings}
                 title={advancedDialogTitle}
                 onClose={() => handleDialog(dialog.contentOf)}
               // onSnackbarEvent={handleSnackbarEvent}
               />
-            )}
+          )}
+          {
+            dialog.openFor.advanced && advancedDialogTitle==="Today's Checkout" &&(
+              <RecentCheckouts
+                allBookings={allBookings}
+                title={advancedDialogTitle}
+                onClose={() => handleDialog(dialog.contentOf)}
+              // onSnackbarEvent={handleSnackbarEvent}
+              />
+          )}
         </Dialog>
 
         <div className="subContainer"  >

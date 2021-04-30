@@ -19,8 +19,8 @@ const AdvancedMenu = ({ showAdvancedDialog }) => {
     setAnchorEl(null);
   };
 
-  const handleOpenAdvanceTabMenu = title => {
-    showAdvancedDialog(title);
+  const handleOpenAdvanceTabMenu = (title,size) => {
+    showAdvancedDialog(title,size);
     setAnchorEl(null);
   };
 
@@ -44,7 +44,7 @@ const AdvancedMenu = ({ showAdvancedDialog }) => {
         onClose={handleCloseAdvanceMenu}
        >
           <MenuItem onClick={()=>handleOpenAdvanceTabMenu("Advance Collection")}>Advance</MenuItem>
-          <MenuItem onClick={()=>handleCloseAdvanceMenu}>Recent Checkout</MenuItem>
+           <MenuItem onClick={()=>handleOpenAdvanceTabMenu("Today's Checkout", "md")}>Today's Checkout</MenuItem>
           <MenuItem onClick={()=>handleCloseAdvanceMenu}>Bill Settlement</MenuItem>
           <MenuItem onClick={()=>handleCloseAdvanceMenu}>Approximate Bill</MenuItem>
           <MenuItem onClick={()=>handleCloseAdvanceMenu}>Petty Cash</MenuItem>

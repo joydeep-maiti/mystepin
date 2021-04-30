@@ -215,11 +215,13 @@ const RateMaster = ({ onSnackbarEvent }) => {
   const handleInput = (e) => {
     
     if(e.target.name === "seasonId"){
-      let obj = ratePercents.find(el => el.seasonId === e.target.value)
+      let obj = ratePercents.find(el => 
+        el && el.seasonId === e.target.value
+      )
       console.log("obj",obj)
       setNewDoc({
         ...newDoc,
-        percent: openRateCopyDialog?0:obj.percent,
+        percent: openRateCopyDialog || !obj || !obj.percent ? 0 : obj.percent,
         [e.target.name]:e.target.value
       })
     }else {
@@ -441,7 +443,7 @@ const RateMaster = ({ onSnackbarEvent }) => {
                     <SaveOutlinedIcon style={{cursor:"pointer"}} onClick={handleUpdate}/>
                   </TableCell>}
                   <TableCell align="center">
-                    {row.seasonId!=="603b86c34de7fa001e6aeb7a" && <DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(row)}/>}
+                    {row.seasonId!=="5d3edc251c9d4400006bc08e" && <DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(row)}/>}
                   </TableCell>
                 </TableRow>
               ))}

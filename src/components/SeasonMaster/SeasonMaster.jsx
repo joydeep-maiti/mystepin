@@ -10,6 +10,8 @@ import {
   Button,
   makeStyles
 } from "@material-ui/core";
+import Dialog from '@material-ui/core/Dialog';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -68,9 +70,13 @@ const useStyles = makeStyles(theme => ({
 const SeasonMaster = ({ onClose }) => {
   const classes = useStyles();
   const [rooms, setRooms] = useState([]);
-  const [newDoc, setNewDoc] = useState({});
+  const [newDoc, setNewDoc] = useState({
+    fromDate: null,
+    toDate: null,
+  });
   const [editingRow, setEditingRow] = useState({});
   const [loading, setLoading] = useState(false);
+  const [openRateCopyDialog, setOpenRateCopyDialog] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -83,12 +89,17 @@ const SeasonMaster = ({ onClose }) => {
     setLoading(false);
   };
 
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = (e) => {
     e.preventDefault();
+    setOpenRateCopyDialog(true)
+  }
+ 
+  const addSeason= async(flag)=>{
+    setOpenRateCopyDialog(false)
     setLoading(true);
-    const res = await seasonService.addSeason(newDoc);
+    const res = await seasonService.addSeason(newDoc,flag);
     setLoading(false);
-    if(res.status===201){
+    if(res.status===201 || res.status===200){
       // setNewDoc({})
       setLoading(true);
       fetchData()
@@ -97,7 +108,6 @@ const SeasonMaster = ({ onClose }) => {
       setNewDoc({})
       alert("Bad Request")
     }
-
   }
 
   const handleUpdate = async () => {
@@ -124,9 +134,11 @@ const SeasonMaster = ({ onClose }) => {
 
   const handleInput = (e) => {
     setNewDoc({
+      ...newDoc,
       [e.target.name]:e.target.value
     })
   }
+
 
   const handleInputChange = (e) => {
     setEditingRow({
@@ -181,7 +193,7 @@ const SeasonMaster = ({ onClose }) => {
     <React.Fragment>
       <DialogTitle>Seasons</DialogTitle>
       <DialogContent className={classes.roomsDiv}>
-        <form className={classes.formGroup} noValidate autoComplete="off" onSubmit={handleFormSubmit}>
+        <form className={classes.formGroup} autoComplete="off" onSubmit={handleFormSubmit}>
           <TextField required id="standard-required" label="Season" name="season" onChange={handleInput}/>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
@@ -286,20 +298,41 @@ const SeasonMaster = ({ onClose }) => {
                     </MuiPickersUtilsProvider>
                   </TableCell>}
                   {editingRow._id !== row._id && <TableCell align="center">
-                    {row._id!=="603b86c34de7fa001e6aeb7a" && <EditOutlinedIcon style={{cursor:"pointer"}} onClick={()=>handleEdit(row)}/>}
+                    {row._id!=="5d3edc251c9d4400006bc08e" && <EditOutlinedIcon style={{cursor:"pointer"}} onClick={()=>handleEdit(row)}/>}
                   </TableCell>}
                   {editingRow._id === row._id && <TableCell align="center">
                     <ReplayOutlinedIcon style={{cursor:"pointer"}} onClick={handleUndo}/>
                     <SaveOutlinedIcon style={{cursor:"pointer"}} onClick={handleUpdate}/>
                   </TableCell>}
                   <TableCell align="center">
-                    {row._id!=="603b86c34de7fa001e6aeb7a" && <DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(row)}/>}
+                    {row._id!=="5d3edc251c9d4400006bc08e" && <DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(row)}/>}
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+        <Dialog
+          open={openRateCopyDialog}
+          onClose={()=>setOpenRateCopyDialog(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Copy Rate from Regular?"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              The existing Regular Rates will be copied to this Season Rates
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={()=>addSeason(false)} color="primary">
+              Disagree
+            </Button>
+            <Button onClick={()=>addSeason(true)} color="primary" autoFocus>
+              Agree
+            </Button>
+          </DialogActions>
+        </Dialog>
       </DialogContent>
     </React.Fragment>
   );

@@ -22,6 +22,10 @@ const useStyles = makeStyles(theme => ({
   },
   buttons:{
     marginTop: 20
+  },
+  dateDisplay : {
+      marginBottom : "2rem",
+      width: "300px"
   }
 }));
 const Occupancy = () => {
@@ -93,8 +97,8 @@ const Occupancy = () => {
    //**************************************Monthly Occupancy Report*************************************
   const fetchAndGenerateMonthlyOccupanyReport = async()=>{
 
-    let startD = moment(startingDate).format('yyyy-M-D')
-    let currentD = moment(currentDate).format('yyyy-M-D')
+    let startD = moment(startingDate).format('yyyy-MM-DD')
+    let currentD = moment(currentDate).format('yyyy-MM-DD')
     console.log("Start",startD)
     console.log("End",currentD)
 
@@ -305,22 +309,11 @@ const renderFromtoCalender=()=>{
 
 const renderDailyCalender=()=>{
  return( 
- <MuiPickersUtilsProvider utils={DateFnsUtils} 
-  style={{ marginLeft: "rem"}}>
-<KeyboardDatePicker
-disableToolbar
-format="dd/MMMM/yyyy"
-margin="normal"
-id="date-picker-dialog"
-label="Date Picker"
-value={currentDate}              
-KeyboardButtonProps={{
-'aria-label': 'change date',
-}}
-readOnly
-style={{ width:'350px'}}
-    />
-</MuiPickersUtilsProvider>)
+  
+  <Typography variant="h3">
+   {moment().format('DD-MMMM-YYYY')}
+  </Typography>
+ )
 }
 
 //Occupancy Render

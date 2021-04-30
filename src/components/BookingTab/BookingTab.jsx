@@ -71,7 +71,7 @@ const BookingTab = () => {
   
 
       useEffect(()=>{
-        if(bookingCategory === "Daily Booking Chart"){
+        if(bookingCategory === "Daily Booking"){
          setDailyView(false)  
         }
         else{
@@ -196,22 +196,11 @@ else{
   
   const renderDailyCalender=()=>{
    return( 
-   <MuiPickersUtilsProvider utils={DateFnsUtils} 
-    style={{ marginLeft: "rem"}}>
-  <KeyboardDatePicker
-  disableToolbar
-  format="dd/MMMM/yyyy"
-  margin="normal"
-  id="date-picker-dialog"
-  label="Date Picker"
-  value={currentDate}              
-  KeyboardButtonProps={{
-  'aria-label': 'change date',
-  }}
-  readOnly
-  style={{ width:'350px'}}
-      />
-  </MuiPickersUtilsProvider>)
+    <Typography variant="h3">
+    {moment().format('DD-MMMM-YYYY')}
+   </Typography>
+  
+    )
   }
   //Booking Tab render
     return (

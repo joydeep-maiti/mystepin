@@ -1,6 +1,6 @@
 import React from "react";
 import { withRouter } from 'react-router-dom'
-import { DialogTitle, DialogContent } from "@material-ui/core";
+import { DialogTitle, DialogContent, Button,DialogActions } from "@material-ui/core";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -29,15 +29,14 @@ const RecentCheckouts = ({ allBookings, onClose, title, onSnackbarEvent, history
         }
     }
 
+    const handleReport = (el)=>{
+        onClose();
+        history.push("/report",el);
+    }
+
     return (
         <React.Fragment>
         <DialogTitle>{title}</DialogTitle>
-        {/* <AdvancedForm
-            allBookings={allBookings}
-            onClose={onClose}
-            title={title}
-            // onSnackbarEvent={onSnackbarEvent}
-        /> */}
         <DialogContent>
         {loading && <Loader color="#0088bc" />}
         <TableContainer component={Paper} style={{marginTop:"0.7rem", height:"80vh"}}>
@@ -55,7 +54,7 @@ const RecentCheckouts = ({ allBookings, onClose, title, onSnackbarEvent, history
                     bills && bills.map(el => {
                     return(
                         <TableRow>
-                        <TableCell align="center"><span style={{cursor:"pointer", color:"blue"}} >{el.billingId}</span></TableCell>
+                        <TableCell align="center"><span style={{cursor:"pointer", color:"blue"}} onClick={()=>handleReport(el)}>{el.billingId}</span></TableCell>
                         <TableCell align="center">{el.guestName}</TableCell>
                         <TableCell align="center">{el.guestName}</TableCell>
                         <TableCell align="center">{el.paymentData.totalRoomCharges}</TableCell>
@@ -68,6 +67,12 @@ const RecentCheckouts = ({ allBookings, onClose, title, onSnackbarEvent, history
             </Table>
         </TableContainer>
         </DialogContent>
+        <DialogActions style={{paddingRight:"2rem", marginTop:"1rem"}}>
+        <Button onClick={onClose} color="secondary" variant="contained">
+          Close
+        </Button>
+
+      </DialogActions>
         </React.Fragment>
     );
 };

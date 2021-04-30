@@ -331,7 +331,7 @@ const Dashboard = props => {
               />
           )}
           {
-            dialog.openFor.advanced && advancedDialogTitle==="Recent Checkout" &&(
+            dialog.openFor.advanced && advancedDialogTitle==="Today's Checkout" &&(
               <RecentCheckouts
                 allBookings={allBookings}
                 title={advancedDialogTitle}

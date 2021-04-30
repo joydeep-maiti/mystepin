@@ -12,7 +12,6 @@ async function getBookings(monthObj) {
     console.log(error);
   }
 }
-
 async function addBooking(booking) {
   try {
     return await http.post(`${http.baseUrl}/bookings/insert`, booking);

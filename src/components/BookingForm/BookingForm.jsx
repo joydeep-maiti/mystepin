@@ -31,6 +31,7 @@ import taxService from "../../services/taxService";
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
+
 const BookingForm = props => {
   const classes = useStyles();
 
@@ -70,10 +71,7 @@ const BookingForm = props => {
     {planType:"EP"},
     {planType:"MAP"},
   ]);
-
-
-  
-  const [taxSlabs, setTaxSlabs] = React.useState([]);
+    const [taxSlabs, setTaxSlabs] = React.useState([]);
   // const roomOptions = availableRooms.map(room => {
   //   return { label: room.roomNumber, value: room.roomNumber };
   // });
@@ -301,27 +299,25 @@ const BookingForm = props => {
     if(data.bookedBy === "Agent"){
       setIsAgent(true);
       setIsMember(false);
-      setHeadOffice(false)
       console.log("Hello Agent")
+    }
+    else if(data.bookedBy === 'Head Office'){
+      setisHeadOffice(true)
+      setIsAgent(false)
+      setIsMember(false);
+      console.log("Hello member")
     }
     else if(data.bookedBy === "Member"){
       setIsMember(true)
       setIsAgent(false)
-      setHeadOffice(false)
-      console.log("Hello member")
-    }
-    else if(data.bookedBy === "Head Office"){
-      setIsMember(false)
-      setIsAgent(false)
-      setHeadOffice(true)
+      setisHeadOffice(false)
       console.log("Hello member")
     }
     else{
       setIsAgent(false)
       setIsMember(false)
-      setHeadOffice(false)
-
-    }
+      setisHeadOffice(false)
+  }
   },[data.bookedBy])
   //Adding BookedOptions
   const [bookedBy,setBookedBy] = useState("")
@@ -330,7 +326,7 @@ const BookingForm = props => {
   const [memberShipNumber,setMembershipNumber]=useState()
   const [isAgent,setIsAgent] = useState(false);
   const [isMember,setIsMember] = useState(false);
-  const [isHeadOffice,setHeadOffice] = useState(false)
+  const [isHeadOffice,setisHeadOffice] = useState(false);
   const bookedByOptions=[
     {label:"Walk In" ,value:"Walk In"},
     {label:"Agent" ,value:"Agent"},
@@ -507,7 +503,10 @@ const BookingForm = props => {
           disabled: shouldDisable,
           error: errors["agent"]
         })}
-        {isAgent || isHeadOffice && FormUtils.renderInput(
+        {isAgent && FormUtils.renderInput(
+          getInputArgObj("referencenumber", "Reference number", "number", shouldDisable)
+        )}
+        {isHeadOffice && FormUtils.renderInput(
           getInputArgObj("referencenumber", "Reference number", "number", shouldDisable)
         )}
         {

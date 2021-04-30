@@ -260,7 +260,7 @@ const ReportBody = ({ booking, billData }) => {
 
   return (
     <div>
-      {(bill || booking) && <ReportGenerator booking={Object.assign({}, bill, booking)} />}
+      {bill && <ReportGenerator booking={Object.assign({}, bill, booking)} />}
       <div className={classes.btnGroup}>
         <ReactToPrint
           trigger={() =>

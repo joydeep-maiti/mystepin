@@ -17,7 +17,6 @@ const Select5 = ({ walletList, onChange, error, value, ...props }) => {
           className: classes.menu
         }
       }}
-      margin="normal"
       {...props}
       helperText={error}
     >

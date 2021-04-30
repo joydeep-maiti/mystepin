@@ -236,6 +236,10 @@ const BookingFormLayout = ({
 
   const handleInputChange = ({ currentTarget: input }) => {
     console.log("input",input)
+    if(input.name==="contactNumber"){
+      console.log("input.value",input.value)
+      input.value = input.value.slice(0,10)
+    }
     const updatedState = FormUtils.handleInputChange(
       input,
       data,
@@ -528,6 +532,7 @@ const BookingFormLayout = ({
               enableFileUpload={enableFileUpload}
               handleFlatRateChange={handleFlatRateChange}
               updatedata={(val)=>setData({...data,...val})}
+              onCheckIn={handleCheckIn}
             />
           }
           maxWidth={700}

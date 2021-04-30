@@ -285,12 +285,16 @@ const SeasonMaster = ({ onClose }) => {
                       />
                     </MuiPickersUtilsProvider>
                   </TableCell>}
-                  {editingRow._id !== row._id && <TableCell align="center"><EditOutlinedIcon style={{cursor:"pointer"}} onClick={()=>handleEdit(row)}/></TableCell>}
+                  {editingRow._id !== row._id && <TableCell align="center">
+                    {row._id!=="603b86c34de7fa001e6aeb7a" && <EditOutlinedIcon style={{cursor:"pointer"}} onClick={()=>handleEdit(row)}/>}
+                  </TableCell>}
                   {editingRow._id === row._id && <TableCell align="center">
                     <ReplayOutlinedIcon style={{cursor:"pointer"}} onClick={handleUndo}/>
                     <SaveOutlinedIcon style={{cursor:"pointer"}} onClick={handleUpdate}/>
                   </TableCell>}
-                  <TableCell align="center"><DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(row)}/></TableCell>
+                  <TableCell align="center">
+                    {row._id!=="603b86c34de7fa001e6aeb7a" && <DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(row)}/>}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

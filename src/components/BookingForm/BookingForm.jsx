@@ -58,7 +58,8 @@ const BookingForm = props => {
     enableFileUpload,
     onSetPrice,
     handleFlatRateChange,
-    updatedata
+    updatedata,
+    onCheckIn
   } = props;
 
   const [loading, setLoading] = React.useState(false);
@@ -377,7 +378,7 @@ const BookingForm = props => {
   }
 
   return (
-    <form onSubmit={event => onFormSubmit(event)}>
+    <form onSubmit={event => onFormSubmit(event)} style={{marginBottom:"2rem"}}>
       {loading && <Loader color="#0088bc" />}
       <div className="form-group">
         {FormUtils.renderInput(
@@ -657,10 +658,21 @@ const BookingForm = props => {
         {FormUtils.renderButton({
           type: "submit",
           size: "large",
-          label: "Submit",
+          label: data._id?"Save":"Book",
           color: "primary",
           className: null,
           disabled: Object.keys(errors).length || shouldDisable ? true : false
+        })}
+
+        {data.status && !data.status.checkedIn && FormUtils.renderButton({
+          type: "button",
+          size: "large",
+          label: "CheckIn",
+          color: "primary",
+          className: null,
+          disabled: Object.keys(errors).length || shouldDisable ? true : false,
+          style: {marginLeft:"1rem"},
+          onClick: onCheckIn
         })}
       </div>
       <Dialog onClose={()=>setOpenPriceModal(false)} aria-labelledby="simple-dialog-title" open={openPriceModal} maxWidth="md" fullWidth={true}>

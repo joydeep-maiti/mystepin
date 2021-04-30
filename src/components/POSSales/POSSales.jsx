@@ -8,7 +8,9 @@ import moment from "moment";
 import utils from "../../utils/utils";
 import FormUtils from "../../utils/formUtils";
 import reportOptions from '../../services/reportOptions'
-
+import jsPDF from 'jspdf';
+import "jspdf-autotable";
+import posReportService from '../../services/posReportService'
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
@@ -29,7 +31,7 @@ const POSSales = () => {
   const [posCategory,setPosCategory] = useState("");
   const [shouldDisable, setShouldDisable] = useState(false);
   const [posTypes, setPosTypes] = useState([]);
-  
+  const [posTotal,setPosTotal] = useState(0);
   //getting options
   useEffect(()=>{
     fetchBillingTypes()
@@ -63,7 +65,78 @@ const POSSales = () => {
       setPosCategory(event.target.value);
       console.log("event",posCategory);
       }
-  
+  //Report Generation
+  const [generatedTime,setGeneratedTime] = useState(
+    moment().format('D-MMMM-YYYY h:mm A')
+  )
+  let total=0;
+  const fetchAndGeneratePOSReport = async()=>{
+    let startD = moment(startingDate).format('yyyy-MM-DD')
+    let currentD = moment(currentDate).format('yyyy-MM-DD')
+    console.log("Start",startD)
+    console.log("End",currentD)
+    let options = await posReportService.getPosReport(posCategory,startD,currentD)
+    console.log("Response",options)
+    console.log("Category",posCategory)
+   if(options !== null){
+    let data = options.map(option=>{
+          let date = moment(option.date).format("DD-MMMM-yyyy");
+          total += parseInt(option.amount)
+        return([
+          date,
+          option.roomNo,
+          option.amount,
+          option.remarks
+        ])
+      })
+
+    setPosTotal(total)
+    console.log("POSTotal",total);
+    console.log("POSDATA",posTotal)
+    exportPOSReportToPDF(data,total)
+   }
+  else{
+    alert("No Booking in specfied Category")
+  }
+  } 
+    
+    const exportPOSReportToPDF = (reportData) =>{
+    const unit = "pt";
+    const size = "A4"; // Use A1, A2, A3 or A4
+    const orientation = "landscape"; // portrait or landscape
+    const marginLeft = 20;
+    const marginLeft2 = 350;
+    const date = moment().format('D-MMM-YYYY')
+    const day = moment().format('dddd')
+    const doc = new jsPDF(orientation, unit, size);
+    doc.setFontSize(20);
+    let title = `${posCategory} REPORT`;
+    let headers = [["DATE","ROOM NO","AMOUNT","REMARKS"]];
+    let content = {
+      startY: 120,
+      head: headers,
+      body: reportData,
+      theme: 'striped',
+      styles: {
+        cellWidth:'wrap',
+        halign: 'center',
+      },
+      margin: marginLeft,
+      pageBreak:'auto'
+    };
+    doc.text(title, 300, 40);
+    doc.setFontSize(10);
+    doc.text("Report Generated at "+generatedTime,1400,20);
+    doc.setFontSize(12);
+    doc.text("MONTH : "+ "APRIL 21",100,100)
+    doc.setFontSize(12);
+    doc.autoTable(content);
+    doc.setFontSize(20);
+    let finalY = doc.lastAutoTable.finalY+100; // The y position on the page
+    doc.text(320, finalY, `Total ${posCategory} Sales        ${total}`);
+    doc.setTextColor("#fb3640");
+    doc.save(`${posCategory} BOOKING REPORT`)
+  }
     const classes = useStyles();
     return (
       <div>
@@ -120,7 +193,7 @@ const POSSales = () => {
             </MuiPickersUtilsProvider>
             </div>  
           <div className="buttoncontainer"> 
-        <Button  type="submit" className="button">
+        <Button  type="submit" className="button" onClick={fetchAndGeneratePOSReport}>
           Generate
         </Button>
           </div>

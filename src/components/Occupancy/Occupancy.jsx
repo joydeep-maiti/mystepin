@@ -207,7 +207,6 @@ const Occupancy = () => {
     }
   } 
   
-
 //Export Daily occupancy pdf
     const exportDailyOccupantToPDF = (reportData,data2,occupied,continuing) =>{
     const unit = "pt";
@@ -315,7 +314,6 @@ const renderDailyCalender=()=>{
   </Typography>
  )
 }
-
 //Occupancy Render
   return (
     <div>

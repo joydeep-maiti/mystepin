@@ -33,7 +33,7 @@ const BookingTab = () => {
   const [bookingTypes, setBookingTypes] = useState([]);
   const [dailyview,setDailyView] = useState(false)
   const [generatedTime,setGeneratedTime] = useState(
-    moment().format('D.MMMM.YYYY h:mm A')
+    moment().format('D-MMMM-YYYY h:mm A')
   )
   //getting options
   useEffect(()=>{

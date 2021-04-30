@@ -345,10 +345,14 @@ const BookingForm = props => {
  
   const nationalityOptions = [
     {label : "Indian",value : "Indian"}
-    ,{label : "UK",value : "UK"}
-    ,{label : "USA",value : "USA"}
-    ,{label : "Australia",value : "Australia"}
+    ,{label : "British",value : "British"}
+    ,{label : "American",value : "American"}
+    ,{label : "Australian",value : "Australian"}
     ,{label : "Japan",value : "Japan"}
+    ,{label : "Saudi Arab",value : "Saudi Arab"}
+    ,{label : "UAE",value : "UAE"}
+    ,{label : "Africa",value : "Africa"},
+    ,{label : "French",value : "French"}
  ]
 
   console.log(memberShipNumber)

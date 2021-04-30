@@ -116,7 +116,7 @@ const Taxes = ({ onClose }) => {
   return (
     <React.Fragment>
       
-       <DialogTitle>Tax Caluclation</DialogTitle>
+       <DialogTitle>Tax Calculation</DialogTitle>
        
     <TableContainer className={classes.table} component={Paper} style={{position:"relative",width:"70%" ,right:"-10%"}}>
     <Table className={classes.table} aria-label="simple table"  >

@@ -106,7 +106,7 @@ const BookingForm = props => {
 
   const fetchTaxes = async () => {
     setLoading(true)
-    const taxSlabs = await taxService.getTaxSlabs();
+    const taxSlabs = await taxService.getTaxSlabs("GST");
     setTaxSlabs(taxSlabs);
     setLoading(false);
   };

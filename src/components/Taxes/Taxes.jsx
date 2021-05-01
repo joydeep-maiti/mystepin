@@ -24,6 +24,12 @@ import { grey, black, blue } from "@material-ui/core/colors";
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
 import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import constants from "../../utils/constants";
+
+const { success, error } = constants.snackbarVariants;
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -37,11 +43,6 @@ const StyledTableCell = withStyles((theme) => ({
 
 
 }))(TableCell);
-
-
-
-
-
 
 const useStyles = makeStyles(theme => ({
 
@@ -63,9 +64,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Taxes = ({ onClose }) => {
+const Taxes = ({ onSnackbarEvent }) => {
   const classes = useStyles();
-  const [taxSlabs, setTaxSlabs] = useState([]);
+  const [taxSlabs, setTaxSlabs] = useState(null);
   const [sam, setsam] = useState([]);
   const [tax, setTax] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -86,6 +87,13 @@ const Taxes = ({ onClose }) => {
     const slab = [...taxSlabs]
     slab[i].lessThanAndEqual = Number(e.target.value)
     slab[i + 1].greaterThan = Number(e.target.value) + 1
+    setTaxSlabs(slab)
+  }
+
+  const handleCheckBoxChange = (e) =>{
+    console.log("e.checked",e.target.checked)
+    const slab = [...taxSlabs]
+    slab[3].active = e.target.checked
     setTaxSlabs(slab)
   }
 
@@ -112,28 +120,37 @@ const Taxes = ({ onClose }) => {
     taxSlabs.forEach(el => {
       promises.push(taxService.updatetaxDetails(el))
     })
+    setLoading(true);
     Promise.all(promises)
       .then(res => {
-        alert("Data Saved!!")
+        openSnackBar("Rate Updated Successfully", success);
         console.log("promiseAll res", res)
       })
       .catch((err) => {
         console.log(err)
       })
+      .then(()=>{
+        setLoading(false);
+      })
 
   }
 
+  const openSnackBar = (message, variant) => {
+    const snakbarObj = { open: true, message, variant, resetBookings: false };
+    onSnackbarEvent(snakbarObj);
+  };
+
   return (
     <React.Fragment>
-
       <DialogTitle>Tax Calculation</DialogTitle>
+      {loading && <Loader color="#0088bc" />}
       <DialogContent className={classes.roomsDiv}>
         <TableContainer className={classes.table} component={Paper}>
           <Table className={classes.table} aria-label="simple table"  >
             <TableHead>
               <TableRow>
                 <StyledTableCell rowSpan={2} align="center">TAX</StyledTableCell>
-                <StyledTableCell rowSpan={2} align="center">SETTINGS</StyledTableCell>
+                <StyledTableCell rowSpan={2} align="center">UNIT</StyledTableCell>
                 <StyledTableCell colSpan={2} align="center" >PRICE RANGE</StyledTableCell>
                 <StyledTableCell rowSpan={2} align="center">VALUE</StyledTableCell>
               </TableRow>
@@ -143,58 +160,78 @@ const Taxes = ({ onClose }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow>
-                <StyledTableCell align="center" rowSpan={4}><TextField style={{ position: "relative", width: "50%", height: "500%" }}
-                  variant="outlined" value="GST" disabled="true" ></TextField></StyledTableCell>
-                <StyledTableCell align="center" rowSpan={4} ><TextField style={{ position: "relative", width: "50%" }}
-                  variant="outlined" value="%" disabled="true"></TextField></StyledTableCell>
-
-              </TableRow>
-              {taxSlabs.map((row, i) => (
+              {taxSlabs && taxSlabs.slice(0,3).map((row, i) => (
                 <TableRow key={row._id} >
-
-                  {tax._id !== row._id && <StyledTableCell align="center">
-                    <TextField style={{ position: "relative", width: "50%" }}
-                      variant="outlined" disabled="true" value={row.greaterThan} /></StyledTableCell>}
-                  {tax._id === row._id && <StyledTableCell align="center">
-                    <TextField style={{ position: "relative", width: "50%" }}
-                      variant="outlined" type="number" label="greaterThan" name="greaterThan" required="true" disabled="true" value={tax.greaterThan} />
+                  
+                  {i===0 && <StyledTableCell align="center" rowSpan={3}><TextField style={{ position: "relative", width: "50%"}}
+                    variant="outlined" value="GST" disabled="true" ></TextField>
                   </StyledTableCell>}
-                  {
-                    i == 2 && <StyledTableCell > </StyledTableCell>
-                  }
-                  { i == 0 && <StyledTableCell align="center">
+                  {i===0 && <StyledTableCell align="center" rowSpan={3} ><TextField style={{ position: "relative", width: "50%" }}
+                    variant="outlined" value="%" disabled="true"></TextField>
+                  </StyledTableCell>}
+                  <StyledTableCell align="center">
+                    <TextField style={{ position: "relative", width: "50%" }}
+                      variant="outlined" disabled="true" value={row.greaterThan} />
+                  </StyledTableCell>
+                  {i !== 2 && <StyledTableCell align="center">
                     <TextField style={{ position: "relative", width: "50%" }}
                       variant="outlined" type="number" inputProps={{ min: 0, max: 100 }} name="lessThanAndEqual" value={row.lessThanAndEqual} onChange={(e) => handleInputChange(e, i)} ></TextField>
                   </StyledTableCell>}
-                  { i == 1 && <StyledTableCell align="center">
-                    <TextField style={{ position: "relative", width: "50%" }}
-                      variant="outlined" type="number" inputProps={{ min: 0, max: 100 }} name="lessThanAndEqual" value={row.lessThanAndEqual} onChange={(e) => handleInputChange(e, i)} ></TextField>
-                  </StyledTableCell>}
-                  {  row.taxPercent <= 100 &&
-                    <StyledTableCell align="center">
+                  {i === 2 && <StyledTableCell align="center"></StyledTableCell>}
+                  <StyledTableCell align="center">
                       <TextField style={{ position: "relative", width: "50%" }}
                         variant="outlined" type="number" inputProps={{ min: 0, max: 100, step:.01 }}name="taxPercent" value={row.taxPercent} onChange={(e) => handlePercentInputChange(e, i)} ></TextField>
-                    </StyledTableCell>
-                  }
-                  { row.taxPercent > 100 && <StyledTableCell align="center">
-                    <TextField style={{ position: "relative", width: "50%" }}
-                      variant="outlined" type="number" title="Not a valid" name="taxPercent" value={alert("Not Valid")} onChange={(e) => handlePercentInputChange(e, i)} ></TextField>
-                  </StyledTableCell>}
-
+                  </StyledTableCell>
                 </TableRow>
 
               ))}
               <TableRow>
+                <StyledTableCell align="center">
+                  <TextField style={{ position: "relative", width: "50%"}}
+                  variant="outlined" value="CITY" disabled="true" />
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  <TextField style={{ position: "relative", width: "50%" }}
+                  variant="outlined" value="%" disabled="true" />
+                </StyledTableCell>
+                <StyledTableCell></StyledTableCell>
+                <StyledTableCell align="center">
+                  <FormControl>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={taxSlabs && taxSlabs[3] && taxSlabs[3].active}
+                          onChange={handleCheckBoxChange}
+                          name="active"
+                          color="primary"
+                        />
+                      }
+                      label="Active"
+                      ></FormControlLabel>
+                  </FormControl>
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  <TextField 
+                    style={{ position: "relative", width: "50%" }}
+                    variant="outlined" 
+                    type="number" 
+                    inputProps={{ min: 0, max: 100, step:.01 }}
+                    name="taxPercent" 
+                    value={taxSlabs && taxSlabs[3] && taxSlabs[3].taxPercent} 
+                    onChange={(e) => handlePercentInputChange(e, 3)} 
+                  />
+                </StyledTableCell>
+              </TableRow>
+              <TableRow>
                 <StyledTableCell></StyledTableCell>
                 <StyledTableCell></StyledTableCell>
                 <StyledTableCell></StyledTableCell>
                 <StyledTableCell></StyledTableCell>
-                <StyledTableCell style={{paddingRight:"2rem"}}>
+                <StyledTableCell align="center">
                   <Button
                     type="submit"
                     variant="contained"
-                    style={{ backgroundColor: "#0088bc", color: 'white', float:"right"}} 
+                    style={{ backgroundColor: "#0088bc", color: 'white'}} 
                     onClick={handleUpdate}
                   > 
                     SAVE 

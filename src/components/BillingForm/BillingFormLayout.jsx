@@ -52,18 +52,20 @@ const BillingFormLayout = props => {
 
   useEffect(() => {
     const { selectedBooking: booking, history } = props;
-    const getTaxSlabs = async () => {
-      const taxSlabs = await taxService.getTaxSlabs();
-      const roomCharges = booking.roomCharges;
-      setSelectedBooking(booking);
-      setTaxSlabs(taxSlabs);
-      setRoomCharges(roomCharges);
-    };
     if (booking === null) history.replace("/");
     else getTaxSlabs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  
+  const getTaxSlabs = async () => {
+    const { selectedBooking: booking, history } = props;
+    const taxSlabs = await taxService.getTaxSlabs("GST");
+    const roomCharges = booking.roomCharges;
+    setSelectedBooking(booking);
+    setTaxSlabs(taxSlabs);
+    setRoomCharges(roomCharges);
+  };
+  
   useEffect(() => {
     if(Number(data.card)+Number(data.cash)+Number(data.wallet) === data.balance){
       setDue(false)

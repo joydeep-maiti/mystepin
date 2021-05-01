@@ -36,6 +36,11 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import moment from "moment";
+import ConfirmDialog from '../../common/ConfirmDialog/ConfirmDialog'
+import constants from "../../utils/constants";
+
+const { success, error } = constants.snackbarVariants;
+
 
 const useStyles = makeStyles(theme => ({
   formGroup: {
@@ -67,7 +72,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const SeasonMaster = ({ onClose }) => {
+
+
+const SeasonMaster = ({ onSnackbarEvent }) => {
   const classes = useStyles();
   const [rooms, setRooms] = useState([]);
   const [newDoc, setNewDoc] = useState({
@@ -77,6 +84,8 @@ const SeasonMaster = ({ onClose }) => {
   const [editingRow, setEditingRow] = useState({});
   const [loading, setLoading] = useState(false);
   const [openRateCopyDialog, setOpenRateCopyDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [tempDoc, setTempDoc] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -91,6 +100,10 @@ const SeasonMaster = ({ onClose }) => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
+    if(newDoc.fromDate>newDoc.toDate){
+      alert("From Date can not be Greater than To Date")
+      return
+    }
     setOpenRateCopyDialog(true)
   }
  
@@ -100,7 +113,7 @@ const SeasonMaster = ({ onClose }) => {
     const res = await seasonService.addSeason(newDoc,flag);
     setLoading(false);
     if(res.status===201 || res.status===200){
-      // setNewDoc({})
+      openSnackBar("Season Created Successfully", success);
       setLoading(true);
       fetchData()
     }else {
@@ -115,6 +128,7 @@ const SeasonMaster = ({ onClose }) => {
     const res = await seasonService.updateSeason(editingRow);
     setLoading(false);
     if(res){
+      openSnackBar("Season Updated Successfully", success);
       setEditingRow({})
       setLoading(true);
       fetchData()
@@ -122,11 +136,20 @@ const SeasonMaster = ({ onClose }) => {
   }
 
   const handleDelete = async (row) => {
-    return
+    setTempDoc(row)
+    setOpenDeleteDialog(true)
+  }
+
+  const deleteSeason = async(flag)=>{
+    setOpenDeleteDialog(false)
+    if(!flag){
+      return
+    }
     setLoading(true);
-    const res = await seasonService.deleteSeason(row);
+    const res = await seasonService.deleteSeason(tempDoc);
     setLoading(false);
     if(res){
+      openSnackBar("Season Deleted Successfully", success);
       setLoading(true);
       fetchData()
     }
@@ -139,6 +162,10 @@ const SeasonMaster = ({ onClose }) => {
     })
   }
 
+  const openSnackBar = (message, variant) => {
+    const snakbarObj = { open: true, message, variant, resetBookings: false };
+    onSnackbarEvent(snakbarObj);
+  };
 
   const handleInputChange = (e) => {
     setEditingRow({
@@ -312,27 +339,20 @@ const SeasonMaster = ({ onClose }) => {
             </TableBody>
           </Table>
         </TableContainer>
-        <Dialog
-          open={openRateCopyDialog}
-          onClose={()=>setOpenRateCopyDialog(false)}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{"Copy Rate from Regular?"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              The existing Regular Rates will be copied to this Season Rates
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={()=>addSeason(false)} color="primary">
-              Disagree
-            </Button>
-            <Button onClick={()=>addSeason(true)} color="primary" autoFocus>
-              Agree
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <ConfirmDialog 
+          openDialog={openRateCopyDialog}
+          setOpenDialog={setOpenRateCopyDialog}
+          title="Copy Rate from Regular?"
+          message="The existing Regular Rates will be copied to this Season Rates"
+          handleSubmit={addSeason}
+        />
+        <ConfirmDialog 
+          openDialog={openDeleteDialog}
+          setOpenDialog={setOpenDeleteDialog}
+          title="Confirm Delete Season?"
+          message="The Rates associated with this Season will also be Deleted"
+          handleSubmit={deleteSeason}
+        />
       </DialogContent>
     </React.Fragment>
   );

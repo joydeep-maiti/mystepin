@@ -467,7 +467,11 @@ const BookingFormLayout = ({
     updatedData.status = { ...updatedData.status, checkedIn: true };
     setData(updatedData);
     setLoading(true);
-    updateBooking(updatedData, "Checked In Successfully");
+    if(!updatedData._id){
+      createBooking(updatedData)
+    }else {
+      updateBooking(updatedData, "Checked In Successfully");
+    }
   };
 
   const handleCheckOut = () => {

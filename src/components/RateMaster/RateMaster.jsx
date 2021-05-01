@@ -416,7 +416,7 @@ const RateMaster = ({ onSnackbarEvent }) => {
                 <TableCell align="center" style={tablestyles}>Rate</TableCell>
                 <TableCell align="center" style={tablestyles}>Extra Rate/Person</TableCell>
                 <TableCell align="center" style={tablestyles}>Edit</TableCell>
-                <TableCell align="center" style={tablestyles}>Delete</TableCell>
+                {/* <TableCell align="center" style={tablestyles}>Delete</TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -442,9 +442,9 @@ const RateMaster = ({ onSnackbarEvent }) => {
                     <ReplayOutlinedIcon style={{cursor:"pointer"}} onClick={handleUndo}/>
                     <SaveOutlinedIcon style={{cursor:"pointer"}} onClick={handleUpdate}/>
                   </TableCell>}
-                  <TableCell align="center">
+                  {/* <TableCell align="center">
                     {row.seasonId!=="5d3edc251c9d4400006bc08e" && <DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(row)}/>}
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               ))}
             </TableBody>

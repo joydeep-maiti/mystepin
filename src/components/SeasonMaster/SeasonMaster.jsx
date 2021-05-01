@@ -101,7 +101,7 @@ const SeasonMaster = ({ onSnackbarEvent }) => {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     if(newDoc.fromDate>newDoc.toDate){
-      alert("From Date can not be Greater than To Date")
+      alert("Please choose a valid Date range!")
       return
     }
     setOpenRateCopyDialog(true)
@@ -118,12 +118,16 @@ const SeasonMaster = ({ onSnackbarEvent }) => {
       fetchData()
     }else {
       console.log(res)
-      setNewDoc({})
+      // setNewDoc()
       alert("Bad Request")
     }
   }
 
   const handleUpdate = async () => {
+    if(editingRow.fromDate>editingRow.toDate){
+      alert("lease choose a valid Date range!")
+      return
+    }
     setLoading(true);
     const res = await seasonService.updateSeason(editingRow);
     setLoading(false);

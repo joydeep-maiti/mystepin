@@ -24,11 +24,11 @@ const ConfirmDialog = ({ openDialog, setOpenDialog, title, message, handleSubmit
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => handleSubmit(false)} color="primary">
-                    Disagree
+                <Button onClick={() => handleSubmit(false)} color="secondary" variant="contained">
+                    NO
                 </Button>
-                <Button onClick={() => handleSubmit(true)} color="primary" autoFocus>
-                    Agree
+                <Button onClick={() => handleSubmit(true)} color="primary" autoFocus variant="contained">
+                    YES
                 </Button>
             </DialogActions>
         </Dialog>

@@ -32,6 +32,10 @@ const POSSales = () => {
   const [shouldDisable, setShouldDisable] = useState(false);
   const [posTypes, setPosTypes] = useState([]);
   const [posTotal,setPosTotal] = useState(0);
+  var sdate=moment(startingDate);
+  const [startDateString,setStartDateString]=useState(sdate.format('DD')+"-"+sdate.format('MMMM')+"-"+sdate.format('YYYY'));
+  var cdate=moment(currentDate);
+  const [currentDateString,setCurrentDateString]=useState(cdate.format('DD')+"-"+cdate.format('MMMM')+"-"+cdate.format('YYYY'));
   //getting options
   useEffect(()=>{
     fetchBillingTypes()
@@ -49,10 +53,14 @@ const POSSales = () => {
     //Handle starting date Change
     const handleStartingDateChange =(date)=>{
       setStartingDate(utils.getDate(date));  
+      var d = moment(date);
+      setStartDateString(d.format('DD')+"-"+d.format('MMMM')+"-"+d.format('YYYY'));
           };
     //Handle current date Change
     const handleCurrentDateChange = (date) => {  
       setCurrentDate(utils.getDate(date));
+      var d = moment(date);
+    setCurrentDateString(d.format('DD')+"-"+d.format('MMMM')+"-"+d.format('YYYY'));
      };
     //Get Plan Options
     const getPlanOptions = () => {
@@ -67,7 +75,7 @@ const POSSales = () => {
       }
   //Report Generation
   const [generatedTime,setGeneratedTime] = useState(
-    moment().format('D-MMMM-YYYY h:mm A')
+    moment().format('DD-MMMM-YYYY h:mm A')
   )
   let total=0;
   const fetchAndGeneratePOSReport = async()=>{
@@ -78,7 +86,7 @@ const POSSales = () => {
     let options = await posReportService.getPosReport(posCategory,startD,currentD)
     console.log("Response",options)
     console.log("Category",posCategory)
-   if(options !== null){
+   if(options){
     let data = options.map(option=>{
           let date = moment(option.date).format("DD-MMMM-yyyy");
           total += parseInt(option.amount)
@@ -96,7 +104,7 @@ const POSSales = () => {
     exportPOSReportToPDF(data,total)
    }
   else{
-    alert("No Booking in specfied Category")
+    alert("No POS Sales in specfied Category")
   }
   } 
     
@@ -126,16 +134,20 @@ const POSSales = () => {
     };
     doc.text(title, 300, 40);
     doc.setFontSize(10);
-    doc.text("Report Generated at "+generatedTime,1400,20);
+    doc.text("Report Generated at "+generatedTime,620,40);
     doc.setFontSize(12);
-    doc.text("MONTH : "+ "APRIL 21",100,100)
+    doc.text("From : "+startDateString,100, 90);
+    doc.text("To : "+currentDateString,250, 90);
     doc.setFontSize(12);
     doc.autoTable(content);
     doc.setFontSize(20);
     let finalY = doc.lastAutoTable.finalY+100; // The y position on the page
-    doc.text(320, finalY, `Total ${posCategory} Sales        ${total}`);
+    doc.setDrawColor(0, 0, 0);
+    doc.setLineWidth(2.5);
+    doc.line(15, finalY-70, 820, finalY-70)
+    doc.text(320, finalY, `Total ${posCategory} Sales   =     ${total}`);
     doc.setTextColor("#fb3640");
-    doc.save(`${posCategory} BOOKING REPORT`)
+    doc.save(`${posCategory} SALES REPORT`)
   }
     const classes = useStyles();
     return (

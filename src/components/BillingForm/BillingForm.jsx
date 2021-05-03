@@ -54,7 +54,7 @@ const BillingForm = props => {
 
   console.log("booking",booking)
   console.log("data",data)
-
+  
   const [postotal, setPosTotal] = React.useState(0)
   const [pos, setPos] = React.useState(null)
   // const [roomChargesTotal, setRoomChargesTotal] = React.useState(0)
@@ -101,11 +101,11 @@ const BillingForm = props => {
     setWallet(event.target.value)
     onChangeData({walletType:event.target.value})
   }
-
   React.useEffect(()=>{
     fetchPos()
   },[booking._id,data.totalRoomCharges])
 
+ 
   const fetchPos = async()=>{
     setLoading(true)
     const response = await posService.getPosByBookingId(booking._id)

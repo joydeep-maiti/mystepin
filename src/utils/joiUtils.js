@@ -89,13 +89,12 @@ export default {
       .items(roomsSchema)
       .unique()
       .required(),
-    Idproof: Joi.string()
-    .label("ID_Proof"),
-    proofs: Joi.string()
-    .label("Proof Type"),
+    // Idproof: Joi.string()
+    // .label("ID_Proof"),
+    // proofs: Joi.string()
+    // .label("Proof Type"),
     bookedBy: Joi.string()
     .label("Booked By")
-
   },
   billingFormSchema: {
     cash: Joi.number(),

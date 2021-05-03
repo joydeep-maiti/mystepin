@@ -18,8 +18,7 @@ async function addBooking(booking) {
   } catch (error) {
     console.log(error);
   }
-}
-
+}//${http.baseUrl} //http://localhost:5000
 async function getProofId(id) {
   try {
     return await http.get(`${http.baseUrl}/booking/idproof/${id}`);

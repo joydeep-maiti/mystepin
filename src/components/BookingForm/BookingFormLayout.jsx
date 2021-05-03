@@ -453,11 +453,14 @@ const BookingFormLayout = ({
       handleEdit()
       return;
     }
-    if(!data.idProofImage){
-      alert("Please Upload Id Proof first in order to check in")
-      setEnableFileUpload(true)
-      return
-    }
+
+    //To check the id proof for sign in changed
+
+    // if(!data.idProofImage){
+    //   alert("Please Upload Id Proof first in order to check in")
+    //   setEnableFileUpload(true)
+    //   return
+    // }
     const updatedData = { ...data };
     updatedData.checkedInTime = utils.getTime();
     updatedData.status = { ...updatedData.status, checkedIn: true };

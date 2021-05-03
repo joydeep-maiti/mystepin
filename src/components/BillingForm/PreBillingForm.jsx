@@ -133,7 +133,7 @@ const PreBillingForm = props => {
             <td className={classes.tableTDesc}>{booking?moment(booking.checkOut).format('D.MMM.YYYY'):""}</td>
             <td className={classes.tableTDTitle}>No of Nights</td>
             <td>:</td>
-            <td className={classes.tableTDesc}>{booking?booking.nights:0}</td>
+            <td className={classes.tableTDesc}>{booking?booking.nights:1}</td>
           {/* </tr>
           <tr> */}
           </tr>

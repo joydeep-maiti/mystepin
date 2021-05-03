@@ -57,7 +57,7 @@ const RecentCheckouts = ({ allBookings, onClose, title, onSnackbarEvent, history
                         <TableCell align="center"><span style={{cursor:"pointer", color:"blue"}} onClick={()=>handleReport(el)}>{el.billingId}</span></TableCell>
                         <TableCell align="center">{el.guestName}</TableCell>
                         <TableCell align="center">{el.guestName}</TableCell>
-                        <TableCell align="center">{el.paymentData.totalRoomCharges}</TableCell>
+                        <TableCell align="center">{el.paymentData.posTotal?Number(el.paymentData.totalRoomCharges)+Number(el.paymentData.posTotal):el.paymentData.totalRoomCharges}</TableCell>
                         <TableCell align="center">{el.paymentData.billingStatus}</TableCell>
                         </TableRow>
                     )

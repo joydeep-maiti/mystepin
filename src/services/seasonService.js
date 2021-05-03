@@ -9,10 +9,10 @@ async function getSeason() {
   }
 }
 
-async function addSeason(data) {
+async function addSeason(data,flag) {
   try {
     const response = await http.post(
-      `${http.baseUrl}/season`,
+      `${http.baseUrl}/season?copyrate=${flag}`,
       data
     );
     return response

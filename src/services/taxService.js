@@ -1,8 +1,8 @@
 import http from "./httpService";
 
-async function getTaxSlabs() {
+async function getTaxSlabs(type) {
   try {
-    const { data: taxSlabs } = await http.get(`${http.baseUrl}/taxSlabs`);
+    const { data: taxSlabs } = await http.get(`${http.baseUrl}/taxSlabs?type=${type}`);
     return taxSlabs;
   } catch (error) {
     console.log(error);

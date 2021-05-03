@@ -10,6 +10,8 @@ import {
   Button,
   makeStyles
 } from "@material-ui/core";
+import Dialog from '@material-ui/core/Dialog';
+import DialogContentText from '@material-ui/core/DialogContentText';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -34,6 +36,11 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import moment from "moment";
+import ConfirmDialog from '../../common/ConfirmDialog/ConfirmDialog'
+import constants from "../../utils/constants";
+
+const { success, error } = constants.snackbarVariants;
+
 
 const useStyles = makeStyles(theme => ({
   formGroup: {
@@ -65,12 +72,20 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const SeasonMaster = ({ onClose }) => {
+
+
+const SeasonMaster = ({ onSnackbarEvent }) => {
   const classes = useStyles();
   const [rooms, setRooms] = useState([]);
-  const [newDoc, setNewDoc] = useState({});
+  const [newDoc, setNewDoc] = useState({
+    fromDate: null,
+    toDate: null,
+  });
   const [editingRow, setEditingRow] = useState({});
   const [loading, setLoading] = useState(false);
+  const [openRateCopyDialog, setOpenRateCopyDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [tempDoc, setTempDoc] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -83,28 +98,41 @@ const SeasonMaster = ({ onClose }) => {
     setLoading(false);
   };
 
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = (e) => {
     e.preventDefault();
+    if(newDoc.fromDate>newDoc.toDate){
+      alert("Please choose a valid Date range!")
+      return
+    }
+    setOpenRateCopyDialog(true)
+  }
+ 
+  const addSeason= async(flag)=>{
+    setOpenRateCopyDialog(false)
     setLoading(true);
-    const res = await seasonService.addSeason(newDoc);
+    const res = await seasonService.addSeason(newDoc,flag);
     setLoading(false);
-    if(res.status===201){
-      // setNewDoc({})
+    if(res.status===201 || res.status===200){
+      openSnackBar("Season Created Successfully", success);
       setLoading(true);
       fetchData()
     }else {
       console.log(res)
-      setNewDoc({})
+      // setNewDoc()
       alert("Bad Request")
     }
-
   }
 
   const handleUpdate = async () => {
+    if(editingRow.fromDate>editingRow.toDate){
+      alert("lease choose a valid Date range!")
+      return
+    }
     setLoading(true);
     const res = await seasonService.updateSeason(editingRow);
     setLoading(false);
     if(res){
+      openSnackBar("Season Updated Successfully", success);
       setEditingRow({})
       setLoading(true);
       fetchData()
@@ -112,11 +140,20 @@ const SeasonMaster = ({ onClose }) => {
   }
 
   const handleDelete = async (row) => {
-    return
+    setTempDoc(row)
+    setOpenDeleteDialog(true)
+  }
+
+  const deleteSeason = async(flag)=>{
+    setOpenDeleteDialog(false)
+    if(!flag){
+      return
+    }
     setLoading(true);
-    const res = await seasonService.deleteSeason(row);
+    const res = await seasonService.deleteSeason(tempDoc);
     setLoading(false);
     if(res){
+      openSnackBar("Season Deleted Successfully", success);
       setLoading(true);
       fetchData()
     }
@@ -124,9 +161,15 @@ const SeasonMaster = ({ onClose }) => {
 
   const handleInput = (e) => {
     setNewDoc({
+      ...newDoc,
       [e.target.name]:e.target.value
     })
   }
+
+  const openSnackBar = (message, variant) => {
+    const snakbarObj = { open: true, message, variant, resetBookings: false };
+    onSnackbarEvent(snakbarObj);
+  };
 
   const handleInputChange = (e) => {
     setEditingRow({
@@ -181,7 +224,7 @@ const SeasonMaster = ({ onClose }) => {
     <React.Fragment>
       <DialogTitle>Seasons</DialogTitle>
       <DialogContent className={classes.roomsDiv}>
-        <form className={classes.formGroup} noValidate autoComplete="off" onSubmit={handleFormSubmit}>
+        <form className={classes.formGroup} autoComplete="off" onSubmit={handleFormSubmit}>
           <TextField required id="standard-required" label="Season" name="season" onChange={handleInput}/>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
@@ -285,17 +328,35 @@ const SeasonMaster = ({ onClose }) => {
                       />
                     </MuiPickersUtilsProvider>
                   </TableCell>}
-                  {editingRow._id !== row._id && <TableCell align="center"><EditOutlinedIcon style={{cursor:"pointer"}} onClick={()=>handleEdit(row)}/></TableCell>}
+                  {editingRow._id !== row._id && <TableCell align="center">
+                    {row._id!=="5d3edc251c9d4400006bc08e" && <EditOutlinedIcon style={{cursor:"pointer"}} onClick={()=>handleEdit(row)}/>}
+                  </TableCell>}
                   {editingRow._id === row._id && <TableCell align="center">
                     <ReplayOutlinedIcon style={{cursor:"pointer"}} onClick={handleUndo}/>
                     <SaveOutlinedIcon style={{cursor:"pointer"}} onClick={handleUpdate}/>
                   </TableCell>}
-                  <TableCell align="center"><DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(row)}/></TableCell>
+                  <TableCell align="center">
+                    {row._id!=="5d3edc251c9d4400006bc08e" && <DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(row)}/>}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+        <ConfirmDialog 
+          openDialog={openRateCopyDialog}
+          setOpenDialog={setOpenRateCopyDialog}
+          title="Copy Rate from Regular?"
+          message="The existing Regular Rates will be copied to this Season Rates"
+          handleSubmit={addSeason}
+        />
+        <ConfirmDialog 
+          openDialog={openDeleteDialog}
+          setOpenDialog={setOpenDeleteDialog}
+          title="Confirm Delete Season?"
+          message="The Rates associated with this Season will also be Deleted"
+          handleSubmit={deleteSeason}
+        />
       </DialogContent>
     </React.Fragment>
   );

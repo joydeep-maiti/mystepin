@@ -67,7 +67,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Configuration = () => {
+const Configuration = ({onSnackbarEvent}) => {
   const classes = useStyles();
   const [taxSlabs, setTaxSlabs] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -100,19 +100,19 @@ const Configuration = () => {
       </AppBar>
       
       <TabPanel className={classes.tabDiv} value={value} index={0}>
-        <Rooms />
+        <Rooms onSnackbarEvent={onSnackbarEvent} />
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={1}>
-        <RoomCategory />
+        <RoomCategory onSnackbarEvent={onSnackbarEvent} />
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={2}>
-        <RateMaster />
+        <RateMaster onSnackbarEvent={onSnackbarEvent}/>
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={3}>
-        <SeasonMaster />
+        <SeasonMaster onSnackbarEvent={onSnackbarEvent} />
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={4}>
-        <Taxes />
+        <Taxes onSnackbarEvent={onSnackbarEvent} />
       </TabPanel>
     </div>
   );

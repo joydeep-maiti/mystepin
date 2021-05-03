@@ -9,6 +9,7 @@ import LoaderDialog from "../../common/LoaderDialog/LoaderDialog";
 import TextField from '@material-ui/core/TextField';
 import { YearSelection } from "@material-ui/pickers/views/Year/YearView";
 import { InputLabel} from "@material-ui/core";
+import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
   formGroup: {
@@ -34,7 +35,18 @@ const useStyles = makeStyles(theme => ({
   },
   radioGroup: {
     marginBottom: 20
-  }
+  },
+  tableTDTitle:{
+    fontWeight:600,
+    padding:".5rem 0",
+    fontSize:"15px",
+    width:"7rem"
+  },
+  tableTDesc:{
+    padding:".5rem 0",
+    fontSize:"15px",
+
+  },
 }));
 
 const BillingForm = props => {
@@ -74,10 +86,15 @@ const BillingForm = props => {
       setRooms(bookedRooms.toString())
   },[booking])
 
-  const billingStatus=due?[
+  // const billingStatus=due?[
+  //   {label:"Due" ,value:"Due"},
+  //   {label:"Bill to Company" ,value:"Bill to Company"},
+  // ]:[
+  //   {label:"Paid" ,value:"Paid"},
+  // ]
+  const billingStatus = [
     {label:"Due" ,value:"Due"},
     {label:"Bill to Company" ,value:"Bill to Company"},
-  ]:[
     {label:"Paid" ,value:"Paid"},
   ]
 
@@ -89,8 +106,9 @@ const BillingForm = props => {
   ]
   const getFullName = booking.firstName+" "+booking.lastName;
   const handleCardNum = (event)=>{
-    setCardnum(event.target.value)
-    onChangeData({cardNum:event.target.value})
+    // console.log(typeof event.target.value)
+    setCardnum(event.target.value.slice(0,4))
+    onChangeData({cardNum:event.target.value.slice(0,4)})
   }
   const selectBillingStatus = (event) => {
     onChangeData({
@@ -111,7 +129,7 @@ const BillingForm = props => {
     const response = await posService.getPosByBookingId(booking._id)
     setLoading(false)
     if(!response) {
-      setBalance(Number(data.totalRoomCharges)-Number(booking.advance))
+      setBalance(Number(Number(data.totalRoomCharges)-Number(booking.advance)).toFixed(2))
       return
     }
     setPos(response)
@@ -122,11 +140,11 @@ const BillingForm = props => {
         expense += Number(e.amount)
       })
     })
-    setPosTotal(expense)
+    setPosTotal(Number(expense).toFixed(2))
     onChangeData({
-      posTotal:expense
+      posTotal:Number(expense).toFixed(2)
     })
-    setBalance(Number(data.totalRoomCharges)+Number(expense)-Number(booking.advance))
+    setBalance(Number(Number(data.totalRoomCharges)+Number(expense)-Number(booking.advance)).toFixed(2))
   }
 
   React.useEffect(()=>{
@@ -257,6 +275,33 @@ const BillingForm = props => {
     booking && (
       <form onSubmit={event => onFormSubmit(event)}>
         {loading && <LoaderDialog open={loading} />}
+        <table width="100%">
+          <tr>
+            <td className={classes.tableTDTitle}>Name of Guest</td>
+            <td>:</td>
+            <td className={classes.tableTDesc}>{booking?booking.firstName+" "+booking.lastName:""}</td>
+          {/* </tr>
+          <tr> */}
+            <td className={classes.tableTDTitle}>Room Nos</td>
+            <td>:</td>
+            <td className={classes.tableTDesc} colSpan="4">{rooms}</td>
+          </tr>
+          <tr>
+            <td className={classes.tableTDTitle}>Chckin Date</td>
+            <td>:</td>
+            <td className={classes.tableTDesc}>{booking?moment(booking.checkIn).format('D.MMM.YYYY'):""}</td>
+          {/* </tr>
+          <tr> */}
+            <td className={classes.tableTDTitle}>Checkout Date</td>
+            <td>:</td>
+            <td className={classes.tableTDesc}>{booking?moment(booking.checkOut).format('D.MMM.YYYY'):""}</td>
+            <td className={classes.tableTDTitle}>No of Nights</td>
+            <td>:</td>
+            <td className={classes.tableTDesc}>{booking?booking.nights:0}</td>
+          {/* </tr>
+          <tr> */}
+          </tr>
+        </table>
         {/* <div className={classes.radioGroup}>
           {FormUtils.renderRadioGroup({
             label: "",
@@ -267,9 +312,7 @@ const BillingForm = props => {
             radioButtons
           })}
         </div> */}
-        <div style={{display:"flex", flexWrap:"wrap"}}>
-          {renderInputItems("Name of Guest", getFullName, "name")}
-          {renderInputItems("Room Numbers", rooms, "room numbers")}
+        <div style={{display:"flex", flexWrap:"wrap", marginTop:"1rem"}}>
           {renderInputItems("Room Charges", booking.roomCharges, "roomCharges")}
           {renderInputItems("Tax", data.tax, "tax")}
           {renderInputItems("Misllaneous", postotal, "misllaneous")}
@@ -277,7 +320,7 @@ const BillingForm = props => {
           {renderInputItems("Advance", booking.advance, "advance")}
           {renderInputItems("Balance",  balance, "balance")}
         </div>
-        <div style={{width:"20rem",display:"flex"}}>
+        <div style={{width:"20rem",display:"flex", alignItems:"center"}}>
         <label style={{width:"16rem"}}>Billing Status</label>
         <span>:</span>
         {FormUtils.renderBillingStatus({
@@ -314,14 +357,13 @@ const BillingForm = props => {
             <div  style={{width:"10rem"}}>
                 {payment.card.checked && 
                 <TextField
-                          required
-                          id="card-num" 
-                          label="last 4 digits" 
-                          type="number"
-                          variant="outlined" 
-                          inputProps={{ maxLength: 4 }}
-                          value={cardnum}  
-                          onChange={handleCardNum}>
+                  required
+                  id="card-num" 
+                  label="last 4 digits" 
+                  type="number"
+                  inputProps={{ max: 9999}}
+                  value={cardnum}  
+                  onChange={handleCardNum}>
                 </TextField>
                 }
             </div>

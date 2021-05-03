@@ -12,7 +12,9 @@ import {
   DialogTitle,
   Typography,
   Button,
-  makeStyles
+  makeStyles,
+  IconButton,
+  Dialog
 } from "@material-ui/core";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -38,6 +40,10 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import moment from "moment";
+import FileCopyOutlinedIcon from '@material-ui/icons/FileCopyOutlined';
+import constants from "../../utils/constants";
+
+const { success, error } = constants.snackbarVariants;
 
 const rateData = [{
   _id:"604490bd794f4b0b55171a7d",
@@ -81,12 +87,13 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const RateMaster = ({ onClose }) => {
+const RateMaster = ({ onSnackbarEvent }) => {
   const classes = useStyles();
   const [rooms, setRooms] = useState([]);
   const [newDoc, setNewDoc] = useState({percent:null});
   const [editingRow, setEditingRow] = useState({});
   const [loading, setLoading] = useState(false);
+  const [openRateCopyDialog, setOpenRateCopyDialog] = useState(false);
   const [percentView, setPercentView] = useState(false);
   const [roomTypes, setRoomTypes] = useState([]);
   const [ratePercents, setRatePercents] = useState(null);
@@ -150,6 +157,7 @@ const RateMaster = ({ onClose }) => {
     setLoading(false);
     if(res.status===201){
       // setNewDoc({})
+      openSnackBar("Rate Updated Successfully", success);
       setLoading(true);
       fetchData()
     }else {
@@ -162,10 +170,12 @@ const RateMaster = ({ onClose }) => {
 
   const handlePercentFormSubmit = async (e) => {
     e.preventDefault();
+    setOpenRateCopyDialog(false)
     setLoading(true);
     const res = await ratemasterService.updateRateByPercent(newDoc);
     setLoading(false);
     if(res){
+      openSnackBar("Rate Updated Successfully", success);
       // setNewDoc({})
       setLoading(true);
       fetchData()
@@ -182,6 +192,7 @@ const RateMaster = ({ onClose }) => {
     const res = await ratemasterService.updateRate(editingRow);
     setLoading(false);
     if(res){
+      openSnackBar("Rate Updated Successfully", success);
       setEditingRow({})
       setLoading(true);
       fetchData()
@@ -195,22 +206,28 @@ const RateMaster = ({ onClose }) => {
     const res = await ratemasterService.deleteRate(row);
     setLoading(false);
     if(res){
+      openSnackBar("Rate Deleted Successfully", success);
       setLoading(true);
       fetchData()
     }
   }
 
   const handleInput = (e) => {
-    setNewDoc({
-      ...newDoc,
-      [e.target.name]:e.target.value
-    })
+    
     if(e.target.name === "seasonId"){
-      let obj = ratePercents.find(el => el.seasonId === e.target.value)
+      let obj = ratePercents.find(el => 
+        el && el.seasonId === e.target.value
+      )
       console.log("obj",obj)
       setNewDoc({
         ...newDoc,
-        percent: obj.percent
+        percent: openRateCopyDialog || !obj || !obj.percent ? 0 : obj.percent,
+        [e.target.name]:e.target.value
+      })
+    }else {
+      setNewDoc({
+        ...newDoc,
+        [e.target.name]:e.target.value
       })
     }
   }
@@ -267,10 +284,30 @@ const RateMaster = ({ onClose }) => {
     setPercentView(event.target.checked)
   };
 
+  const openSnackBar = (message, variant) => {
+    const snakbarObj = { open: true, message, variant, resetBookings: false };
+    onSnackbarEvent(snakbarObj);
+  };
+
   return (
     <React.Fragment>
       <DialogTitle>
         Rate Master
+        {/* <div style={{float:"right"}}>
+          <FileCopyOutlinedIcon />
+          Copy Rate
+        </div> */}
+        <IconButton
+          aria-label="account of current user"
+          aria-controls="menu-appbar"
+          aria-haspopup="true"
+          color="inherit"
+          onClick={()=>setOpenRateCopyDialog(true)}
+          style={{float:"right", padding:7}}
+        >
+          <FileCopyOutlinedIcon/>
+          <span style={{marginLeft:"5px",fontSize:"1rem"}}>Copy Rate</span>
+        </IconButton>
         <FormControlLabel
           control={
             <Switch
@@ -379,7 +416,7 @@ const RateMaster = ({ onClose }) => {
                 <TableCell align="center" style={tablestyles}>Rate</TableCell>
                 <TableCell align="center" style={tablestyles}>Extra Rate/Person</TableCell>
                 <TableCell align="center" style={tablestyles}>Edit</TableCell>
-                <TableCell align="center" style={tablestyles}>Delete</TableCell>
+                {/* <TableCell align="center" style={tablestyles}>Delete</TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -405,12 +442,42 @@ const RateMaster = ({ onClose }) => {
                     <ReplayOutlinedIcon style={{cursor:"pointer"}} onClick={handleUndo}/>
                     <SaveOutlinedIcon style={{cursor:"pointer"}} onClick={handleUpdate}/>
                   </TableCell>}
-                  <TableCell align="center"><DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(row)}/></TableCell>
+                  {/* <TableCell align="center">
+                    {row.seasonId!=="5d3edc251c9d4400006bc08e" && <DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(row)}/>}
+                  </TableCell> */}
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+        <Dialog onClose={()=>setOpenRateCopyDialog(false)} aria-labelledby="simple-dialog-title" open={openRateCopyDialog}>
+          <DialogTitle hid="simple-dialog-title">Copy Rates from Regular</DialogTitle>
+          <DialogContent>
+          <form className={classes.formGroup} autoComplete="off" onSubmit={handlePercentFormSubmit}>
+            <FormControl className={classes.formControl}>
+              <InputLabel id="demo-simple-select-label">Season</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                required
+                name="seasonId"
+                value={newDoc.seasonId}
+                onChange={handleInput}
+                >
+                {seasons.map(el=><MenuItem value={el._id}>{el.season}</MenuItem>)}
+              </Select>
+            </FormControl>
+            <Button 
+            type="submit" 
+            variant="contained"
+            style={{backgroundColor:"#0088bc",color:'white'}}
+            >
+              SUBMIT
+            </Button>
+          </form>
+          </DialogContent>
+          <DialogActions></DialogActions>
+        </Dialog>
       </DialogContent>
     </React.Fragment>
   );

@@ -84,7 +84,7 @@ const PreBillingForm = props => {
       setRooms(bookedRooms.toString())
     formatDayWiseBookingRates()
   },[booking])
-
+  
   const formatDayWiseBookingRates= ()=> {
     let dayWiseBookingRates = {}
     booking.roomWiseRatesForBooking && booking.roomWiseRatesForBooking.map(el=>{            

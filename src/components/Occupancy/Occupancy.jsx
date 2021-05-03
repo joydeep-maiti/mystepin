@@ -153,7 +153,7 @@ const Occupancy = () => {
     doc.setFontSize(10);
     doc.text("Report Generated at "+generatedTime,600,20);
     doc.setFontSize(12);
-    doc.text("MONTH : "+ "APRIL 21",100,100)
+    doc.text("MONTH : "+ moment().format("MMMM-YYYY"),100,100)
     doc.setFontSize(12);
     doc.autoTable(content);
     doc.setTextColor("#fb3640");

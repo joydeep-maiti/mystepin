@@ -31,16 +31,16 @@ const BillingDetails = () => {
   const classes = useStyles();
   const [startingDate,setStartingDate]=useState(utils.getDate(moment().startOf('month')));
   var sdate=moment(startingDate);
-  const [startDateString,setStartDateString]=useState(sdate.format('D')+"-"+sdate.format('MMMM')+"-"+sdate.format('YYYY'));
+  const [startDateString,setStartDateString]=useState(sdate.format('DD')+"-"+sdate.format('MMMM')+"-"+sdate.format('YYYY'));
   const [currentDate, setCurrentDate] = useState(utils.getDate());
   var    cdate=moment(currentDate);
-  const [currentDateString,setCurrentDateString]=useState(cdate.format('D')+"-"+cdate.format('MMMM')+"-"+cdate.format('YYYY'));
+  const [currentDateString,setCurrentDateString]=useState(cdate.format('DD')+"-"+cdate.format('MMMM')+"-"+cdate.format('YYYY'));
   const [bookings, setBookings] = useState([]);
   const [billingCategory,setBillingCategory] = useState("");
   const [shouldDisable, setShouldDisable] = useState(false);
   const [billingTypes, setBillingTypes] = useState([]);
   const [generatedTime,setGeneratedTime] = useState(
-    moment().format('D-MMMM-YYYY')+'-'+moment().format('h:mm A')
+    moment().format('DD-MMMM-YYYY')+'-'+moment().format('h:mm A')
   )
   //getting options
   useEffect(()=>{
@@ -60,14 +60,14 @@ const BillingDetails = () => {
   const handleStartingDateChange =(date)=>{
     setStartingDate(utils.getDate(date));  
     var d = moment(date);
-    setStartDateString(d.format('D')+"-"+d.format('MMMM')+"-"+d.format('YYYY'));
+    setStartDateString(d.format('DD')+"-"+d.format('MMMM')+"-"+d.format('YYYY'));
 
   };
   //Handle current date Change
   const handleCurrentDateChange = (date) => {  
     setCurrentDate(utils.getDate(date));
     var d = moment(date);
-    setCurrentDateString(d.format('D')+"-"+d.format('MMMM')+"-"+d.format('YYYY'));
+    setCurrentDateString(d.format('DD')+"-"+d.format('MMMM')+"-"+d.format('YYYY'));
 
   };
   //Get Plan Options
@@ -123,9 +123,9 @@ const BillingDetails = () => {
           margin: marginLeft,
           pageBreak:'auto'
         };
-        doc.text(title, 400, 40);
+        doc.text(title, 350, 40);
         doc.setFontSize(10);
-        doc.text("Report Generated at "+generatedTime,600,40);
+        doc.text("Report Generated at "+generatedTime,620,40);
         doc.setFontSize(15);
         doc.text("From : "+startDateString,100, 90);
         doc.text("To : "+currentDateString,250, 90);

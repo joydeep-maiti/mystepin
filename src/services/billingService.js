@@ -1,8 +1,5 @@
 import http from "./httpService";
 
-
-
-
 async function getBillByBookingId(id) {
   try {
     const { data: rooms } = await http.get(`${http.baseUrl}/billing/${id}`);
@@ -11,7 +8,6 @@ async function getBillByBookingId(id) {
     console.log(error);
   }
 }
-
 async function addBilling(data) {
   try {
     const response = await http.post(

@@ -15,14 +15,15 @@ import utils from "../../utils/utils";
 import bookingService from "../../services/bookingService";
 import taxService from "../../services/taxService";
 import billingService from "../../services/billingService";
-
+import advanceService from '../../services/advanceService'
 const { success, error } = constants.snackbarVariants;
 
 const schema = schemas.billingFormSchema;
 
 const BillingFormLayout = props => {
   const handleSnackbarEvent = useContext(SnackBarContext);
-
+  
+  const {booking} = props;
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -31,11 +32,12 @@ const BillingFormLayout = props => {
   const [roomCharges, setRoomCharges] = useState();
   const [isBillingForm, setIsBillingForm] = useState(false);
   const [due, setDue] = useState(true);
-
+  const [advanceAmount,setAdvanceAmount] = useState(0);
   const [data, setData] = useState({
     cash: "",
     card: "",
     wallet: "",
+    advance:"",
     billingStatus:"Due",
     taxStatus: "withTax",
     totalRoomCharges:0,
@@ -49,14 +51,27 @@ const BillingFormLayout = props => {
     card: { checked: false, disable: true },
     wallet: { checked: false, disable: true }
   });
-
-  useEffect(() => {
+  React.useEffect(()=>{
+    fetchAdvance();
+})
+const fetchAdvance = async()=>{
+  const { selectedBooking: booking} = props;
+  if(booking!==null)
+  {
+    const advance = await advanceService.getAdvanceByBookingId(booking._id);
+    let total = 0;
+    advance.advance.map( ad => total += parseInt(ad.advanceP));
+    setAdvanceAmount(total);
+    console.log("Booking inside",advanceAmount)
+  }
+}
+ useEffect(() => {
     const { selectedBooking: booking, history } = props;
     if (booking === null) history.replace("/");
     else getTaxSlabs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   const getTaxSlabs = async () => {
     const { selectedBooking: booking, history } = props;
     const taxSlabs = await taxService.getTaxSlabs("GST");
@@ -65,7 +80,7 @@ const BillingFormLayout = props => {
     setTaxSlabs(taxSlabs);
     setRoomCharges(roomCharges);
   };
-  
+
   useEffect(() => {
     if(Number(data.card)+Number(data.cash)+Number(data.wallet) === data.balance){
       setDue(false)

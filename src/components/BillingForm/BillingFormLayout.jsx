@@ -85,7 +85,9 @@ const fetchAdvance = async()=>{
   };
 
   useEffect(() => {
-    if(Number(data.card)+Number(data.cash)+Number(data.wallet) === data.balance){
+    let diff = Number(data.balance)- (Number(data.card)+Number(data.cash)+Number(data.wallet))
+    console.log("diff",diff,Number(data.card),Number(data.cash),Number(data.wallet), data.balance)
+    if(diff <=10){
       setDue(false)
       setData({
         ...data,
@@ -165,11 +167,11 @@ const fetchAdvance = async()=>{
   const checkBalance = (data, errors) => {
     // debugger
     const total =
-      ((data.cash && parseInt(data.cash)) || 0) +
-      ((data.card && parseInt(data.card)) || 0) +
-      ((data.wallet && parseInt(data.wallet)) || 0);
+      ((data.cash && Number(data.cash)) || 0) +
+      ((data.card && Number(data.card)) || 0) +
+      ((data.wallet && Number(data.wallet)) || 0);
 
-    if (total !== parseInt(data.balance))
+    if (total !== Number(data.balance))
       return false
     return true
    
@@ -190,10 +192,18 @@ const fetchAdvance = async()=>{
     else errors.customError = "Please select any payment mode";
 
     if(!checkBalance(clonedData, errors)){
+      if(clonedData.billingStatus === "Paid"){
+        alert("Total varies from balance. Please make the Billing Status as Due")
+        return
+      }
       if(!window.confirm("Total varies from balance. Do you want to proceed?")){
         return
       }
     }else {
+      if(clonedData.billingStatus !== "Paid"){
+        alert("Total matches with balance. Please make the Billing Status as Paid")
+        return
+      }
       if(!window.confirm("Do you want to proceed with billing?")){
         return
       }
@@ -270,7 +280,7 @@ const fetchAdvance = async()=>{
     })
     setData({
       ...data,
-      totalRoomCharges: Number(selectedBooking.roomCharges)+Number(tax),
+      totalRoomCharges: (Number(selectedBooking.roomCharges)+Number(tax)).toFixed(2),
       totalCalculatedRoomCharges: total,
       tax,
       taxStatus: "withTax",
@@ -288,7 +298,7 @@ const fetchAdvance = async()=>{
     })
     setData({
       ...data,
-      totalRoomCharges: Number(selectedBooking.roomCharges),
+      totalRoomCharges: Number(selectedBooking.roomCharges).toFixed(2),
       totalCalculatedRoomCharges: total,
       tax: 0,
       taxStatus: "withoutTax",

@@ -143,8 +143,8 @@ const POSSales = () => {
     doc.setFontSize(20);
     let finalY = doc.lastAutoTable.finalY+100; // The y position on the page
     doc.setDrawColor(0, 0, 0);
-    doc.setLineWidth(2.5);
-    doc.line(15, finalY-70, 820, finalY-70)
+    doc.setLineWidth(1.5);
+    doc.line(18, finalY-99, 825, finalY-99)
     doc.text(320, finalY, `Total ${posCategory} Sales   =     ${total}`);
     doc.setTextColor("#fb3640");
     doc.save(`${posCategory} SALES REPORT`)

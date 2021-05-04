@@ -7,11 +7,11 @@ import './BillingDetails.css';
 import moment from "moment";
 import utils from "../../utils/utils";
 import FormUtils from "../../utils/formUtils";
-import billingDetails from '../../services/billingDetails'
 import reportOptions from '../../services/reportOptions'
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import "jspdf-autotable";
+import billingReport from '../../services/billingReport';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -82,25 +82,37 @@ const BillingDetails = () => {
     console.log("event",billingCategory);
     }
   //Getting Booking Details
-  // const getBookingsDetails = async (startingDate,currentDate) => { 
-  //  const booking = await billingDetails.getBookings(startingDate,currentDate);
-  //    let a=201;
-  //    console.log("Hari",booking)
-  //     if(booking !== null){
-  //         booking.forEach(book=>{
-  //           let value=[`A/${a++}`,
-  //           book.firstName+" "+book.lastName,
-  //           utils.getDate(),""
-  //           ,"","","","","","","","",book.balance,
-  //           "",
-  //           "",
-  //           ""]
-  //            bookings.push(value);
-  //           })
-  //         }
-  //       }
-
-    const exporttoPDF = () =>{
+  const getBookingsDetails = async () => { 
+      let startD = moment(startingDate).format('yyyy-MM-DD')
+    let currentD = moment(currentDate).format('yyyy-MM-DD')
+    console.log("Start",startD)
+    console.log("End",currentD)
+     const options = await billingReport.getBillingDetails(startD,currentD,billingCategory);
+     console.log("Hari",options)
+     if(options){
+      let data = options.map(option=>{
+        let billingDate = moment(option.billingDate).format('D-MMMM-YYYY');
+        let boardingDate = moment(option.boardingDate).format('D-MMMM-YYYY');
+        return([
+         ` ${option.billNo} \n ${option.name}` ,
+          billingDate,
+          option.roomrate,
+          boardingDate,
+          option.tax,
+          option.food,
+          option.transport, 
+          option.laundary,
+          option.misc,
+          option.phone,
+          option.grandTotal,
+          option.advance,
+          option.Balance
+        ])
+      })
+    exporttoPDF(data);
+  }
+  }
+    const exporttoPDF=(data)=>{
     const unit = "pt";
     const size = "A4"; // Use A1, A2, A3 or A4
     const orientation = "landscape"; // portrait or landscape
@@ -109,8 +121,7 @@ const BillingDetails = () => {
     const doc = new jsPDF(orientation, unit, size);
         doc.setFontSize(20);
         let title = `${billingCategory} Report`;
-        let headers = [["Bill No", "Name","Bill Date","Room Rate","Boarding","Tax","Food","Transport","Laundary","Misc","Phone","Total","Advance","Balance"]];
-        let data = bookings
+        let headers = [[`Bill No \n Name`,"Bill Date","Room Rate","Boarding","Tax","Food","Transport","Laundary","Misc","Phone","Total","Advance","Balance"]];
         let content = {
           startY: 120,
           head: headers,
@@ -132,13 +143,6 @@ const BillingDetails = () => {
         doc.setFontSize(12);
         doc.autoTable(content);
         doc.save(`${billingCategory}.pdf`)
-
-  }
-
-  const generateReport=()=>{
-    //getBookingsDetails(startingDate,currentDate);
-    exporttoPDF();
-    console.log("Generating Report");
   }
   //return method
     return (
@@ -196,7 +200,7 @@ const BillingDetails = () => {
             </MuiPickersUtilsProvider>
             </div>  
             <div className="buttoncontainer"> 
-          <Button  type="submit" className="button" onClick={generateReport}>
+          <Button  type="submit" className="button" onClick={getBookingsDetails}>
             Generate
           </Button>
             </div>

@@ -53,15 +53,18 @@ const BillingFormLayout = props => {
   });
   React.useEffect(()=>{
     fetchAdvance();
-})
+},[])
 const fetchAdvance = async()=>{
   const { selectedBooking: booking} = props;
   if(booking!==null)
   {
     const advance = await advanceService.getAdvanceByBookingId(booking._id);
     let total = 0;
-    advance.advance.map( ad => total += parseInt(ad.advanceP));
-    setAdvanceAmount(total);
+    if(advance){
+      advance.advance.map( ad => total += parseInt(ad.advanceP));
+
+      setAdvanceAmount(total);
+    }
     console.log("Booking inside",advanceAmount)
   }
 }
@@ -226,7 +229,7 @@ const fetchAdvance = async()=>{
       checkedInTime: selectedBooking.checkedInTime,
       checkedOutTime: selectedBooking.checkedOutTime,
       roomCharges: selectedBooking.roomCharges,
-      advance: selectedBooking.advance,
+      advance: advanceAmount,
       roomWiseRatesForBooking: selectedBooking.roomWiseRatesForBooking,
       totalAmount: selectedBooking.totalAmount,
       posData,

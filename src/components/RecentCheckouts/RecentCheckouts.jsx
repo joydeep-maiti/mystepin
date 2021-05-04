@@ -39,7 +39,7 @@ const RecentCheckouts = ({ allBookings, onClose, title, onSnackbarEvent, history
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>
         {loading && <Loader color="#0088bc" />}
-        <TableContainer component={Paper} style={{marginTop:"0.7rem", height:"80vh"}}>
+        <TableContainer component={Paper} style={{marginTop:"0.7rem", maxHeight:"70vh"}}>
             <Table size="small" stickyHeader aria-label="sticky table">
                 <TableHead>
                     <TableRow>
@@ -52,15 +52,18 @@ const RecentCheckouts = ({ allBookings, onClose, title, onSnackbarEvent, history
                 </TableHead>
                 {
                     bills && bills.map(el => {
-                    return(
-                        <TableRow>
-                        <TableCell align="center"><span style={{cursor:"pointer", color:"blue"}} onClick={()=>handleReport(el)}>{el.billingId}</span></TableCell>
-                        <TableCell align="center">{el.guestName}</TableCell>
-                        <TableCell align="center">{el.guestName}</TableCell>
-                        <TableCell align="center">{el.paymentData.posTotal?Number(el.paymentData.totalRoomCharges)+Number(el.paymentData.posTotal):el.paymentData.totalRoomCharges}</TableCell>
-                        <TableCell align="center">{el.paymentData.billingStatus}</TableCell>
-                        </TableRow>
-                    )
+                        let _rooms = el.roomWiseRatesForBooking && el.roomWiseRatesForBooking.map(ele=>{
+                            return ele.roomNumber
+                        }) 
+                        return(
+                            <TableRow>
+                            <TableCell align="center"><span style={{cursor:"pointer", color:"blue"}} onClick={()=>handleReport(el)}>{el.billingId}</span></TableCell>
+                            <TableCell align="center">{el.guestName}</TableCell>
+                            <TableCell align="center">{_rooms.toString()}</TableCell>
+                            <TableCell align="center">{el.paymentData.posTotal?(Number(el.paymentData.totalRoomCharges)+Number(el.paymentData.posTotal)).toFixed(2):Number(el.paymentData.totalRoomCharges).toFixed(2)}</TableCell>
+                            <TableCell align="center">{el.paymentData.billingStatus}</TableCell>
+                            </TableRow>
+                        )
                     })
                 }
 

@@ -36,6 +36,7 @@ import "./Dashboard.scss";
 import ReportComponent from '../ReportComponent/ReportComponent'
 import AdvancedDialog from '../AdvancedTab/AdvancedDialog'
 import RecentCheckouts from '../RecentCheckouts/RecentCheckouts'
+import BillSettlement from '../BillSettlement/BillSettlement'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -334,6 +335,14 @@ const Dashboard = props => {
             dialog.openFor.advanced && advancedDialogTitle==="Today's Checkout" &&(
               <RecentCheckouts
                 allBookings={allBookings}
+                title={advancedDialogTitle}
+                onClose={() => handleDialog(dialog.contentOf)}
+              // onSnackbarEvent={handleSnackbarEvent}
+              />
+          )}
+          {
+            dialog.openFor.advanced && advancedDialogTitle==="Bill Settlement" &&(
+              <BillSettlement
                 title={advancedDialogTitle}
                 onClose={() => handleDialog(dialog.contentOf)}
               // onSnackbarEvent={handleSnackbarEvent}

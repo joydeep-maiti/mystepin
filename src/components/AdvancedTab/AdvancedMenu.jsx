@@ -45,7 +45,7 @@ const AdvancedMenu = ({ showAdvancedDialog }) => {
        >
           <MenuItem onClick={()=>handleOpenAdvanceTabMenu("Advance Collection")}>Advance</MenuItem>
            <MenuItem onClick={()=>handleOpenAdvanceTabMenu("Today's Checkout", "md")}>Today's Checkout</MenuItem>
-          <MenuItem onClick={()=>handleCloseAdvanceMenu}>Bill Settlement</MenuItem>
+          <MenuItem onClick={()=>handleOpenAdvanceTabMenu("Bill Settlement")}>Bill Settlement</MenuItem>
           <MenuItem onClick={()=>handleCloseAdvanceMenu}>Approximate Bill</MenuItem>
           <MenuItem onClick={()=>handleCloseAdvanceMenu}>Petty Cash</MenuItem>
       </Menu>

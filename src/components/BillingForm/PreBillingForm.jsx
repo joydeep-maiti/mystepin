@@ -213,7 +213,7 @@ const PreBillingForm = props => {
                           <td className={classes.pricetableTd}>{rate.rate}</td>
                           <td className={classes.pricetableTd}>{rate.taxPercent+"%"}</td>
                           <td className={classes.pricetableTd}>{data.taxStatus==="withTax"?taxAmount:0}</td>
-                          <td className={classes.pricetableTd}>{roomDayTotal}</td>
+                          <td className={classes.pricetableTd}>{(roomDayTotal).toFixed(2)}</td>
                         </tr>
                         {
                           index === dayWiseRates[date].length-1 && 
@@ -223,7 +223,7 @@ const PreBillingForm = props => {
                               <td></td>
                               <td></td>
                               <th style={{paddingBottom:".5rem", fontSize:"15px", fontWeight:600}}>Day Total</th>
-                              <th style={{paddingBottom:".5rem", fontSize:"15px", fontWeight:600}}>{dayTotal}</th>
+                              <th style={{paddingBottom:".5rem", fontSize:"15px", fontWeight:600}}>{(dayTotal).toFixed(2)}</th>
                             </tr>
                         }
                         {/* {

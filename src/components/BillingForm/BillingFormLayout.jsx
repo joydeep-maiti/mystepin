@@ -241,9 +241,10 @@ const fetchAdvance = async()=>{
       roomCharges: selectedBooking.roomCharges,
       advance: advanceAmount,
       roomWiseRatesForBooking: selectedBooking.roomWiseRatesForBooking,
-      totalAmount: selectedBooking.totalAmount,
+      totalAmount: Number(paymentData.totalRoomCharges)+Number(paymentData.posTotal),
       posData,
-      paymentData
+      paymentData,
+
     }
     updateBookingPayment(selectedBooking,billingData);
   };

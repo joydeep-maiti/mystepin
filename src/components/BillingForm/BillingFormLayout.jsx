@@ -43,7 +43,8 @@ const BillingFormLayout = props => {
     totalRoomCharges:0,
     cardNum:"",
     walletType:"",
-    tax:0
+    tax:0,
+    posTotal:0
 
   });
   const [payment, setPayment] = useState({

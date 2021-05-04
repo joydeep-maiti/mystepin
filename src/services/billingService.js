@@ -45,5 +45,14 @@ async function getRecentCheckouts() {
   }
 }
 
-export default { getBillByBookingId,addBilling, getRecentCheckouts };
+async function getBillsByDate(date) {
+  try {
+    const { data: bills } = await http.get(`${http.baseUrl}/billing?date=${date}`);
+    return bills;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export default { getBillByBookingId,addBilling, getRecentCheckouts, getBillsByDate };
 

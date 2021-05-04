@@ -35,6 +35,10 @@ const BookingTab = () => {
   const [generatedTime,setGeneratedTime] = useState(
     moment().format('D-MMMM-YYYY h:mm A')
   )
+  var sdate=moment(startingDate);
+  const [startDateString,setStartDateString]=useState(sdate.format('DD')+"-"+sdate.format('MMMM')+"-"+sdate.format('YYYY'));
+  var    cdate=moment(currentDate);
+  const [currentDateString,setCurrentDateString]=useState(cdate.format('DD')+"-"+cdate.format('MMMM')+"-"+cdate.format('YYYY'));
   //getting options
   useEffect(()=>{
     fetchBillingTypes()
@@ -52,10 +56,14 @@ const BookingTab = () => {
     //Handle starting date Change
     const handleStartingDateChange =(date)=>{
       setStartingDate(utils.getDate(date));  
+      var d = moment(date);
+      setStartDateString(d.format('DD')+"-"+d.format('MMMM')+"-"+d.format('YYYY'));
           };
     //Handle current date Change
     const handleCurrentDateChange = (date) => {  
       setCurrentDate(utils.getDate(date));
+      var d = moment(date);
+      setCurrentDateString(d.format('DD')+"-"+d.format('MMMM')+"-"+d.format('YYYY'));
      };
     //Get Plan Options
     const getPlanOptions = () => {
@@ -68,10 +76,8 @@ const BookingTab = () => {
       setBookingCategory(event.target.value);
       console.log("event",bookingCategory);
       }
-  
-
-      useEffect(()=>{
-        if(bookingCategory === "Daily Booking"){
+    useEffect(()=>{
+        if(bookingCategory === "Daily Booking" || bookingCategory === "Confirmed Booking for"){
          setDailyView(false)  
         }
         else{
@@ -144,8 +150,19 @@ else{
   doc.text(title, 300, 40);
   doc.setFontSize(10);
   doc.text("Report Generated at "+generatedTime,1400,20);
-  doc.setFontSize(12);
-  doc.text("MONTH : "+ moment().format("MMMM-YYYY"),100,100)
+   if(bookingCategory === "Daily Booking" || bookingCategory === "Confirmed Booking for") 
+  {
+    doc.setFontSize(12)
+    doc.text("Date : "+ moment().format("DD-MMMM-YYYY"),100,100)
+  }
+  else
+  {
+  doc.setFontSize(15);
+  doc.text("From : "+startDateString,100, 90);
+  doc.text("To : "+currentDateString,250, 90);
+  }  
+
+  
   doc.setFontSize(12);
   doc.autoTable(content);
   doc.setTextColor("#fb3640");
@@ -196,9 +213,21 @@ else{
   
   const renderDailyCalender=()=>{
    return( 
-    <Typography variant="h3">
-    {moment().format('DD-MMMM-YYYY')}
-   </Typography>
+    < MuiPickersUtilsProvider utils={DateFnsUtils}>
+           <KeyboardDatePicker
+               disableToolbar
+               format="dd/MMMM/yyyy"
+               margin="normal"
+               id="date-picker-dialog"
+             label="From"
+             value={currentDate}              
+             onChange={handleCurrentDateChange}
+             KeyboardButtonProps={{
+               'aria-label': 'change date',
+             }}
+             style={{ width:"350px"}}
+               />
+             </MuiPickersUtilsProvider>
   
     )
   }

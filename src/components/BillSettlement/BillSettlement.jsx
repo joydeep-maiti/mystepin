@@ -73,7 +73,7 @@ const BillSettlement = ({ onClose, title, onSnackbarEvent, history }) => {
         {loading && <Loader color="#0088bc" />}
             <div style={{width:"100%", display:"flex",justifyContent:"space-evenly",alignItems:"center", marginBottom:"1rem" }}>
                 <Typography
-                    className={{width: "40%",display:"flex"}}
+                    style={{width: "35%"}}
                 >
                 Billing Date
                 </Typography>
@@ -100,7 +100,7 @@ const BillSettlement = ({ onClose, title, onSnackbarEvent, history }) => {
             </div>
             <div style={{ display:"flex",justifyContent:"space-evenly",alignItems:"center", marginBottom:"1rem" }}>
                 <Typography
-                    className={{width: "40%",display:"flex"}}
+                    style={{width: "35%"}}
                 >
                     Bill Number
                 </Typography>
@@ -123,7 +123,7 @@ const BillSettlement = ({ onClose, title, onSnackbarEvent, history }) => {
             </div>
             <div style={{ display:"flex",justifyContent:"space-evenly",alignItems:"center", marginBottom:"1rem" }}>
                 <Typography
-                    className={{width: "40%",display:"flex"}}
+                    style={{width: "35%"}}
                 >
                     Customer Name
                 </Typography>
@@ -142,14 +142,14 @@ const BillSettlement = ({ onClose, title, onSnackbarEvent, history }) => {
             </div>
             <div style={{ display:"flex",justifyContent:"space-evenly",alignItems:"center", marginBottom:"1rem" }}>
                 <Typography
-                    className={{width: "40%",display:"flex"}}
+                    style={{width: "35%"}}
                 >
                     Amount
                 </Typography>
                 <Typography>:</Typography>
                 <div style={{ width: "40%" }}>
                     <TextField 
-                    style={{width:"100%"}}
+                        style={{width:"100%", textAlign:"right"}}
                         type="text" 
                         value={selectedBill && selectedBill.totalAmount} 
                         required id="standard-required" 
@@ -161,14 +161,14 @@ const BillSettlement = ({ onClose, title, onSnackbarEvent, history }) => {
             </div>
             <div style={{ display:"flex",justifyContent:"space-evenly",alignItems:"center", marginBottom:"1rem" }}>
                 <Typography
-                    className={{width: "40%",display:"flex"}}
+                    style={{width: "35%"}}
                 >
                     Paid
                 </Typography>
                 <Typography>:</Typography>
                 <div style={{ width: "40%" }}>
                     <TextField 
-                    style={{width:"100%"}}
+                    style={{width:"100%", textAlign:"right"}}
                         type="text" 
                         value={paid} 
                         required id="standard-required" 
@@ -180,14 +180,14 @@ const BillSettlement = ({ onClose, title, onSnackbarEvent, history }) => {
             </div>
             <div style={{ display:"flex",justifyContent:"space-evenly",alignItems:"center", marginBottom:"1rem" }}>
                 <Typography
-                    className={{width: "40%",display:"flex"}}
+                    style={{width: "35%"}}
                 >
                     Due
                 </Typography>
                 <Typography>:</Typography>
                 <div style={{ width: "40%" }}>
                     <TextField 
-                    style={{width:"100%"}}
+                        style={{width:"100%", textAlign:"right"}}
                         type="text" 
                         value={due} 
                         required id="standard-required" 

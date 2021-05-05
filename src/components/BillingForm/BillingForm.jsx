@@ -62,6 +62,7 @@ const BillingForm = props => {
     payment,
     onChangeData,
     due,
+    advanceAmount
   } = props;
 
   console.log("booking",booking)
@@ -129,7 +130,7 @@ const BillingForm = props => {
     const response = await posService.getPosByBookingId(booking._id)
     setLoading(false)
     if(!response) {
-      setBalance(Number(Number(data.totalRoomCharges)-Number(booking.advance)).toFixed(2))
+      setBalance(Number(Number(data.totalRoomCharges)-Number(advanceAmount)).toFixed(2))
       return
     }
     setPos(response)
@@ -144,7 +145,7 @@ const BillingForm = props => {
     onChangeData({
       posTotal:Number(expense).toFixed(2)
     })
-    setBalance(Number(Number(data.totalRoomCharges)+Number(expense)-Number(booking.advance)).toFixed(2))
+    setBalance(Number(Number(data.totalRoomCharges)+Number(expense)-Number(advanceAmount)).toFixed(2))
   }
 
   React.useEffect(()=>{
@@ -317,7 +318,7 @@ const BillingForm = props => {
           {renderInputItems("Tax", data.tax, "tax")}
           {renderInputItems("Misllaneous", postotal, "misllaneous")}
           {renderInputItems("Total Charges", data.totalRoomCharges, "totalRoomCharges")}
-          {renderInputItems("Advance", booking.advance, "advance")}
+          {renderInputItems("Advance", advanceAmount, "advance")}
           {renderInputItems("Balance",  balance, "balance")}
         </div>
         <div style={{width:"20rem",display:"flex", alignItems:"center"}}>

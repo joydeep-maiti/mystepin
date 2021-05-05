@@ -315,7 +315,7 @@ const fetchAdvance = async()=>{
 
   const calculateRoomCharges = (roomCharges, taxPercent, taxType) => {
     const clonedSelectedBooking = { ...selectedBooking };
-    const balance = roomCharges - parseInt(clonedSelectedBooking.advance);
+    const balance = roomCharges - parseInt(advanceAmount);
 
     clonedSelectedBooking.roomCharges = roomCharges.toString();
     clonedSelectedBooking.balance = balance.toString();
@@ -391,6 +391,7 @@ const fetchAdvance = async()=>{
           booking={selectedBooking}
           payment={payment}
           onChangeData={handleChangeData}
+          advanceAmount={advanceAmount}
           due={due}
         />
       );

@@ -71,13 +71,13 @@ const ReportGenerator = ({ booking }) => {
         </div>
         <div className="report__section">
           <div className="report-row">
-            <span className="report-key">Booking Id</span>
-            <span className="report-value">{booking._id}</span>
+            <span className="report-key">Bill Number</span>
+            <span className="report-value">{booking.billingId}</span>
           </div>
           <div className="report-row">
-            <span className="report-key">Booking Date</span>
+            <span className="report-key">Billing Date</span>
             <span className="report-value">
-              {utils.getFormattedDate(booking.bookingDate)}
+              {utils.getFormattedDate(booking.checkOut)}
             </span>
           </div>
         </div>

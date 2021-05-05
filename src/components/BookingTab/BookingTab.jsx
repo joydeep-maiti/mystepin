@@ -240,7 +240,6 @@ else{
             </Typography>
       </div>
       <div className="container">   
-      
           {FormUtils.renderSelect({
             id: "bookingType",
             label: "Booking Type",

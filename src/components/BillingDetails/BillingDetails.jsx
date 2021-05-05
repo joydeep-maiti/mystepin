@@ -55,7 +55,6 @@ const BillingDetails = () => {
     })
     setBillingTypes(types)
   } 
-  
   //Handle starting date Change
   const handleStartingDateChange =(date)=>{
     setStartingDate(utils.getDate(date));  

@@ -192,7 +192,7 @@ const fetchAdvance = async()=>{
       delete errors.customError;
     else errors.customError = "Please select any payment mode";
 
-    if(!checkBalance(clonedData, errors)){
+    if(due){
       if(clonedData.billingStatus === "Paid"){
         alert("Total varies from balance. Please make the Billing Status as Due")
         return

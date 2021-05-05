@@ -345,7 +345,7 @@ const Dashboard = props => {
               <BillSettlement
                 title={advancedDialogTitle}
                 onClose={() => handleDialog(dialog.contentOf)}
-              // onSnackbarEvent={handleSnackbarEvent}
+                onSnackbarEvent={handleSnackbarEvent}
               />
           )}
         </Dialog>
@@ -427,7 +427,7 @@ const Dashboard = props => {
                               format="MM/dd/yyyy"
                               margin="normal"
                               id="date-picker-dialog"
-                              label="Date picker inline"
+                              label="Select Date"
                               value={currentDate}              
                               onChange={handleDateChange}
                               KeyboardButtonProps={{

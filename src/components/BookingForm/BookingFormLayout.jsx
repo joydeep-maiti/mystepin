@@ -510,6 +510,7 @@ const BookingFormLayout = ({
               checkOut={data.checkOut}
               isBooked={data.bookingDate}
               onEdit={handleEdit}
+              isEdit={isEdit}
               onCancel={handleCancel}
               onCheckIn={handleCheckIn}
               onCheckOut={handleCheckOut}

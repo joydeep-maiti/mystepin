@@ -22,6 +22,9 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import { Typography } from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
+import constants from "../../utils/constants";
+
+const { success, error } = constants.snackbarVariants;
 
 const BillSettlement = ({ onClose, title, onSnackbarEvent, history }) => {
 
@@ -37,8 +40,11 @@ const BillSettlement = ({ onClose, title, onSnackbarEvent, history }) => {
     },[forDate])
 
     React.useEffect(()=>{
-        let totalPaid =  selectedBill && selectedBill.paymentData && Number(selectedBill.paymentData.cash)+Number(selectedBill.paymentData.wallet)+Number(selectedBill.paymentData.card)
-        let _due = selectedBill && Number(selectedBill.paymentData.balance)-totalPaid
+        let totalPaid =  0
+        let _due = 0
+        totalPaid = selectedBill && selectedBill.paymentData && Number(selectedBill.paymentData.cash)+Number(selectedBill.paymentData.wallet)+Number(selectedBill.paymentData.card)
+        _due = selectedBill && Number(selectedBill.paymentData.balance)-totalPaid
+        console.log("totalPaid",totalPaid,_due)
         setPaid(totalPaid)
         setDue(_due)
     },[selectedBill])
@@ -47,10 +53,17 @@ const BillSettlement = ({ onClose, title, onSnackbarEvent, history }) => {
         setLoading(true)
         const res = await billingService.getBillsByDate(forDate.toJSON().split("T")[0])
         setLoading(false)
-        if(res){
+        if(res && res.length !==0){
             setBills(res)
+        }else {  
+            openSnackBar("No Bills Found for the Selected Date",error) 
+            setBills(res) 
         }
     }
+    const openSnackBar = (message, variant) => {
+        const snakbarObj = { open: true, message, variant, resetBookings: false };
+        onSnackbarEvent(snakbarObj);
+    };
 
     const handleReport = (el)=>{
         onClose();
@@ -59,17 +72,21 @@ const BillSettlement = ({ onClose, title, onSnackbarEvent, history }) => {
 
     const handleNewFromDateChange = (date) => {
         setForDate(date)
+        setSelectedBill(null)
+        // setPaid(null)
+        // setDue(null)
     };
 
     const handleInput = (e) => {
         let _bill = bills.find(el => el._id === e.target.value)
         setSelectedBill(_bill)
     }
+    console.log("paid",paid,due)
 
     return (
         <React.Fragment>
         <DialogTitle>{title}</DialogTitle>
-        <DialogContent>
+        <DialogContent style={{border:"1px solid gray", margin:"0 1rem"}}>
         {loading && <Loader color="#0088bc" />}
             <div style={{width:"100%", display:"flex",justifyContent:"space-evenly",alignItems:"center", marginBottom:"1rem" }}>
                 <Typography
@@ -83,7 +100,7 @@ const BillSettlement = ({ onClose, title, onSnackbarEvent, history }) => {
                         <KeyboardDatePicker
                         required
                         disableToolbar
-                        variant="inline"
+                        // variant="inline"
                         format="MM/dd/yyyy"
                         margin="normal"
                         id="date-picker-inline"
@@ -113,7 +130,7 @@ const BillSettlement = ({ onClose, title, onSnackbarEvent, history }) => {
                         id="demo-simple-select"
                         required
                         name="seasonId"
-                        value={selectedBill && selectedBill._id}
+                        value={selectedBill? selectedBill._id:""}
                         onChange={handleInput}
                         >
                         {bills.map(el=><MenuItem value={el._id}>{el.billingId}</MenuItem>)}
@@ -132,7 +149,7 @@ const BillSettlement = ({ onClose, title, onSnackbarEvent, history }) => {
                     <TextField 
                     style={{width:"100%"}}
                         type="text" 
-                        value={selectedBill && selectedBill.guestName} 
+                        value={selectedBill?selectedBill.guestName:""} 
                         required id="standard-required" 
                         // label="Customer Name" 
                         name="guestName" 
@@ -151,7 +168,7 @@ const BillSettlement = ({ onClose, title, onSnackbarEvent, history }) => {
                     <TextField 
                         style={{width:"100%", textAlign:"right"}}
                         type="text" 
-                        value={selectedBill && selectedBill.totalAmount} 
+                        value={selectedBill? selectedBill.totalAmount:""} 
                         required id="standard-required" 
                         // label="Guest Name" 
                         name="guestName" 
@@ -170,7 +187,7 @@ const BillSettlement = ({ onClose, title, onSnackbarEvent, history }) => {
                     <TextField 
                     style={{width:"100%", textAlign:"right"}}
                         type="text" 
-                        value={paid} 
+                        value={selectedBill?paid:""} 
                         required id="standard-required" 
                         // label="Guest Name" 
                         name="guestName" 
@@ -189,7 +206,7 @@ const BillSettlement = ({ onClose, title, onSnackbarEvent, history }) => {
                     <TextField 
                         style={{width:"100%", textAlign:"right"}}
                         type="text" 
-                        value={due} 
+                        value={selectedBill?due:""} 
                         required id="standard-required" 
                         // label="Guest Name" 
                         name="guestName" 

@@ -162,8 +162,8 @@ const BookingForm = props => {
     let nights = dates.length > 0? dates.length : 1 
     let divi = data.flatRoomRate && Number(nights)*Number(rooms.length)
     // console.log("data.roomCharges/divi",data.roomCharges/divi,data.roomCharges,divi)
-    let singleRooomSingleNightRate = data.flatRoomRate && data.roomCharges/divi;
-    console.log("singleRooomSingleNightRate", dates,singleRooomSingleNightRate)
+    let singleRooomSingleNightRateT = data.flatRoomRate && data.roomCharges/divi;
+    console.log("singleRooomSingleNightRateT", dates,singleRooomSingleNightRateT)
     rooms.forEach(room=>{
       const bookingRate = {
         roomNumber:room.roomNumber,
@@ -185,24 +185,35 @@ const BookingForm = props => {
             rate: dayrate.rate,
             extra: dayrate.extraRate,
             taxPercent,
-            tax
+            tax:Number(tax).toFixed(2)
           })
         })
       }else {
-        const slab = taxSlabs.filter(el => singleRooomSingleNightRate>el.greaterThan && singleRooomSingleNightRate<= (el.lessThanAndEqual || 9999999999))
+        let singleRooomSingleNightRate;
+        const slab = taxSlabs.filter(el => Number(singleRooomSingleNightRateT)>Number(el.greaterThan) && Number(singleRooomSingleNightRateT)<= (Number(el.lessThanAndEqual) || 9999999999))
         let taxPercent;
         let tax;
         if(slab.length>0){
+          console.log("slab Price",slab)
           taxPercent = slab[0].taxPercent
-          tax = singleRooomSingleNightRate*(slab[0].taxPercent/100)
+          singleRooomSingleNightRate = (Number(singleRooomSingleNightRateT)/((100+Number(taxPercent))/100)).toFixed(2)
+          // console.log("singleRooomSingleNightRate Price",singleRooomSingleNightRate)
+          // const slab2 = taxSlabs.filter(el => singleRooomSingleNightRate>el.greaterThan && singleRooomSingleNightRate<= (el.lessThanAndEqual || 9999999999))
+          // if(Number(slab2[0].taxPercent) !== Number(taxPercent)){
+          //   console.log("slab2 Price",slab2)
+          //   taxPercent = slab2[0].taxPercent
+          //   singleRooomSingleNightRate = (Number(singleRooomSingleNightRateT)/((100+Number(taxPercent))/100)).toFixed(2)
+          //   console.log("singleRooomSingleNightRate2 Price",singleRooomSingleNightRate)
+          // }
+          tax = (singleRooomSingleNightRate*(taxPercent/100)).toFixed(2)
         }
         dates.forEach(el=>{
           bookingRates.push({
             date: el.toISOString(),
-            rate: singleRooomSingleNightRate,
+            rate: Number(singleRooomSingleNightRate).toFixed(2),
             extra: 0,
             taxPercent,
-            tax
+            tax:Number(tax).toFixed(2)
           })
         })
       }

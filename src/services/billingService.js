@@ -8,9 +8,23 @@ async function getBillByBookingId(id) {
     console.log(error);
   }
 }
+
 async function addBilling(data) {
   try {
     const response = await http.post(
+      `${http.baseUrl}/billing`,
+      data
+    );
+    return response
+  } catch (error) {
+    console.log(error);
+    return false
+  }
+}
+
+async function updateBiil(data) {
+  try {
+    const response = await http.patch(
       `${http.baseUrl}/billing`,
       data
     );
@@ -54,5 +68,5 @@ async function getBillsByDate(date) {
   }
 }
 
-export default { getBillByBookingId,addBilling, getRecentCheckouts, getBillsByDate };
+export default { getBillByBookingId,addBilling, getRecentCheckouts, getBillsByDate, updateBiil };
 

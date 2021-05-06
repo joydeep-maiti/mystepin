@@ -203,13 +203,15 @@ const BillSettlement = ({ onClose, title, onSnackbarEvent, history }) => {
         // else errors.customError = "Please select any payment mode";
     
         if(isDue){
-          if(clonedData.billingStatus === "Paid"){
-            alert("Total varies from balance. Please make the Billing Status as Due")
+            alert("Total varies from balance. Please settle the Bill in order to proceed!")
             return
-          }
-          if(!window.confirm("Total varies from balance. Do you want to proceed?")){
-            return
-          }
+        //   if(clonedData.billingStatus === "Paid"){
+        //     alert("Total varies from balance. Please make the Billing Status as Due")
+        //     return
+        //   }
+        //   if(!window.confirm("Total varies from balance. Do you want to proceed?")){
+        //     return
+        //   }
         }else {
           if(clonedData.billingStatus !== "Paid"){
             alert("Total matches with balance. Please make the Billing Status as Paid")
@@ -253,8 +255,23 @@ const BillSettlement = ({ onClose, title, onSnackbarEvent, history }) => {
         }
          
         console.log("payData",payData)
-        // updateBookingPayment(selectedBooking,billingData);
+        updateBill(selectedBill,payData);
     }
+
+    const updateBill = async (selectedBill, payData) => {
+        setLoading(true);
+        const { status } = await  billingService.updateBiil({
+            _id: selectedBill._id,
+            paymentData:payData
+        });
+        setLoading(false);
+        if (status === 200) {
+            openSnackBar("Bill Settled Successfully", success);
+            fetchBills()
+            // props.onRedirectFromBilling(bookingData);
+            // props.history.push("/report")
+        } else openSnackBar("Error Occurred", error);
+    };
 
     return (
         <React.Fragment>

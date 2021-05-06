@@ -90,6 +90,12 @@ const Taxes = ({ onSnackbarEvent }) => {
     setTaxSlabs(slab)
   }
 
+  const handleNameChange = (e) => {
+    const slab = [...taxSlabs]
+    slab[3].name = e.target.value
+    setTaxSlabs(slab)
+  }
+
   const handleCheckBoxChange = (e) =>{
     console.log("e.checked",e.target.checked)
     const slab = [...taxSlabs]
@@ -123,7 +129,7 @@ const Taxes = ({ onSnackbarEvent }) => {
     setLoading(true);
     Promise.all(promises)
       .then(res => {
-        openSnackBar("Rate Updated Successfully", success);
+        openSnackBar("Tax Updated Successfully", success);
         console.log("promiseAll res", res)
       })
       .catch((err) => {
@@ -149,10 +155,11 @@ const Taxes = ({ onSnackbarEvent }) => {
           <Table className={classes.table} aria-label="simple table"  >
             <TableHead>
               <TableRow>
+                <StyledTableCell rowSpan={2} align="center">Active</StyledTableCell>
                 <StyledTableCell rowSpan={2} align="center">TAX</StyledTableCell>
-                <StyledTableCell rowSpan={2} align="center">UNIT</StyledTableCell>
+                {/* <StyledTableCell rowSpan={2} align="center">UNIT</StyledTableCell> */}
                 <StyledTableCell colSpan={2} align="center" >PRICE RANGE</StyledTableCell>
-                <StyledTableCell rowSpan={2} align="center">VALUE</StyledTableCell>
+                <StyledTableCell rowSpan={2} align="center">VALUE in %</StyledTableCell>
               </TableRow>
               <TableRow>
                 <StyledTableCell align="center">RATE FROM</StyledTableCell>
@@ -163,38 +170,44 @@ const Taxes = ({ onSnackbarEvent }) => {
               {taxSlabs && taxSlabs.slice(0,3).map((row, i) => (
                 <TableRow key={row._id} >
                   
-                  {i===0 && <StyledTableCell align="center" rowSpan={3}><TextField style={{ position: "relative", width: "50%"}}
+                  {i===0 && <StyledTableCell align="center" rowSpan={3}>
+                  <FormControl>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={true}
+                          name="active"
+                          color="primary"
+                          disabled
+                        />
+                      }
+                      label="Active"
+                      ></FormControlLabel>
+                  </FormControl>
+                </StyledTableCell>}
+                  {i===0 && <StyledTableCell align="center" rowSpan={3}><TextField style={{ position: "relative", width: "40%"}}
                     variant="outlined" value="GST" disabled="true" ></TextField>
                   </StyledTableCell>}
-                  {i===0 && <StyledTableCell align="center" rowSpan={3} ><TextField style={{ position: "relative", width: "50%" }}
+                  {/* {i===0 && <StyledTableCell align="center" rowSpan={3} ><TextField style={{ position: "relative", width: "40%" }}
                     variant="outlined" value="%" disabled="true"></TextField>
-                  </StyledTableCell>}
+                  </StyledTableCell>} */}
                   <StyledTableCell align="center">
-                    <TextField style={{ position: "relative", width: "50%" }}
+                    <TextField style={{ position: "relative", width: "40%" }}
                       variant="outlined" disabled="true" value={row.greaterThan} />
                   </StyledTableCell>
                   {i !== 2 && <StyledTableCell align="center">
-                    <TextField style={{ position: "relative", width: "50%" }}
+                    <TextField style={{ position: "relative", width: "40%" }}
                       variant="outlined" type="number" inputProps={{ min: 0, max: 100 }} name="lessThanAndEqual" value={row.lessThanAndEqual} onChange={(e) => handleInputChange(e, i)} ></TextField>
                   </StyledTableCell>}
                   {i === 2 && <StyledTableCell align="center"></StyledTableCell>}
                   <StyledTableCell align="center">
-                      <TextField style={{ position: "relative", width: "50%" }}
+                      <TextField style={{ position: "relative", width: "40%" }}
                         variant="outlined" type="number" inputProps={{ min: 0, max: 100, step:.01 }}name="taxPercent" value={row.taxPercent} onChange={(e) => handlePercentInputChange(e, i)} ></TextField>
                   </StyledTableCell>
                 </TableRow>
 
               ))}
               <TableRow>
-                <StyledTableCell align="center">
-                  <TextField style={{ position: "relative", width: "50%"}}
-                  variant="outlined" value="CITY" disabled="true" />
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <TextField style={{ position: "relative", width: "50%" }}
-                  variant="outlined" value="%" disabled="true" />
-                </StyledTableCell>
-                <StyledTableCell></StyledTableCell>
                 <StyledTableCell align="center">
                   <FormControl>
                     <FormControlLabel
@@ -212,7 +225,18 @@ const Taxes = ({ onSnackbarEvent }) => {
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   <TextField 
-                    style={{ position: "relative", width: "50%" }}
+                    name="name"
+                    style={{ position: "relative", width: "40%"}}
+                    variant="outlined" 
+                    value={taxSlabs && taxSlabs[3] && taxSlabs[3].name} 
+                    onChange={handleNameChange}
+                  />
+                </StyledTableCell>
+                <StyledTableCell align="center"></StyledTableCell>
+                <StyledTableCell></StyledTableCell>
+                <StyledTableCell align="center">
+                  <TextField 
+                    style={{ position: "relative", width: "40%" }}
                     variant="outlined" 
                     type="number" 
                     inputProps={{ min: 0, max: 100, step:.01 }}

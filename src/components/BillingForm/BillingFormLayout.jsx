@@ -282,7 +282,7 @@ const fetchAdvance = async()=>{
     })
     setData({
       ...data,
-      totalRoomCharges: (Number(selectedBooking.roomCharges)+Number(tax)).toFixed(2),
+      totalRoomCharges: selectedBooking.flatRoomRate ? Number(selectedBooking.roomCharges).toFixed(2):(Number(selectedBooking.roomCharges)+Number(tax)).toFixed(2),
       totalCalculatedRoomCharges: total,
       tax,
       taxStatus: "withTax",

@@ -140,7 +140,7 @@ const POSSales = () => {
     doc.text("To : "+currentDateString,250, 90);
     doc.setFontSize(12);
     doc.autoTable(content);
-    doc.setFontSize(20);
+    doc.setFontSize(12);
     let finalY = doc.lastAutoTable.finalY+100; // The y position on the page
     doc.setDrawColor(0, 0, 0);
     doc.setLineWidth(1.5);

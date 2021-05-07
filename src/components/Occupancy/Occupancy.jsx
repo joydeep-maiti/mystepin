@@ -309,7 +309,7 @@ const renderFromtoCalender=()=>{
 const renderDailyCalender=()=>{
  return( 
   
-  <Typography variant="h3">
+  <Typography variant="h4">
    {moment().format('DD-MMMM-YYYY')}
   </Typography>
  )

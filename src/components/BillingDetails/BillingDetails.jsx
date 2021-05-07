@@ -89,29 +89,41 @@ const BillingDetails = () => {
      const options = await billingReport.getBillingDetails(startD,currentD,billingCategory);
      console.log("Hari",options)
      if(options){
+       let total=[0,0,0,0,0,0,0,0,0,0];
       let data = options.map(option=>{
         let billingDate = moment(option.billingDate).format('D-MMMM-YYYY');
-        let boardingDate = moment(option.boardingDate).format('D-MMMM-YYYY');
+        total[0] += option.roomrate ? parseInt(option.roomrate) : 0;
+        total[1] += option.tax ? parseInt(option.tax.toFixed(2)) : 0;
+        total[2] += option.food ? parseInt(option.food) : 0;
+        total[3] += option.transport ? parseInt(option.transport) : 0;
+        total[4] += option.laundary ? parseInt(option.laundary) : 0;
+        total[5] += option.misc ? parseInt(option.misc) : 0;
+        total[6] += option.phone ? parseInt(option.phone) : 0;
+        total[7] += option.grandTotal ? parseInt(Number(option.grandTotal).toFixed(2)) : 0;
+        total[8] += option.advance ? parseInt(option.advance) : 0;
+        total[9] += option.Balance ? parseInt(Number(option.Balance).toFixed(2)) : 0;
+ 
+        //let boardingDate = moment(option.boardingDate).format('D-MMMM-YYYY');
         return([
          ` ${option.billNo} \n ${option.name}` ,
           billingDate,
-          option.roomrate,
-          boardingDate,
-          option.tax,
+         option.roomrate,
+          "",
+          Number(option.tax).toFixed(2),
           option.food,
           option.transport, 
           option.laundary,
           option.misc,
           option.phone,
-          option.grandTotal,
+          Number(option.grandTotal).toFixed(2),
           option.advance,
-          option.Balance
+          Number(option.Balance).toFixed(2)
         ])
       })
-    exporttoPDF(data);
+    exporttoPDF(data,total);
   }
   }
-    const exporttoPDF=(data)=>{
+    const exporttoPDF=(data,total)=>{
     const unit = "pt";
     const size = "A4"; // Use A1, A2, A3 or A4
     const orientation = "landscape"; // portrait or landscape
@@ -141,6 +153,22 @@ const BillingDetails = () => {
         doc.text("To : "+currentDateString,250, 90);
         doc.setFontSize(12);
         doc.autoTable(content);
+        doc.setFontSize(12);
+        let finalY = doc.lastAutoTable.finalY; // The y position on the page
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(1.5);
+        doc.line(18, finalY+1, 825, finalY+1)
+        doc.text(350, finalY+10, `Total Amount`);
+        doc.text(280, finalY+30, `Room Rate      `+"    "+`:   ${total[0]}`);
+        doc.text(280, finalY+50, `Tax    `+"    "+`:  ${total[1]}`);
+        doc.text(280, finalY+70, `Food   `+"    "+`:  ${total[2]}`);
+        doc.text(280, finalY+90, `Transport `+"    "+`:  ${total[3]}`);
+        doc.text(280, finalY+110, `Laundary  `+"    "+`:   ${total[4]}`);
+        doc.text(280, finalY+130, `Misc    `+"    "+`:  ${total[5]}`);
+        doc.text(280, finalY+150, `Phone   `+"    "+`:   ${total[6]}`);
+        doc.text(280, finalY+170, `Total    `+"    "+`:  ${total[7]}`);
+        doc.text(280, finalY+190, `Advance  `+"    "+`:   ${total[8]}`);
+        doc.text(280, finalY+210, `Balance  `+"    "+`:   ${total[9]}`);       
         doc.save(`${billingCategory}.pdf`)
   }
   //return method

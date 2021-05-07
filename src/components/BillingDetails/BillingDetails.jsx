@@ -89,29 +89,41 @@ const BillingDetails = () => {
      const options = await billingReport.getBillingDetails(startD,currentD,billingCategory);
      console.log("Hari",options)
      if(options){
+       let total=[0,0,0,0,0,0,0,0,0,0];
       let data = options.map(option=>{
         let billingDate = moment(option.billingDate).format('D-MMMM-YYYY');
-        let boardingDate = moment(option.boardingDate).format('D-MMMM-YYYY');
+        total[0] += option.roomrate ? parseInt(option.roomrate) : 0;
+        total[1] += option.tax ? parseInt(option.tax.toFixed(2)) : 0;
+        total[2] += option.food ? parseInt(option.food) : 0;
+        total[3] += option.transport ? parseInt(option.transport) : 0;
+        total[4] += option.laundary ? parseInt(option.laundary) : 0;
+        total[5] += option.misc ? parseInt(option.misc) : 0;
+        total[6] += option.phone ? parseInt(option.phone) : 0;
+        total[7] += option.grandTotal ? parseInt(Number(option.grandTotal).toFixed(2)) : 0;
+        total[8] += option.advance ? parseInt(option.advance) : 0;
+        total[9] += option.Balance ? parseInt(Number(option.Balance).toFixed(2)) : 0;
+ 
+        //let boardingDate = moment(option.boardingDate).format('D-MMMM-YYYY');
         return([
          ` ${option.billNo} \n ${option.name}` ,
           billingDate,
-          option.roomrate,
-          boardingDate,
-          option.tax,
+         option.roomrate,
+          "",
+          Number(option.tax).toFixed(2),
           option.food,
           option.transport, 
           option.laundary,
           option.misc,
           option.phone,
-          option.grandTotal,
+          Number(option.grandTotal).toFixed(2),
           option.advance,
-          option.Balance
+          Number(option.Balance).toFixed(2)
         ])
       })
-    exporttoPDF(data);
+    exporttoPDF(data,total);
   }
   }
-    const exporttoPDF=(data)=>{
+    const exporttoPDF=(data,total)=>{
     const unit = "pt";
     const size = "A4"; // Use A1, A2, A3 or A4
     const orientation = "landscape"; // portrait or landscape
@@ -120,7 +132,7 @@ const BillingDetails = () => {
     const doc = new jsPDF(orientation, unit, size);
         doc.setFontSize(20);
         let title = `${billingCategory} Report`;
-        let headers = [[`Bill No \n Name`,"Bill Date","Room Rate","Boarding","Tax","Food","Transport","Laundary","Misc","Phone","Total","Advance","Balance"]];
+        let headers = [[`Bill No\nName`,"Bill Date","Room Rate","Boarding","Tax","Food","Transport","Laundary","Misc","Phone","Total","Advance","Balance"]];
         let content = {
           startY: 120,
           head: headers,
@@ -128,7 +140,7 @@ const BillingDetails = () => {
           theme: 'striped',
           styles: {
             cellWidth:'wrap',
-            halign: 'center',
+            halign : "left"
           },
           margin: marginLeft,
           pageBreak:'auto'
@@ -141,6 +153,22 @@ const BillingDetails = () => {
         doc.text("To : "+currentDateString,250, 90);
         doc.setFontSize(12);
         doc.autoTable(content);
+        doc.setFontSize(12);
+        let finalY = doc.lastAutoTable.finalY; // The y position on the page
+        doc.setDrawColor(0, 0, 0);
+        doc.setLineWidth(1.5);
+        doc.line(18, finalY+1, 825, finalY+1)
+        doc.text(350, finalY+20, `Summary`);
+        doc.text(280, finalY+40, `Room Rate`+" ".repeat(10)+`:   ${total[0]}`);
+        doc.text(280, finalY+60, `Tax`+" ".repeat(22)+`:  ${total[1]}`);
+        doc.text(280, finalY+80, `Food`+" ".repeat(20)+`:  ${total[2]}`);
+        doc.text(280, finalY+100, `Transport`+" ".repeat(13)+`:  ${total[3]}`);
+        doc.text(280, finalY+120, `Laundary`+" ".repeat(13)+`:   ${total[4]}`);
+        doc.text(280, finalY+140, `Misc`+" ".repeat(21)+`:  ${total[5]}`);
+        doc.text(280, finalY+160, `Phone`+" ".repeat(18)+`:   ${total[6]}`);
+        doc.text(280, finalY+180, `Total`+" ".repeat(20)+`:  ${total[7]}`);
+        doc.text(280, finalY+200, `Advance`+" ".repeat(14)+`:   ${total[8]}`);
+        doc.text(280, finalY+220, `Balance`+" ".repeat(15)+`:   ${total[9]}`);   
         doc.save(`${billingCategory}.pdf`)
   }
   //return method

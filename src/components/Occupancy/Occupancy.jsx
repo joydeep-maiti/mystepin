@@ -227,7 +227,7 @@ const Occupancy = () => {
       theme: 'striped',
       styles: {
         cellWidth:'wrap',
-        halign: 'center',
+        halign : "left",
       },
       headerStyles: {
         fillColor: "#0088bc",
@@ -253,7 +253,7 @@ const Occupancy = () => {
       theme: 'grid',
       styles: {
         cellWidth:'wrap',
-        halign: 'center',
+        halign : "left",
       },
       bodyStyles: {
         textColor: "#e84545"
@@ -309,7 +309,7 @@ const renderFromtoCalender=()=>{
 const renderDailyCalender=()=>{
  return( 
   
-  <Typography variant="h3">
+  <Typography variant="h4">
    {moment().format('DD-MMMM-YYYY')}
   </Typography>
  )

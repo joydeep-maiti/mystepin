@@ -132,7 +132,7 @@ const BillingDetails = () => {
     const doc = new jsPDF(orientation, unit, size);
         doc.setFontSize(20);
         let title = `${billingCategory} Report`;
-        let headers = [[`Bill No \n Name`,"Bill Date","Room Rate","Boarding","Tax","Food","Transport","Laundary","Misc","Phone","Total","Advance","Balance"]];
+        let headers = [[`Bill No\nName`,"Bill Date","Room Rate","Boarding","Tax","Food","Transport","Laundary","Misc","Phone","Total","Advance","Balance"]];
         let content = {
           startY: 120,
           head: headers,
@@ -140,7 +140,7 @@ const BillingDetails = () => {
           theme: 'striped',
           styles: {
             cellWidth:'wrap',
-            halign: 'center',
+            halign : "left"
           },
           margin: marginLeft,
           pageBreak:'auto'
@@ -158,17 +158,17 @@ const BillingDetails = () => {
         doc.setDrawColor(0, 0, 0);
         doc.setLineWidth(1.5);
         doc.line(18, finalY+1, 825, finalY+1)
-        doc.text(350, finalY+10, `Total Amount`);
-        doc.text(280, finalY+30, `Room Rate      `+"    "+`:   ${total[0]}`);
-        doc.text(280, finalY+50, `Tax    `+"    "+`:  ${total[1]}`);
-        doc.text(280, finalY+70, `Food   `+"    "+`:  ${total[2]}`);
-        doc.text(280, finalY+90, `Transport `+"    "+`:  ${total[3]}`);
-        doc.text(280, finalY+110, `Laundary  `+"    "+`:   ${total[4]}`);
-        doc.text(280, finalY+130, `Misc    `+"    "+`:  ${total[5]}`);
-        doc.text(280, finalY+150, `Phone   `+"    "+`:   ${total[6]}`);
-        doc.text(280, finalY+170, `Total    `+"    "+`:  ${total[7]}`);
-        doc.text(280, finalY+190, `Advance  `+"    "+`:   ${total[8]}`);
-        doc.text(280, finalY+210, `Balance  `+"    "+`:   ${total[9]}`);       
+        doc.text(350, finalY+20, `Summary`);
+        doc.text(280, finalY+40, `Room Rate`+" ".repeat(10)+`:   ${total[0]}`);
+        doc.text(280, finalY+60, `Tax`+" ".repeat(22)+`:  ${total[1]}`);
+        doc.text(280, finalY+80, `Food`+" ".repeat(20)+`:  ${total[2]}`);
+        doc.text(280, finalY+100, `Transport`+" ".repeat(13)+`:  ${total[3]}`);
+        doc.text(280, finalY+120, `Laundary`+" ".repeat(13)+`:   ${total[4]}`);
+        doc.text(280, finalY+140, `Misc`+" ".repeat(21)+`:  ${total[5]}`);
+        doc.text(280, finalY+160, `Phone`+" ".repeat(18)+`:   ${total[6]}`);
+        doc.text(280, finalY+180, `Total`+" ".repeat(20)+`:  ${total[7]}`);
+        doc.text(280, finalY+200, `Advance`+" ".repeat(14)+`:   ${total[8]}`);
+        doc.text(280, finalY+220, `Balance`+" ".repeat(15)+`:   ${total[9]}`);   
         doc.save(`${billingCategory}.pdf`)
   }
   //return method

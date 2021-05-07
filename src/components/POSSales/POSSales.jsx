@@ -127,7 +127,7 @@ const POSSales = () => {
       theme: 'striped',
       styles: {
         cellWidth:'wrap',
-        halign: 'center',
+        halign : "left",
       },
       margin: marginLeft,
       pageBreak:'auto'

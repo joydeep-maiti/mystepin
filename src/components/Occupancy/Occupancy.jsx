@@ -227,7 +227,7 @@ const Occupancy = () => {
       theme: 'striped',
       styles: {
         cellWidth:'wrap',
-        halign: 'center',
+        halign : "left",
       },
       headerStyles: {
         fillColor: "#0088bc",
@@ -253,7 +253,7 @@ const Occupancy = () => {
       theme: 'grid',
       styles: {
         cellWidth:'wrap',
-        halign: 'center',
+        halign : "left",
       },
       bodyStyles: {
         textColor: "#e84545"

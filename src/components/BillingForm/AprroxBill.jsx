@@ -148,7 +148,7 @@ const ApproxBill = props => {
 
   React.useEffect(()=>{
     if(advanceAmount){
-      console.log("postotal", postotal,advanceAmount)
+      // console.log("postotal", postotal,advanceAmount)
       setBalance(Number(Number(data.totalRoomCharges)+Number(postotal)-Number(advanceAmount)).toFixed(2))
     }
   },[advanceAmount, postotal])
@@ -170,11 +170,9 @@ const ApproxBill = props => {
       })
     })
     setPosTotal(Number(expense).toFixed(2))
-    console.log("postotal2", expense,advanceAmount)
     // setBalance(Number(Number(data.totalRoomCharges)+Number(expense)-Number(advanceAmount)).toFixed(2))
   }
 
-  console.log("advanceAmount", postotal,advanceAmount)
 
   return (
     booking && (

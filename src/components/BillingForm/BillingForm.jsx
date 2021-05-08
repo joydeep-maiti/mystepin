@@ -154,6 +154,12 @@ const BillingForm = props => {
       posData: pos
     })
   },[balance])
+
+  React.useEffect(()=>{
+    if(advanceAmount){
+      setBalance(Number(Number(data.totalRoomCharges)+Number(postotal)-Number(advanceAmount)).toFixed(2))
+    }
+  },[advanceAmount])
   
   // React.useEffect(()=>{
   //   let balance = data.taxStatus==="withTax"?Number(roomChargesTotalWithTax)-Number(booking.advance):Number(roomChargesTotal)-Number(booking.advance)

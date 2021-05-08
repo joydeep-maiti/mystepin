@@ -4,6 +4,7 @@ import SnackBarContext from "../../context/snackBarContext";
 
 import BillingForm from "./BillingForm";
 import PreBillingForm from "./PreBillingForm";
+import AprroxBill from "./AprroxBill";
 import BillingHeader from "./BillingFormHeader";
 import Card from "../../common/Card/Card";
 import LoaderDialog from "../../common/LoaderDialog/LoaderDialog";
@@ -31,6 +32,7 @@ const BillingFormLayout = props => {
   const [taxSlabs, setTaxSlabs] = useState();
   const [roomCharges, setRoomCharges] = useState();
   const [isBillingForm, setIsBillingForm] = useState(false);
+  const [isApproxBill, setIsApproxBill] = useState(false);
   const [due, setDue] = useState(true);
   const [advanceAmount,setAdvanceAmount] = useState(0);
   const [data, setData] = useState({
@@ -54,12 +56,12 @@ const BillingFormLayout = props => {
   });
   React.useEffect(()=>{
     fetchAdvance();
-},[])
+  },[selectedBooking])
 const fetchAdvance = async()=>{
-  const { selectedBooking: booking} = props;
-  if(booking!==null)
+
+  if(selectedBooking!==null)
   {
-    const advance = await advanceService.getAdvanceByBookingId(booking._id);
+    const advance = await advanceService.getAdvanceByBookingId(selectedBooking._id);
     let total = 0;
     if(advance){
       advance.advance.map( ad => total += parseInt(ad.advanceP));
@@ -75,7 +77,12 @@ const fetchAdvance = async()=>{
     if (booking === null && !location.state) {
       history.replace("/")
     }
-    else getTaxSlabs(booking || location.state);
+    else if(booking){
+      getTaxSlabs(booking)
+    }else if (location.state){
+      setIsApproxBill(true)
+      getTaxSlabs(location.state)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -398,7 +405,23 @@ const fetchAdvance = async()=>{
           due={due}
         />
       );
-    }else {
+    }else if(isApproxBill){
+      return(
+        <AprroxBill
+          onInputChange={handleInputChange}
+          onCheckboxChange={handleCheckboxChange}
+          onRadioGroupChange={handleRadioGroupChange}
+          onFormSubmit={handleContinue}
+          data={data}
+          errors={errors}
+          booking={selectedBooking}
+          payment={payment}
+          onChangeData={handleChangeData}
+          handleOnClose={handleOnClose}
+          advanceAmount={advanceAmount}
+        />
+      );
+    }else{
       return(
         <PreBillingForm
           onInputChange={handleInputChange}

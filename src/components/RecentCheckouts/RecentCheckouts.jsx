@@ -13,7 +13,7 @@ import Loader from "../../common/Loader/Loader";
 
 const RecentCheckouts = ({ allBookings, onClose, title, onSnackbarEvent, history }) => {
 
-    const [bills, setBills] = React.useState([])
+    const [bills, setBills] = React.useState(null)
     const [loading, setLoading] = React.useState(false);
 
     React.useEffect(()=>{
@@ -39,7 +39,8 @@ const RecentCheckouts = ({ allBookings, onClose, title, onSnackbarEvent, history
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>
         {loading && <Loader color="#0088bc" />}
-        <TableContainer component={Paper} style={{marginTop:"0.7rem", maxHeight:"70vh"}}>
+        {bills && bills.length===0 && <h4 style={{textAlign:"center"}}>No Checkouts Found for Today</h4>}
+        {bills && bills.length>0 && <TableContainer component={Paper} style={{marginTop:"0.7rem", maxHeight:"70vh"}}>
             <Table size="small" stickyHeader aria-label="sticky table">
                 <TableHead>
                     <TableRow>
@@ -51,7 +52,7 @@ const RecentCheckouts = ({ allBookings, onClose, title, onSnackbarEvent, history
                     </TableRow>
                 </TableHead>
                 {
-                    bills && bills.map(el => {
+                    bills.map(el => {
                         let _rooms = el.roomWiseRatesForBooking && el.roomWiseRatesForBooking.map(ele=>{
                             return ele.roomNumber
                         }) 
@@ -68,7 +69,7 @@ const RecentCheckouts = ({ allBookings, onClose, title, onSnackbarEvent, history
                 }
 
             </Table>
-        </TableContainer>
+        </TableContainer>}
         </DialogContent>
         <DialogActions style={{paddingRight:"2rem", marginTop:"1rem"}}>
         <Button onClick={onClose} color="secondary" variant="contained">

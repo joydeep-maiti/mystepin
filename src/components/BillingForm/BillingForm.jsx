@@ -314,7 +314,7 @@ const BillingForm = props => {
           })}
         </div> */}
         <div style={{display:"flex", flexWrap:"wrap", marginTop:"1rem"}}>
-          {renderInputItems("Room Charges", booking.roomCharges, "roomCharges")}
+          {renderInputItems("Room Charges", booking.flatRoomRate?(Number(data.totalRoomCharges)-Number(data.tax)).toFixed(2):booking.roomCharges, "roomCharges")}
           {renderInputItems("Tax", data.tax, "tax")}
           {renderInputItems("Misllaneous", postotal, "misllaneous")}
           {renderInputItems("Total Charges", data.totalRoomCharges, "totalRoomCharges")}

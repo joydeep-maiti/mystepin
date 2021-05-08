@@ -163,12 +163,12 @@ const ReportGenerator = ({ booking }) => {
                   </div>
                 );
               })}
-              {/* <div className="report-row">
+              <div className="report-row">
                 <span className="report-key">POS Total</span>
                 <span className="report-value">
                   &#8377; {booking.paymentData.posTotal}
                 </span>
-              </div> */}
+              </div>
             </React.Fragment>
           )}
           <div className="report-row">
@@ -257,6 +257,7 @@ const ReportBody = ({ booking, billData }) => {
     setBill(response);
   };
 
+  booking && delete booking.roomCharges
 
   return (
     <div>

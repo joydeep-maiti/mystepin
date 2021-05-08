@@ -239,7 +239,7 @@ const fetchAdvance = async()=>{
       checkOut: selectedBooking.checkOut,
       checkedInTime: selectedBooking.checkedInTime,
       checkedOutTime: selectedBooking.checkedOutTime,
-      roomCharges: selectedBooking.roomCharges,
+      roomCharges: selectedBooking.flatRoomRate?(Number(paymentData.totalRoomCharges)-Number(paymentData.tax)).toFixed(2):selectedBooking.roomCharges,
       advance: advanceAmount,
       roomWiseRatesForBooking: selectedBooking.roomWiseRatesForBooking,
       totalAmount: Number(paymentData.totalRoomCharges)+Number(paymentData.posTotal),
@@ -282,9 +282,9 @@ const fetchAdvance = async()=>{
     })
     setData({
       ...data,
-      totalRoomCharges: selectedBooking.flatRoomRate ? Number(selectedBooking.roomCharges).toFixed(2):(Number(selectedBooking.roomCharges)+Number(tax)).toFixed(2),
+      totalRoomCharges: selectedBooking.flatRoomRate ? Number(selectedBooking.roomCharges):(Number(selectedBooking.roomCharges)+Number(tax)).toFixed(2),
       totalCalculatedRoomCharges: total,
-      tax,
+      tax:Number(tax).toFixed(2),
       taxStatus: "withTax",
     })
     console.log("totalRoomCharges",total)

@@ -55,7 +55,7 @@ const BillingFormLayout = props => {
     wallet: { checked: false, disable: true }
   });
   React.useEffect(()=>{
-    fetchAdvance();
+    selectedBooking._id && fetchAdvance();
   },[selectedBooking])
 const fetchAdvance = async()=>{
 

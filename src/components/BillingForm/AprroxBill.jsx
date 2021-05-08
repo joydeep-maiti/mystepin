@@ -143,7 +143,7 @@ const ApproxBill = props => {
   };
 
   React.useEffect(()=>{
-    fetchPos()
+    booking._id && fetchPos()
   },[booking._id,data.totalRoomCharges])
 
   React.useEffect(()=>{

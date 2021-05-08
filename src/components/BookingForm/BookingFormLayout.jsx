@@ -35,6 +35,7 @@ const proofTypes=[
   {label:"Others" ,value:"Others"},
 ];
 
+
 const BookingFormLayout = ({
   location,
   history,

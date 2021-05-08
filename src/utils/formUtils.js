@@ -11,6 +11,8 @@ import Select3 from "../common/Select/Select3";
 import Select4 from "../common/Select/Select4";
 import Select5 from "../common/Select/Select5";
 import Select6 from '../common/Select/Select6';
+import Select7 from '../common/Select/Select7';
+
 
 
 import DatePicker from "../common/DatePicker/DatePicker";
@@ -80,7 +82,8 @@ const renderDatepicker = args => <DatePicker name={args.id} {...args} />;
           options: array  => [{value: any, label: string}]
 */
 const renderSelect = args => <Select name={args.id} {...args} />;
-const renderproof = args => <Select1 name={args.id} {...args} />;
+const renderproof1 = args => <Select1 name={args.id} {...args} />;
+const renderproof2 = args => <Select7 name={args.id} {...args} />;
 const renderBookedBy = args => <Select2 name={args.id} {...args}/>;
 const renderAgent = args => <Select3 name={args.id} {...args}/>;
 const renderBillingStatus = args => <Select4 name= {args.id} {...args}/>;
@@ -126,7 +129,8 @@ export default {
   renderDatepicker,
   renderButton,
   renderRadioGroup,
-  renderproof,
+  renderproof1,
+  renderproof2,
   renderBookedBy,
   renderBillingStatus,
   renderCardStatus,

@@ -72,6 +72,9 @@ const BookingForm = props => {
     {planType:"EP"},
     {planType:"MAP"},
   ]);
+  const proofTypes = [
+    {label:"Passport",value :"Passport"}
+  ]
     const [taxSlabs, setTaxSlabs] = React.useState([]);
   // const roomOptions = availableRooms.map(room => {
   //   return { label: room.roomNumber, value: room.roomNumber };
@@ -539,7 +542,7 @@ const BookingForm = props => {
         }
       </div>
       <div className="form-group">
-        {FormUtils.renderproof({
+        {data.nationality === "Indian" && FormUtils.renderproof1({
           id: "proofs",
           name: "proofs",
           label: "Proof Type",
@@ -549,7 +552,16 @@ const BookingForm = props => {
           disabled: shouldDisable,
           error: errors["proofs"]
         })}
-
+        {data.nationality !== "Indian" && FormUtils.renderproof2({
+          id: "proofs",
+          name: "proofs",
+          label: "Proof Type",
+          value: data.proofs,
+          onChange: event => selectfun1(event),
+          proofTypes,
+          disabled: shouldDisable,
+          error: errors["proofs"]
+        })}
         {FormUtils.renderInput(
         getInputArgObj("Idproof", "ID Proof Number", "text", shouldDisable)
         )}

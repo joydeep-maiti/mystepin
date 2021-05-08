@@ -86,7 +86,9 @@ const PreBillingForm = props => {
   },[booking])
   
   const formatDayWiseBookingRates= ()=> {
+
     let dayWiseBookingRates = {}
+    console.log("dayWiseRates B",booking.roomWiseRatesForBooking)
     booking.roomWiseRatesForBooking && booking.roomWiseRatesForBooking.map(el=>{            
       el.rates.map(rate=>{
        if(!dayWiseBookingRates[rate.date]){

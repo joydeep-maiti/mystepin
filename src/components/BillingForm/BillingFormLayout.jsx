@@ -70,14 +70,17 @@ const fetchAdvance = async()=>{
   }
 }
  useEffect(() => {
-    const { selectedBooking: booking, history } = props;
-    if (booking === null) history.replace("/");
-    else getTaxSlabs();
+    const { selectedBooking: booking, history, location } = props;
+    console.log("props", props)
+    if (booking === null && !location.state) {
+      history.replace("/")
+    }
+    else getTaxSlabs(booking || location.state);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const getTaxSlabs = async () => {
-    const { selectedBooking: booking, history } = props;
+  const getTaxSlabs = async (booking) => {
+    // const { selectedBooking: booking, history } = props;
     const taxSlabs = await taxService.getTaxSlabs("GST");
     const roomCharges = booking.roomCharges;
     setSelectedBooking(booking);

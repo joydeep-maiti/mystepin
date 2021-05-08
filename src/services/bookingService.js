@@ -35,4 +35,13 @@ async function updateBooking(booking) {
   }
 }
 
-export default { getBookings, addBooking, updateBooking, getProofId };
+async function getDayCheckin(date) {
+  try {
+    const { data: bills } =  await http.get(`${http.baseUrl}/bookings/dayCheckin?date=${date}`);
+    return bills;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export default { getBookings, addBooking, updateBooking, getProofId, getDayCheckin };

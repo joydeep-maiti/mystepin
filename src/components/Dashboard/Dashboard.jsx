@@ -36,6 +36,7 @@ import "./Dashboard.scss";
 import ReportComponent from '../ReportComponent/ReportComponent'
 import AdvancedDialog from '../AdvancedTab/AdvancedDialog'
 import RecentCheckouts from '../RecentCheckouts/RecentCheckouts'
+import ApproximateBill from '../ApproximateBill/ApproximateBill'
 import BillSettlement from '../BillSettlement/BillSettlement'
 
 const useStyles = makeStyles((theme) => ({
@@ -334,7 +335,16 @@ const Dashboard = props => {
           {
             dialog.openFor.advanced && advancedDialogTitle==="Today's Checkout" &&(
               <RecentCheckouts
-                allBookings={allBookings}
+                // allBookings={allBookings}
+                title={advancedDialogTitle}
+                onClose={() => handleDialog(dialog.contentOf)}
+              // onSnackbarEvent={handleSnackbarEvent}
+              />
+          )}
+          {
+            dialog.openFor.advanced && advancedDialogTitle==="Approximate Bill" &&(
+              <ApproximateBill
+                // allBookings={allBookings}
                 title={advancedDialogTitle}
                 onClose={() => handleDialog(dialog.contentOf)}
               // onSnackbarEvent={handleSnackbarEvent}

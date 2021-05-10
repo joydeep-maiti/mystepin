@@ -54,23 +54,33 @@ const BillingFormLayout = props => {
     card: { checked: false, disable: true },
     wallet: { checked: false, disable: true }
   });
+
   React.useEffect(()=>{
     selectedBooking._id && fetchAdvance();
   },[selectedBooking])
-const fetchAdvance = async()=>{
 
-  if(selectedBooking!==null)
-  {
-    const advance = await advanceService.getAdvanceByBookingId(selectedBooking._id);
-    let total = 0;
-    if(advance){
-      advance.advance.map( ad => total += parseInt(ad.advanceP));
-
-      setAdvanceAmount(total);
+  React.useEffect(()=>{
+    if(props.location.state){
+      setIsApproxBill(true);
+      setSelectedBooking(props.location.state);
+      setRoomCharges(props.location.state.roomCharges);
     }
-    console.log("Booking inside",advanceAmount)
+  },[props.location])
+
+  const fetchAdvance = async()=>{
+
+    if(selectedBooking!==null)
+    {
+      const advance = await advanceService.getAdvanceByBookingId(selectedBooking._id);
+      let total = 0;
+      if(advance){
+        advance.advance.map( ad => total += parseInt(ad.advanceP));
+
+        setAdvanceAmount(total);
+      }
+      console.log("Booking inside",advanceAmount)
+    }
   }
-}
  useEffect(() => {
     const { selectedBooking: booking, history, location } = props;
     console.log("props", props)
@@ -443,7 +453,7 @@ const fetchAdvance = async()=>{
     <React.Fragment>
       {loading && <LoaderDialog open={loading} />}
       <Card
-        header={<BillingHeader title={isBillingForm?"Billing Form":"Room Rates"}/>}
+        header={<BillingHeader title={isBillingForm?"Billing Form":isApproxBill?"Approximate Bill":"Room Rates"}/>}
         content={cardContent()}
         maxWidth={700}
         margin="30px auto"

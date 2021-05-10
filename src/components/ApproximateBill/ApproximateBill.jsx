@@ -32,7 +32,7 @@ const ApproximateBill = ({ allBookings, onClose, title, onSnackbarEvent, history
 
     const handleReport = (el)=>{
         onClose();
-        history.push("/billing",el);
+        history.push("/approximatebill",el);
     }
 
     return (

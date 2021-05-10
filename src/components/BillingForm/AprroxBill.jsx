@@ -118,7 +118,7 @@ const ApproxBill = props => {
   const renderInputItems = (label, value, inputId) => {
     return (
       // <React.Fragment>
-      <div style={{ width: "50%", display:"flex",alignItems:"center", marginBottom:"1rem" }}>
+      <div style={{ width: "50%", display:"flex",alignItems:"center", marginBottom:".1rem" }}>
         <Typography
           display={"block"}
           nowrap={"true"}
@@ -127,7 +127,7 @@ const ApproxBill = props => {
           {label}
         </Typography>
         <Typography>:</Typography>
-        <div style={{ width: "50%" }}>
+        <div style={{ width: "50%", textAlign:"right" }}>
           {FormUtils.renderInput({
             id: inputId,
             label: null,
@@ -201,7 +201,7 @@ const ApproxBill = props => {
 
           </tr>
         </table>
-        <div style={{display:"flex", flexWrap:"wrap", marginTop:"1rem"}}>
+        <div style={{display:"flex", flexWrap:"wrap", marginTop:"1rem", flexDirection:"column",alignItems:"center"}}>
           {renderInputItems("Room Charges", booking.flatRoomRate?(Number(data.totalRoomCharges)-Number(data.tax)).toFixed(2):booking.roomCharges, "roomCharges")}
           {renderInputItems("Tax", data.tax, "tax")}
           {renderInputItems("Misllaneous", postotal, "misllaneous")}
@@ -219,7 +219,7 @@ const ApproxBill = props => {
             radioButtons
           })}
         </div> */}
-        <div style={{maxHeight:"25rem",overflowY:"auto", marginTop:"1rem"}}>
+        {/* <div style={{maxHeight:"25rem",overflowY:"auto", marginTop:"1rem"}}>
           <table className={classes.pricetable}>
             <tr style={{background:"antiquewhite", padding:"3px 5px"}}>
               <th style={{position:"sticky", top:0,background:"antiquewhite", padding:"3px 5px"}}>Date</th>
@@ -265,11 +265,11 @@ const ApproxBill = props => {
                 })
               }
           </table>
-        </div>
-        <div style={{display:"flex", justifyContent:"flex-end"}}>
+        </div> */}
+        {/* <div style={{display:"flex", justifyContent:"flex-end"}}>
           <h3 style={{margin:"8px 1rem"}}>Total</h3>
           <h3 style={{margin:"8px 1rem"}}>{data.totalRoomCharges}</h3>
-        </div>
+        </div> */}
         {errors.customError && (
           <div style={{ color: "#f44336" }}>
             <p>{errors.customError}</p>

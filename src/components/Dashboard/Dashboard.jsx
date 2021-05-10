@@ -387,6 +387,16 @@ const Dashboard = props => {
               )}
             />
             <Route
+              path="/approximatebill"
+              render={props => (
+                <BillingFormLayout
+                  onSnackbarEvent={handleSnackbarEvent}
+                  onRedirectFromBilling={handleRedirectFromBilling}
+                  {...props}
+                />
+              )}
+            />
+            <Route
               path="/report"
               render={props => (
                 <Report selectedBooking={selectedBooking} {...props} />

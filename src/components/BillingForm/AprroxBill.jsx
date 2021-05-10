@@ -204,8 +204,8 @@ const ApproxBill = props => {
         <div style={{display:"flex", flexWrap:"wrap", marginTop:"1rem", flexDirection:"column",alignItems:"center"}}>
           {renderInputItems("Room Charges", booking.flatRoomRate?(Number(data.totalRoomCharges)-Number(data.tax)).toFixed(2):booking.roomCharges, "roomCharges")}
           {renderInputItems("Tax", data.tax, "tax")}
-          {renderInputItems("Misllaneous", postotal, "misllaneous")}
           {renderInputItems("Total Charges", data.totalRoomCharges, "totalRoomCharges")}
+          {renderInputItems("Misllaneous", postotal, "misllaneous")}
           {renderInputItems("Advance", advanceAmount, "advance")}
           {renderInputItems("Balance",  balance, "balance")}
         </div>

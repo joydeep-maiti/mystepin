@@ -398,6 +398,12 @@ const BillingFormLayout = props => {
     props.history.goBack()
   };
 
+  const handleOnApproxBillClose = () => {
+    // setIsBillingForm(true)
+    console.log("PROPS", props)
+    props.history.push("/")
+  };
+
   const cardContent = ()=> {
     if(isBillingForm){
       return (
@@ -427,7 +433,7 @@ const BillingFormLayout = props => {
           booking={selectedBooking}
           payment={payment}
           onChangeData={handleChangeData}
-          handleOnClose={handleOnClose}
+          handleOnClose={handleOnApproxBillClose}
           advanceAmount={advanceAmount}
         />
       );

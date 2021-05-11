@@ -118,7 +118,7 @@ const ApproxBill = props => {
   const renderInputItems = (label, value, inputId) => {
     return (
       // <React.Fragment>
-      <div style={{ width: "50%", display:"flex",alignItems:"center", marginBottom:".1rem" }}>
+      <div style={{ width: "90%", display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:".1rem" }}>
         <Typography
           display={"block"}
           nowrap={"true"}
@@ -134,7 +134,8 @@ const ApproxBill = props => {
             value: value || "",
             onChange: () => {},
             error: null,
-            disabled: true
+            disabled: true,
+            style:{textAlign:"right"}
           })}
         </div>
       </div>
@@ -185,7 +186,7 @@ const ApproxBill = props => {
 
             <td className={classes.tableTDTitle}>Room Nos</td>
             <td>:</td>
-            <td className={classes.tableTDesc} colSpan="4">{rooms}</td>
+            <td className={classes.tableTDesc}>{rooms}</td>
           </tr>
           <tr>
             <td className={classes.tableTDTitle}>Chckin Date</td>
@@ -195,9 +196,9 @@ const ApproxBill = props => {
             <td className={classes.tableTDTitle}>Checkout Date</td>
             <td>:</td>
             <td className={classes.tableTDesc}>{booking?moment(booking.checkOut).format('D.MMM.YYYY'):""}</td>
-            <td className={classes.tableTDTitle}>No of Nights</td>
+            {/* <td className={classes.tableTDTitle}>No of Nights</td>
             <td>:</td>
-            <td className={classes.tableTDesc}>{booking?booking.nights:1}</td>
+            <td className={classes.tableTDesc}>{booking?booking.nights:1}</td> */}
 
           </tr>
         </table>

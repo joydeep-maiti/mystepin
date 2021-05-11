@@ -210,6 +210,14 @@ const changePaymentOptions=(event)=>{
     const errors = checkForErrors();
     if (errors) return;
     const {_id,date,advanceP,modeofpayment,reciptNumber} = data;
+    //Recipt Duplicate
+    const recipt = []
+    advance.filter(ad => recipt.push(ad.reciptNumber));
+    console.log("Recipt Log",recipt);
+    if(recipt.includes(reciptNumber)){
+        alert("Please Enter a Unique Recipt Number");
+    }
+    else{
     const booking = {
       ...allBookings.find(booking => booking._id === _id)
     };
@@ -247,7 +255,7 @@ const changePaymentOptions=(event)=>{
     }
    
   };
- 
+}
   const openSnackBar = (message, variant) => {
     const snakbarObj = { open: true, message, variant, resetBookings: false };
     handleSnackbarEvent(snakbarObj);

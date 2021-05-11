@@ -28,7 +28,7 @@ import constants from "../../utils/constants";
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-
+import billingService from '../../services/billingService'
 const moment = require("moment");
 const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, handleBookingselection }) => {
     const [forDate, setForDate] = React.useState(null);
@@ -38,9 +38,12 @@ const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, hand
     const [isName,setIsName] = useState(true)
     const [isBill,setIsBill] = useState(false)
     const [isBillDate,setisBillDate] = useState(false)
+    const [name,setName] = useState("")
+    const [billNo,setBillNo] = useState("")
+
     React.useEffect(()=>{
-        fetchBills()
-    },[])
+         fetchBills()
+     },[])
 
     useEffect(() => {
        if(view === 'billdate'){
@@ -59,20 +62,29 @@ const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, hand
         setIsName(true)
        }
     }, [view])
-    const fetchBills = async()=>{
+
+     const fetchBills = async()=>{
         setLoading(true)
-        const res = await bookingService.getDayCheckin()
+        const res = await billingService.getRecentCheckouts()
         setLoading(false)
         if(res){
             setBills(res)
         }
-    }
+     }
+   
+    //Input Change functions
     const handleNewFromDateChange = (date) => {
         setForDate(date)
     };
     const handleViewChange = (event) => {
         setView(event.target.value);
       };
+    const handleNameChange = (e) => {
+        setName(e.target.value);
+    }
+    const handleBillNoChange = (e) => {
+        setBillNo(e.target.value)
+    }
     return (
         <React.Fragment>
         <DialogTitle>{title}</DialogTitle>
@@ -108,7 +120,8 @@ const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, hand
                   <TextField 
                     style={{width:"100%", textAlign:"right"}}
                         type="text" 
-                        value={""} 
+                        value= {name} 
+                        onChange = {handleNameChange}
                         required id="standard-required" 
                         name="guestName"   
                     />
@@ -129,7 +142,8 @@ const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, hand
                   <TextField 
                     style={{width:"100%", textAlign:"right"}}
                         type="text" 
-                        value={""} 
+                        value= {billNo} 
+                        onChange = {handleBillNoChange}
                         required id="standard-required" 
                         name="billNo" 
                         

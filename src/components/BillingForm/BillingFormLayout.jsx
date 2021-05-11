@@ -405,7 +405,7 @@ const BillingFormLayout = props => {
   };
 
   const cardContent = ()=> {
-    if(isBillingForm){
+    if(isBillingForm && !isApproxBill){
       return (
         <BillingForm
           onInputChange={handleInputChange}

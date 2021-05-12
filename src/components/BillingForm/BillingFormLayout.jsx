@@ -459,7 +459,7 @@ const BillingFormLayout = props => {
     <React.Fragment>
       {loading && <LoaderDialog open={loading} />}
       <Card
-        header={<BillingHeader title={isBillingForm?"Billing Form":isApproxBill?"Approximate Bill":"Room Rates"}/>}
+        header={<BillingHeader title={isApproxBill?"Approximate Bill":isBillingForm?"Billing Form":"Room Rates"}/>}
         content={cardContent()}
         maxWidth={isApproxBill?550:700}
         margin="30px auto"

@@ -38,7 +38,7 @@ import AdvancedDialog from '../AdvancedTab/AdvancedDialog'
 import RecentCheckouts from '../RecentCheckouts/RecentCheckouts'
 import ApproximateBill from '../ApproximateBill/ApproximateBill'
 import BillSettlement from '../BillSettlement/BillSettlement'
-
+import PrintBill from '../PrintBill/PrintBill'
 const useStyles = makeStyles((theme) => ({
   formControl: {
     marginTop: "20px",
@@ -353,6 +353,14 @@ const Dashboard = props => {
           {
             dialog.openFor.advanced && advancedDialogTitle==="Bill Settlement" &&(
               <BillSettlement
+                title={advancedDialogTitle}
+                onClose={() => handleDialog(dialog.contentOf)}
+                onSnackbarEvent={handleSnackbarEvent}
+              />
+          )}
+          {
+            dialog.openFor.advanced && advancedDialogTitle==="Print Bill" &&(
+              <PrintBill
                 title={advancedDialogTitle}
                 onClose={() => handleDialog(dialog.contentOf)}
                 onSnackbarEvent={handleSnackbarEvent}

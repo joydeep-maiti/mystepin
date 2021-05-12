@@ -1,14 +1,6 @@
 import React,{useEffect,useState} from "react";
 import { withRouter } from 'react-router-dom'
 import { DialogTitle, DialogContent, Button,DialogActions } from "@material-ui/core";
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import TableContainer from '@material-ui/core/TableContainer';
-import Paper from '@material-ui/core/Paper';
-import bookingService from '../../services/bookingService'
 import Loader from "../../common/Loader/Loader";
 import {
     MuiPickersUtilsProvider,
@@ -29,29 +21,28 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import billingService from '../../services/billingService'
+import PrintBillForm from '../PrintBill/PrintBillForm'
+import Fuse from 'fuse.js'
 const moment = require("moment");
+
 const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, handleBookingselection }) => {
     const [forDate, setForDate] = React.useState(null);
     const [bills, setBills] = React.useState(null)
     const [loading, setLoading] = React.useState(false);
-    const [view, setView] = React.useState('billdate');
+    const [type, setType] = React.useState('billdate');
     const [isName,setIsName] = useState(true)
     const [isBill,setIsBill] = useState(false)
     const [isBillDate,setisBillDate] = useState(false)
     const [name,setName] = useState("")
     const [billNo,setBillNo] = useState("")
 
-    React.useEffect(()=>{
-         fetchBills()
-     },[])
-
     useEffect(() => {
-       if(view === 'billdate'){
+       if(type === 'billdate'){
            setisBillDate(true)
            setIsBill(false)
            setIsName(false)
        }
-       else if(view === 'billno'){
+       else if(type === 'billno'){
         setisBillDate(false)
         setIsBill(true)
         setIsName(false)
@@ -61,23 +52,75 @@ const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, hand
         setIsBill(false)
         setIsName(true)
        }
-    }, [view])
+    }, [type])
 
+   
+    const handleSearch = () =>{
+        if(type === "name" && name){
+            fetchGuest()
+        }
+        else if( type === "billdate" && forDate){
+            fetchBills()
+        }
+        else if( type === "billno" && billNo)
+        {fetchBillNo()}
+        else{
+            alert("Please enter the data")
+        }
+        
+    }
+    //
      const fetchBills = async()=>{
         setLoading(true)
-        const res = await billingService.getRecentCheckouts()
+       const res = await billingService.getBillsByDate(forDate.toJSON().split("T")[0])
+        console.log("RecentCheckout",res)
         setLoading(false)
         if(res){
             setBills(res)
         }
      }
-   
+     const fetchGuest = async()=>{
+        setLoading(true)
+       const res = await billingService.getRecentCheckouts()
+       const options = {
+        includeScore: true,
+        threshold : 0.1,
+        keys: ['guestName']
+      }
+      const fuse = new Fuse(res, options)
+      const result = fuse.search(name)
+
+      let r = result.map(re => {return re.item})
+        console.log("Guest Name",result)
+        setLoading(false)
+        if(r){
+            setBills(r)
+        }
+     } 
+     const fetchBillNo = async()=>{
+        setLoading(true)
+       const res = await billingService.getRecentCheckouts()
+       const options = {
+        includeScore: true,
+        threshold : 0.1,
+        keys: ['billingId']
+      }
+      const fuse = new Fuse(res, options)
+      const result = fuse.search(billNo)
+
+      let r = result.map(re => {return re.item})
+        console.log("Guest Name",result)
+        setLoading(false)
+        if(r){
+            setBills(r)
+        }
+     } 
     //Input Change functions
     const handleNewFromDateChange = (date) => {
         setForDate(date)
     };
     const handleViewChange = (event) => {
-        setView(event.target.value);
+        setType(event.target.value);
       };
     const handleNameChange = (e) => {
         setName(e.target.value);
@@ -86,19 +129,19 @@ const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, hand
         setBillNo(e.target.value)
     }
     return (
-        <React.Fragment>
+        <React.Fragment  >
         <DialogTitle>{title}</DialogTitle>
-        <form  >
+        <form>
         <DialogContent style={{border:"1px solid gray", margin:"0 1rem"}}>
         {loading && <Loader color="#0088bc" />}
-        <div style={{ display:"flex",justifyContent:"space-evenly",alignItems:"center", marginBottom:"1rem" }}>
+        <div style={{ display:"flex",justifyContent:"space-evenly",alignItems:"center", marginBottom:"1rem"}}>
                 <Typography
                     style={{width: "35%"}}
                 >
                     Search Bill with 
                 </Typography>
                 <FormControl  style={{width:"100%"}}>
-                <RadioGroup aria-label="view" style={{ flexDirection: "row" }} name="view" value={view} onChange={handleViewChange}>
+                <RadioGroup aria-label="view" style={{ flexDirection: "row" }} name="view" value={type} onChange={handleViewChange}>
                           <FormControlLabel value="billdate" control={<Radio style={{color:"#0088bc"}}/>} label="Bill No" />
                           
                           <FormControlLabel value="name" control={<Radio style={{color:"#0088bc"}}/>} label="Guest Name" />
@@ -182,22 +225,19 @@ const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, hand
                 </div>
             </div>
              }
-            {/* {selectedBill && selectedBill.paymentData.billingStatus!=="Paid" && 
-            <BillingSettlementForm
-                onInputChange={handleInputChange}
-                onCheckboxChange={handleCheckboxChange}
-                // onFormSubmit={handleFormSubmit}
-                data={data}
-                errors={errors}
-                payment={payment}
-                onChangeData={handleChangeData}
-            />} */}
+            {bills  && 
+            <PrintBillForm
+                data={bills}
+                onClose = {onClose}
+            />}
         </DialogContent>
         <DialogActions style={{paddingRight:"2rem", marginTop:"1rem"}}>
         <Button onClick={onClose} color="secondary" variant="contained">
           Close
         </Button>
-
+        <Button onClick={handleSearch} color="primary" variant="contained">
+          Search Bill
+        </Button>
       </DialogActions>
       </form>
     </React.Fragment>

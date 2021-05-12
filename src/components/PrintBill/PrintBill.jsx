@@ -228,6 +228,7 @@ const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, hand
             {bills  && 
             <PrintBillForm
                 data={bills}
+                type = {type}
                 onClose = {onClose}
             />}
         </DialogContent>

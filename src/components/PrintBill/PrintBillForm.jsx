@@ -17,6 +17,15 @@ const PrintBillForm = props => {
 
     const handleReport = (el)=>{
         onClose();
+        let element=[]
+        element.push(el)
+        element = element.map((e)=>{
+            e.firstName = e.guestName
+            e.lastName = ""
+            e.roomWiseRatesForBooking = e.rooms
+            delete e.roomWiseRatesForBooking
+            return e
+        })
         history.push("/report",el);
     }
   return (

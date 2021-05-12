@@ -148,9 +148,14 @@ const ApproxBill = props => {
   },[booking._id,data.totalRoomCharges])
 
   React.useEffect(()=>{
+    // debugger
+    console.log("postotal", postotal,advanceAmount)
     if(advanceAmount){
-      // console.log("postotal", postotal,advanceAmount)
-      setBalance(Number(Number(data.totalRoomCharges)+Number(postotal)-Number(advanceAmount)).toFixed(2))
+      let bal = Number(Number(data.totalRoomCharges)+Number(postotal)-Number(advanceAmount)).toFixed(2)
+      setBalance(bal)
+    }else {
+      let bal = Number(Number(data.totalRoomCharges)+Number(postotal))
+      setBalance(bal)
     }
   },[advanceAmount, postotal])
  
@@ -171,7 +176,8 @@ const ApproxBill = props => {
       })
     })
     setPosTotal(Number(expense).toFixed(2))
-    // setBalance(Number(Number(data.totalRoomCharges)+Number(expense)-Number(advanceAmount)).toFixed(2))
+    let _adv =  advanceAmount? advanceAmount: 0
+    // setBalance(Number(Number(data.totalRoomCharges)+Number(expense)-Number(_adv)).toFixed(2))
   }
 
 
@@ -207,7 +213,7 @@ const ApproxBill = props => {
           {renderInputItems("Tax", data.tax, "tax")}
           {renderInputItems("Misllaneous", postotal || '0', "misllaneous")}
           {renderInputItems("Total Charges", Number(data.totalRoomCharges)+Number(postotal || 0), "totalRoomCharges")}
-          {renderInputItems("Advance", advanceAmount, "advance")}
+          {renderInputItems("Advance", advanceAmount || '0', "advance")}
           {renderInputItems("Balance",  balance, "balance")}
         </div>
         {/* <div className={classes.radioGroup}>

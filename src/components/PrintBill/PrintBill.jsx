@@ -4,27 +4,18 @@ import { DialogTitle, DialogContent, Button,DialogActions } from "@material-ui/c
 import Loader from "../../common/Loader/Loader";
 import {
     MuiPickersUtilsProvider,
-    KeyboardTimePicker,
     KeyboardDatePicker,
 } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
 import { Typography } from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
-import FormUtils from "../../utils/formUtils";
-import schemas from "../../utils/joiUtils";
-import constants from "../../utils/constants";
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import billingService from '../../services/billingService'
+import printBill from '../../services/printBill'
 import PrintBillForm from '../PrintBill/PrintBillForm'
 import Fuse from 'fuse.js'
-const moment = require("moment");
-
 const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, handleBookingselection }) => {
     const [forDate, setForDate] = React.useState(null);
     const [bills, setBills] = React.useState(null)
@@ -63,7 +54,9 @@ const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, hand
             fetchBills()
         }
         else if( type === "billno" && billNo)
-        {fetchBillNo()}
+        {
+            fetchBillNo()
+        }
         else{
             alert("Please enter the data")
         }
@@ -72,16 +65,18 @@ const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, hand
     //
      const fetchBills = async()=>{
         setLoading(true)
-       const res = await billingService.getBillsByDate(forDate.toJSON().split("T")[0])
+       const res = await printBill.getBillsByDate(forDate.toJSON().split("T")[0])
         console.log("RecentCheckout",res)
         setLoading(false)
         if(res){
             setBills(res)
+            console.log("billdate",res)
+
         }
      }
      const fetchGuest = async()=>{
         setLoading(true)
-       const res = await billingService.getRecentCheckouts()
+       const res = await printBill.getAllCheckOuts()
        const options = {
         includeScore: true,
         threshold : 0.1,
@@ -91,15 +86,15 @@ const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, hand
       const result = fuse.search(name)
 
       let r = result.map(re => {return re.item})
-        console.log("Guest Name",result)
         setLoading(false)
         if(r){
             setBills(r)
+            console.log("Guest",r)
         }
      } 
      const fetchBillNo = async()=>{
         setLoading(true)
-       const res = await billingService.getRecentCheckouts()
+       const res = await printBill.getAllCheckOuts()
        const options = {
         includeScore: true,
         threshold : 0.1,
@@ -109,10 +104,11 @@ const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, hand
       const result = fuse.search(billNo)
 
       let r = result.map(re => {return re.item})
-        console.log("Guest Name",result)
         setLoading(false)
         if(r){
             setBills(r)
+            console.log("ID",r)
+
         }
      } 
     //Input Change functions
@@ -142,7 +138,7 @@ const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, hand
                 </Typography>
                 <FormControl  style={{width:"100%"}}>
                 <RadioGroup aria-label="view" style={{ flexDirection: "row" }} name="view" value={type} onChange={handleViewChange}>
-                          <FormControlLabel value="billdate" control={<Radio style={{color:"#0088bc"}}/>} label="Bill No" />
+                          <FormControlLabel value="billdate" control={<Radio style={{color:"#0088bc"}}/>} label="Bill Date" />
                           
                           <FormControlLabel value="name" control={<Radio style={{color:"#0088bc"}}/>} label="Guest Name" />
                           
@@ -151,14 +147,14 @@ const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, hand
                 </FormControl>
             </div>
            {
-              isName &&  <div style={{ display:"flex",justifyContent:"space-evenly",alignItems:"center", marginBottom:"1rem" }}>
+              isName &&  <div style={{ display:"flex",justifyContent:"center",alignItems:"center", marginBottom:"1rem" }}>
               <Typography
-                  style={{width: "35%"}}
+                  style={{width: "auto",paddingRight:"10px"}}
               >
                  Enter Guest Name
               </Typography>
               <Typography>:</Typography>
-              <div style={{ width: "40%" }}>
+              <div  style={{width: "auto",padding:"0 10px"}}>
                   <FormControl  style={{width:"100%"}}>
                   <TextField 
                     style={{width:"100%", textAlign:"right"}}
@@ -170,17 +166,22 @@ const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, hand
                     />
                   </FormControl>
               </div>
+              <div style={{width: "auto",paddingLeft:"10px"}}>
+              <Button onClick={handleSearch} color="primary" variant="contained">
+                       Go
+                 </Button>
+              </div>
           </div>
           }
           {
-              isBill &&  <div style={{ display:"flex",justifyContent:"space-evenly",alignItems:"center", marginBottom:"1rem" }}>
+              isBill &&  <div style={{ display:"flex",justifyContent:"center",alignItems:"center", marginBottom:"1rem" }}>
               <Typography
-                  style={{width: "35%"}}
+                   style={{width: "auto",paddingRight:"10px"}}
               >
                  Enter Bill Number
               </Typography>
               <Typography>:</Typography>
-              <div style={{ width: "40%" }}>
+              <div style={{width: "auto",padding:"0 10px"}}>
                   <FormControl  style={{width:"100%"}}>
                   <TextField 
                     style={{width:"100%", textAlign:"right"}}
@@ -194,17 +195,22 @@ const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, hand
                      
                   </FormControl>
               </div>
+              <div  style={{width: "auto",paddingLeft:"10px"}}>
+              <Button onClick={handleSearch} color="primary" variant="contained">
+                       Go
+                 </Button>
+              </div>
           </div>
           }
           { isBillDate &&
-            <div style={{width:"100%", display:"flex",justifyContent:"space-evenly",alignItems:"center", marginBottom:"1rem" }}>
+            <div style={{width:"100%", display:"flex",justifyContent:"center",alignItems:"center", marginBottom:"1rem" }}>
                 <Typography
-                    style={{width: "35%"}}
+                    style={{width: "auto",paddingRight:"10px"}}
                 >
                 Choose Billing Date
                 </Typography>
                 <Typography>:</Typography>
-                <div style={{ width: "40%" }}>
+                <div style={{width: "auto",padding:"0 10px"}}>
                     <MuiPickersUtilsProvider utils={DateFnsUtils} style={{width:"100%"}}>
                         <KeyboardDatePicker
                         required
@@ -223,6 +229,11 @@ const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, hand
                         />
                     </MuiPickersUtilsProvider>
                 </div>
+                <div  style={{width: "auto",paddingLeft:"10px"}}>
+              <Button onClick={handleSearch} color="primary" variant="contained">
+                       Go
+                 </Button>
+              </div>
             </div>
              }
             {bills  && 
@@ -235,9 +246,6 @@ const PrintBill = ({ allBookings, onClose, title, onSnackbarEvent, history, hand
         <DialogActions style={{paddingRight:"2rem", marginTop:"1rem"}}>
         <Button onClick={onClose} color="secondary" variant="contained">
           Close
-        </Button>
-        <Button onClick={handleSearch} color="primary" variant="contained">
-          Search Bill
         </Button>
       </DialogActions>
       </form>

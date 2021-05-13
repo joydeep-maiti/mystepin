@@ -215,7 +215,7 @@ const changePaymentOptions=(event)=>{
     advance.filter(ad => recipt.push(ad.reciptNumber));
     console.log("Recipt Log",recipt);
     if(recipt.includes(reciptNumber)){
-        alert("Please Enter a Unique Recipt Number");
+        alert("Recipt number must be Unique");
     }
     else{
     const booking = {

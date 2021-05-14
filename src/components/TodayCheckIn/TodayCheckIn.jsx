@@ -64,6 +64,7 @@ const TodayCheckIn = ({ allBookings, onClose, title, onBookingView,onSnackbarEve
                                 return (
                                     <TableRow>
                                         <TableCell align="center"><span style={{cursor:"pointer", color:"blue"}} onClick={()=>handleReport(el)}>{el._id}</span></TableCell>
+                                        <TableCell align="center">{el.firstName}</TableCell>
                                         <TableCell align="center">{el.lastName}</TableCell>
                                         <TableCell align="center">{_rooms.toString()}</TableCell>
                                         <TableCell align="center">{el.address}</TableCell>

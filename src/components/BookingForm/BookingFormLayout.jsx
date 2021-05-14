@@ -90,6 +90,7 @@ const BookingFormLayout = ({
 
   useEffect(() => {
     const { pathname } = location;
+    console.log("selectedRoom",selectedBooking)
     if (selectedRoom !== null) {
       if (pathname === "/booking/viewBooking") setViewBookingData();
       else if (pathname === "/booking/newBooking") setNewBookingData();
@@ -97,6 +98,17 @@ const BookingFormLayout = ({
     fetchRoomTypes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const { pathname } = location;
+    console.log("selectedRoom",selectedBooking)
+    if (selectedRoom !== null) {
+      if (pathname === "/booking/viewBooking") setViewBookingData();
+      else if (pathname === "/booking/newBooking") setNewBookingData();
+    } else history.replace("/");
+    fetchRoomTypes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedBooking]);
 
   useEffect(() => {
     if(data.bookedBy === "Agent"){

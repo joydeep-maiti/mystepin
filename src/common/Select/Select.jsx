@@ -14,7 +14,8 @@ const Select = ({ options, onChange, error, ...props }) => {
       SelectProps={{
         MenuProps: {
           className: classes.menu
-        }
+        },
+        renderValue:props.renderValue
       }}
       margin="normal"
       {...props}

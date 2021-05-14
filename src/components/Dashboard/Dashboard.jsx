@@ -39,6 +39,7 @@ import RecentCheckouts from '../RecentCheckouts/RecentCheckouts'
 import ApproximateBill from '../ApproximateBill/ApproximateBill'
 import BillSettlement from '../BillSettlement/BillSettlement'
 import GuestSearch from '../GuestSearch/GuestSearch'
+import TodayCheckIn from '../TodayCheckIn/TodayCheckIn'
 import PrintBill from '../PrintBill/PrintBill'
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -286,6 +287,18 @@ const Dashboard = props => {
     } else props.history.push("/booking/newBooking");
   };
 
+  const handleBookingView = (bookingObj) => {
+    console.log("bookingObj",bookingObj)
+    if (bookingObj) {
+      setSelectedBooking(bookingObj);
+      setSelectedRoom("test")
+      setTimeout(()=>{
+        if (bookingObj.status.checkedOut) props.history.push("/report");
+        else props.history.push("/booking/viewBooking");
+      },1000)
+    }
+  };
+
   //Change color with Booking length
 
   let bookingcolor= bookedRooms.length > 0 ?"#0088bc":"#444";
@@ -339,6 +352,16 @@ const Dashboard = props => {
                 // allBookings={allBookings}
                 title={advancedDialogTitle}
                 onClose={() => handleDialog(dialog.contentOf)}
+              // onSnackbarEvent={handleSnackbarEvent}
+              />
+          )}
+          {
+            dialog.openFor.advanced && advancedDialogTitle==="Today's Checkin" &&(
+              <TodayCheckIn
+                // allBookings={allBookings}
+                title={advancedDialogTitle}
+                onClose={() => handleDialog(dialog.contentOf)}
+                onBookingView={handleBookingView}
               // onSnackbarEvent={handleSnackbarEvent}
               />
           )}

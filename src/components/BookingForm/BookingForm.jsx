@@ -295,7 +295,7 @@ const BookingForm = props => {
   const getRoomTypeOptions = (roomtypes) => {
 
     return roomtypes.map(room => {
-      return { label: room.roomType, value: room.roomType};
+      return { label: room.roomType, value: room.roomType, key:room.roomType};
     });
   };
 
@@ -635,12 +635,24 @@ const BookingForm = props => {
                     id: "roomType",
                     label: "Room Type",
                     value: room.roomType,
+                    renderValue:(value)=>(<label>{value}</label>),
                     onChange: event => selectfun(event, index),
                     options:getRoomTypeOptions(options),
                     error,
                     disabled: shouldDisable
                   })}
-
+                  {/* <FormControl style={{width:"80%"}}>
+                  <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    // value= {"Delux"}
+                    renderValue={(value)=>(<label>{value}</label>)}
+                    value= {room.roomType}
+                  >
+                    {options && options.map(el=><MenuItem value={el.roomType} key={el.roomType}>{el.roomType}</MenuItem>)}
+                  </Select>
+                  </FormControl> */}
                   {FormUtils.renderSelect({
                     id: "roomNumber",
                     label: "Room Number",

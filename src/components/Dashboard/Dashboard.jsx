@@ -38,6 +38,7 @@ import AdvancedDialog from '../AdvancedTab/AdvancedDialog'
 import RecentCheckouts from '../RecentCheckouts/RecentCheckouts'
 import ApproximateBill from '../ApproximateBill/ApproximateBill'
 import BillSettlement from '../BillSettlement/BillSettlement'
+import GuestSearch from '../GuestSearch/GuestSearch'
 import PrintBill from '../PrintBill/PrintBill'
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -361,6 +362,14 @@ const Dashboard = props => {
           {
             dialog.openFor.advanced && advancedDialogTitle==="Print Bill" &&(
               <PrintBill
+                title={advancedDialogTitle}
+                onClose={() => handleDialog(dialog.contentOf)}
+                onSnackbarEvent={handleSnackbarEvent}
+              />
+          )}
+          {
+            dialog.openFor.advanced && advancedDialogTitle==="Guest Details" &&(
+              <GuestSearch
                 title={advancedDialogTitle}
                 onClose={() => handleDialog(dialog.contentOf)}
                 onSnackbarEvent={handleSnackbarEvent}

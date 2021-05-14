@@ -160,7 +160,7 @@ const BookingFormLayout = ({
     const room = { roomNumber, roomType, _id };
     newData.rooms.push(room);
     newData.checkIn = selectedDate;
-    // newData.checkOut = selectedDate;
+    newData.checkOut = moment().add(1, 'days').toDate();
 
     const availableRooms = await getAvailableRooms(
       newData.checkIn,
@@ -205,6 +205,11 @@ const BookingFormLayout = ({
   };
 
   const createBooking = async bookingData => {
+    if(bookingData["checkIn"] > bookingData["checkOut"]){
+      alert("Checkout Date should be greater than Checkin Date!")
+      setLoading(false);
+      return
+    }
     const { status } = await bookingService.addBooking(bookingData);
     setLoading(false);
     if (status === 200) openSnackBar("Booking Successfull", success, "/");
@@ -215,6 +220,11 @@ const BookingFormLayout = ({
     bookingData,
     message = "Booking Updated Successfully"
   ) => {
+    if(bookingData["checkIn"] > bookingData["checkOut"]){
+      alert("Checkout Date should be greater than Checkin Date!")
+      setLoading(false);
+      return
+    }
     const { status } = await bookingService.updateBooking(bookingData);
     setLoading(false);
     if (status === 200) openSnackBar(message, success, "/");

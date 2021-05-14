@@ -1,0 +1,88 @@
+.prpertywrapper {
+  display: grid;
+  grid-template-columns: 45% 55%;
+  grid-gap: 1em;
+  grid-auto-rows: minmax(100px, auto);
+  background: aliceblue;
+  border: 1px solid aliceblue;
+  width: 60rem;
+}
+
+.prpertywrapper > div {
+  padding: 1em;
+}
+
+.prpertywrapper h2, .prpertywrapper h5{
+  margin: 0.5rem 0;
+}
+
+.prpertyImageTile {
+  object-fit: cover;
+  width: 100%;
+  max-height: 100%;
+}
+.prpertywrapImage > img {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr;
+}
+.prpertywrapImage > img {
+  padding: 1em;
+  height: 50vh;
+  width: 100%;
+}
+
+.propertyDesc {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.propertyDesc p,.propertyDesc a {
+  margin: 0.5rem 1rem;
+}
+.propertyInputDiv {
+  width: inherit;
+  position: relative;
+}
+.propertyName {
+  border: none;
+  background: none;
+  font-size: 1.5rem;
+  font-weight: 600;
+  width: 100%;
+  padding: 0 2px;
+}
+.propertySlogan {
+  border: none;
+  background: none;
+  font-size: 1rem;
+  font-weight: 600;
+  width: 100%;
+  padding: 0.5rem 2px;
+}
+.propertyInfo {
+  border: none;
+  background: none;
+  font-size: 1rem;
+  font-weight: 500;
+  width: inherit;
+  padding: 0.5rem 1rem;
+}
+.propertyIconBtn {
+  background: #0088bc;
+  height: 1.5rem;
+  position: absolute;
+  bottom: -1.5rem;
+  right: 0;
+  z-index: 9;
+}
+.propertyIconBtnIcon {
+  font-size: 1rem;
+  color: white;
+}
+.editIconBtn {
+  position: absolute;
+  right: 1rem;
+}
+

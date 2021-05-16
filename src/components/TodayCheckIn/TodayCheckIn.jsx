@@ -46,7 +46,7 @@ const TodayCheckIn = ({ allBookings, onClose, title, onBookingView,onSnackbarEve
                     <Table size="small" stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>
-                                <TableCell style={{ background: "#0088bc", color: "white" }} align="center">Booking Id</TableCell>
+                                {/* <TableCell style={{ background: "#0088bc", color: "white" }} align="center">Booking Id</TableCell> */}
                                 <TableCell style={{ background: "#0088bc", color: "white" }} align="center">First Name</TableCell>
                                 <TableCell style={{ background: "#0088bc", color: "white" }} align="center">Last Name</TableCell>
                                 <TableCell style={{ background: "#0088bc", color: "white" }} align="center">Room No</TableCell>
@@ -63,7 +63,7 @@ const TodayCheckIn = ({ allBookings, onClose, title, onBookingView,onSnackbarEve
                                 })
                                 return (
                                     <TableRow>
-                                        <TableCell align="center"><span style={{cursor:"pointer", color:"blue"}} onClick={()=>handleReport(el)}>{el._id}</span></TableCell>
+                                        {/* <TableCell align="center"><span style={{cursor:"pointer", color:"blue"}} onClick={()=>handleReport(el)}>{el._id}</span></TableCell> */}
                                         <TableCell align="center">{el.firstName}</TableCell>
                                         <TableCell align="center">{el.lastName}</TableCell>
                                         <TableCell align="center">{_rooms.toString()}</TableCell>

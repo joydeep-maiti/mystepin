@@ -1,4 +1,17 @@
 import http from "./httpService";
+
+
+const getAllAdvance= async()=>{
+  try{
+    const {data : advances} = await http.get(`${http.baseUrl}/advance`);
+    return advances;
+  }
+  catch(error){
+    console.log(error);
+  }
+}
+
+
 async function getAdvanceByBookingId(id) {
   try {
     const { data: rooms } = await http.get(`${http.baseUrl}/advance/${id}`);
@@ -36,4 +49,4 @@ async function updateAdvance(data) {
   }
 }
 
-export default { getAdvanceByBookingId, addAdvance, updateAdvance};
+export default {getAllAdvance,getAdvanceByBookingId, addAdvance, updateAdvance};

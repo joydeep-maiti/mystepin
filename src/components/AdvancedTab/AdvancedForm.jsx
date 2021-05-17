@@ -36,13 +36,40 @@ const AdvancedForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
   const [disable] = useState(false);
   const handleSnackbarEvent = useContext(SnackBarContext);
   const [paymentMethod,setPaymentMethod] = useState("")
+  const [reciptNumbers,setReciptNumbers] = useState([]);
   const paymentMethodOptions=[
     {label:"Cash",value:"Cash"},
     {label:"Card",value:"Card"},
     {label:"Wallet",value:"Wallet"}
   ]
 
-  const getPaymentOptions = () => {
+  useEffect(()=>{
+    fetchAddAdvance()
+  },[])
+
+    const fetchAddAdvance = async () =>{
+      const advances = await advanceService.getAllAdvance();
+      if(advances)
+      {
+        console.log("Alladvance",advances)
+        const alladvanceArray = advances.map(el  => {return el.advance})
+         let recipt=[]
+         alladvanceArray.map(el =>
+              el.map(e=>
+                {
+                if(e.reciptNumber!=="Booking")
+            recipt.push(e.reciptNumber)
+              }))
+       if(recipt){
+         console.log("Recipt",recipt)
+         setReciptNumbers(recipt)
+       }    
+      }
+
+     
+    }
+    
+    const getPaymentOptions = () => {
     return paymentMethodOptions.map(type => {
     return { label: type, value: type};
   });
@@ -211,11 +238,8 @@ const changePaymentOptions=(event)=>{
     if (errors) return;
     const {_id,date,advanceP,modeofpayment,reciptNumber} = data;
     //Recipt Duplicate
-    const recipt = []
-    advance.filter(ad => recipt.push(ad.reciptNumber));
-    console.log("Recipt Log",recipt);
-    if(recipt.includes(reciptNumber)){
-        alert("Recipt number must be Unique");
+    if(reciptNumbers.includes(reciptNumber)){
+      openSnackBar("Recipt Number Must be Unique", error);
     }
     else{
     const booking = {

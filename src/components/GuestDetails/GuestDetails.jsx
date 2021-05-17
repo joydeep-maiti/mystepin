@@ -87,6 +87,8 @@ const fetchAndGenerateGuestReport = async()=>{
   console.log("Start",startD)
   console.log("End",currentD)
   let options = await guestReport.getGuestDetails(startD,currentD,guestCategory)
+  let len = options.length || 0 ;
+  console.log("len",len)
   console.log("Response",options)
   console.log("Category",guestCategory)
   if(options){
@@ -107,7 +109,7 @@ const fetchAndGenerateGuestReport = async()=>{
           option.Balance
         ])
       })
-      exportGuestReportToPDF(data)
+      exportGuestReportToPDF(data,len)
     }
     else{
       let data = options.map(option=>{
@@ -127,7 +129,7 @@ const fetchAndGenerateGuestReport = async()=>{
           option.Balance
         ])
       })
-      exportGuestReportToPDF(data)
+      exportGuestReportToPDF(data,len)
     }
   
 }
@@ -136,7 +138,7 @@ else{
 }
   
  } 
- const exportGuestReportToPDF = (reportData) =>{
+ const exportGuestReportToPDF = (reportData,len) =>{
   const unit = "pt";
   const size = "A3"; // Use A1, A2, A3 or A4
   const orientation = "landscape"; // portrait or landscape
@@ -163,12 +165,13 @@ else{
     margin: marginLeft,
     pageBreak:'auto'
   };
-  doc.text(title, 360, 40);
+  doc.text(title, 500, 40);
   doc.setFontSize(10);
-  doc.text("Report Generated at "+generatedTime,650,40);
+  doc.text("Report Generated at "+generatedTime,900,40);
   doc.setFontSize(15);
   doc.text("From : "+startDateString,100, 90);
   doc.text("To : "+currentDateString,250, 90);
+  doc.text("No of Guests : "+len,400,90)
   doc.setFontSize(12);
   doc.autoTable(content);
   doc.setTextColor("#fb3640");

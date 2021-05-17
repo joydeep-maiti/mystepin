@@ -113,13 +113,13 @@ const BookingFormLayout = ({
   useEffect(() => {
     if(data.bookedBy === "Agent"){
       schema.agent =  Joi.string().required().label("Agent")
-      schema.referencenumber =  Joi.number().required().label("Reference number")
+      schema.referencenumber =  Joi.string().required().label("Reference number")
       schema.memberNumber = Joi.any()
       let error = {...errors}
       delete error.memberNumber
       setErrors(error)
     }else if (data.bookedBy === "Member"){
-      schema.memberNumber = Joi.number().required().label("Membership Number")
+      schema.memberNumber = Joi.string().required().label("Membership Number")
       schema.agent = Joi.any()
       schema.referencenumber = Joi.any()
       let error = {...errors}

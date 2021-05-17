@@ -523,16 +523,16 @@ const BookingForm = props => {
           error: errors["agent"]
         })}
         {isAgent && FormUtils.renderInput(
-          getInputArgObj("referencenumber", "Reference number", "number", shouldDisable)
+          getInputArgObj("referencenumber", "Reference number", "string", shouldDisable)
         )}
         {isHeadOffice && FormUtils.renderInput(
-          getInputArgObj("referencenumber", "Reference number", "number", shouldDisable)
+          getInputArgObj("referencenumber", "Reference number", "string", shouldDisable)
         )}
         {
           isMember && FormUtils.renderInput({
             id: "memberNumber",
             label: "Membership Number",
-            type: "number",
+            type: "string",
             value: data.memberNumber,
             onChange: (e)=>selectfun1(e),
             error: errors["memberNumber"],

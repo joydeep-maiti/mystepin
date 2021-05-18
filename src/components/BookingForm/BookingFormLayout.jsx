@@ -172,7 +172,7 @@ const BookingFormLayout = ({
     const room = { roomNumber, roomType, _id };
     newData.rooms.push(room);
     newData.checkIn = selectedDate;
-    newData.checkOut = moment().add(1, 'days').toDate();
+    newData.checkOut = moment(selectedDate).add(1, 'days').toDate();
 
     const availableRooms = await getAvailableRooms(
       newData.checkIn,
@@ -549,6 +549,7 @@ const BookingFormLayout = ({
               onAddRoom={handleAddRoom}
               onDeleteRoom={handleDeleteRoom}
               data={data}
+              isEdit={isEdit}
               availableRooms={availableRooms}
               errors={errors}
               options={roomTypes}

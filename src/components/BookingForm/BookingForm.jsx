@@ -59,7 +59,8 @@ const BookingForm = props => {
     onSetPrice,
     handleFlatRateChange,
     updatedata,
-    onCheckIn
+    onCheckIn,
+    isEdit
   } = props;
 
   const [loading, setLoading] = React.useState(false);
@@ -699,7 +700,7 @@ const BookingForm = props => {
           disabled: Object.keys(errors).length || shouldDisable ? true : false
         })}
 
-        {data.status && !data.status.checkedIn && FormUtils.renderButton({
+        {data.status && !data.status.checkedIn && !isEdit && moment().toDate() >= moment(data.checkIn).startOf('date').toDate() && FormUtils.renderButton({
           type: "button",
           size: "large",
           label: "CheckIn",

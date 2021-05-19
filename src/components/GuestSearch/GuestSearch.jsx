@@ -14,6 +14,8 @@ import FormControl from '@material-ui/core/FormControl';
 import { Typography } from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
 import moment from 'moment';
+import jsPDF from 'jspdf';
+import "jspdf-autotable";
 
 const GuestSearch = ({ allBookings, onClose, title, onSnackbarEvent, history }) => {
 
@@ -39,6 +41,56 @@ const GuestSearch = ({ allBookings, onClose, title, onSnackbarEvent, history }) 
 
     const handleChange = (e) => {
         setSearchParam(e.target.value);
+    }
+
+    const exportToPDF = () =>{
+        const unit = "pt";
+        const size = "A4"; // Use A1, A2, A3 or A4
+        const orientation = "landscape"; // portrait or landscape
+        const marginLeft = 20;
+        const marginLeft2 = 350;
+        const date = moment().format('D.MMM.YYYY')
+        const day = moment().format('dddd')
+        const doc = new jsPDF(orientation, unit, size);
+        doc.setFontSize(20);
+        let title = "GUEST DETAILS";
+        let data = bills.map(el=>{
+            let _rooms = el.rooms && el.rooms.map(ele => {
+                return ele.roomNumber
+            })
+            let billAmount = 0
+            if(Array.isArray(el.bill) && el.bill[0] && el.bill[0].paymentData){
+                billAmount = el.bill[0].paymentData.posTotal?(Number(el.bill[0].paymentData.totalRoomCharges)+Number(el.bill[0].paymentData.posTotal)).toFixed(2):Number(el.bill[0].paymentData.totalRoomCharges).toFixed(2)
+            }
+            return [el.firstName,el.lastName,_rooms.toString(),el.address,el.contactNumber,el.checkIn?moment(el.checkIn).format('D.MMM.YYYY'):"",el.checkOut?moment(el.checkOut).format('D.MMM.YYYY'):"",billAmount]
+        })
+        let headers = [["FIRST NAME", "LAST NAME","ROOM NO","ADDRESS","CONTACT","DT. OF ARR","DT. OF DEPT","BILL AMOUNT"]];
+        let content = {
+          startY: 120,
+          head: headers,
+          body: data,
+          theme: 'striped',
+          styles: {
+            cellWidth:'wrap',
+            halign : "left",
+          },
+          headerStyles: {
+            fillColor: "#0088bc",
+            valign: 'middle',
+            halign : 'center'
+          },
+          columnStyles: { 7: { halign: 'right'},4: { halign: 'right'}},
+          margin: marginLeft,
+          pageBreak:'auto'
+        };
+        doc.text(title, 330, 80);
+        doc.setFontSize(10);
+        doc.text("Report Generated at "+moment().format('D.MMMM.YYYY h:mm A'),600,20);
+        doc.setFontSize(12);
+        doc.setFontSize(12);
+        doc.autoTable(content);
+        doc.setTextColor("#fb3640");
+        doc.save("Guest.pdf")
     }
 
     return (
@@ -78,6 +130,9 @@ const GuestSearch = ({ allBookings, onClose, title, onSnackbarEvent, history }) 
                 {bills && bills.length === 0 && <h4 style={{ textAlign: "center" }}>No Data Found for the Search Parameter</h4>}
                 {bills && bills.length > 0 && <TableContainer component={Paper} style={{ marginTop: "0.7rem", maxHeight: "70vh" }}>
                     <h5 style={{float:"right",padding:"0 1rem"}}>{`Results Found: ${bills.length}`}</h5>
+                    <Button onClick={exportToPDF} color="primary" variant="contained">
+                                Print
+                            </Button>
                     <Table size="small" stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>

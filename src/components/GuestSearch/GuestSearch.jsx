@@ -72,7 +72,7 @@ const GuestSearch = ({ allBookings, onClose, title, onSnackbarEvent, history }) 
           theme: 'striped',
           styles: {
             cellWidth:'wrap',
-            halign : "left",
+            halign : "center",
           },
           headerStyles: {
             fillColor: "#0088bc",
@@ -129,10 +129,12 @@ const GuestSearch = ({ allBookings, onClose, title, onSnackbarEvent, history }) 
                 </form>
                 {bills && bills.length === 0 && <h4 style={{ textAlign: "center" }}>No Data Found for the Search Parameter</h4>}
                 {bills && bills.length > 0 && <TableContainer component={Paper} style={{ marginTop: "0.7rem", maxHeight: "70vh" }}>
-                    <h5 style={{float:"right",padding:"0 1rem"}}>{`Results Found: ${bills.length}`}</h5>
-                    <Button onClick={exportToPDF} color="primary" variant="contained">
-                                Print
-                            </Button>
+                    <div style={{display:"flex", alignItems:"center" ,justifyContent:"space-between",padding:"0 1rem"}}>
+                        <h5>{`Results Found: ${bills.length}`}</h5>
+                        <Button onClick={exportToPDF} color="primary" variant="contained">
+                            Print
+                        </Button>
+                    </div>
                     <Table size="small" stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>

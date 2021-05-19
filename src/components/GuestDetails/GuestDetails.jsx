@@ -9,6 +9,7 @@ import utils from "../../utils/utils";
 import FormUtils from "../../utils/formUtils";
 import reportOptions from '../../services/reportOptions'
 import guestReport from '../../services/guestReport'
+import roomService from '../../services/roomService'
 import jsPDF from 'jspdf';
 import "jspdf-autotable";
 const useStyles = makeStyles(theme => ({
@@ -30,6 +31,9 @@ const GuestDetails = () => {
   const [guestCategory,setGuestCategory] = useState("");
   const [shouldDisable, setShouldDisable] = useState(false);
   const [guestTypes, setGuestTypes] = useState([]);
+  const [isRoomWise,setIsRoomWise] = useState(false)
+  const [roomNumbers,setRoomNumbers] = useState([])
+  const [roomNumber,setRoomNumber] = useState("")
   let headers=[];
   const [generatedTime,setGeneratedTime] = useState(
     moment().format('D-MMMM-YYYY h:mm A')
@@ -42,7 +46,27 @@ const GuestDetails = () => {
   useEffect(()=>{
     fetchBillingTypes()
    },[])
+   useEffect(()=>{
+      fetchRooms()
+   },[])
 
+    const fetchRooms = async()=>{
+      const rooms = await roomService.getRooms();
+      const roomN =[]
+          rooms.map(room=>{
+            roomN.push(room.roomNumber)
+          })
+          setRoomNumbers(roomN)
+        }
+        console.log("Room Numbers",roomNumbers)
+   useEffect(()=>{
+      if(guestCategory === "Room Wise"){
+        setIsRoomWise(true)
+      }
+      else{
+        setIsRoomWise(false)
+      }
+   },[guestCategory])
   const fetchBillingTypes = async()=>{
     let options = await reportOptions.getBillingOptions("Guest Report");
     const types = []
@@ -79,9 +103,18 @@ const GuestDetails = () => {
     const classes = useStyles();
 
 
+    //Report Function
+
+    const generateReport=()=>{
+      if(guestCategory !== "Room Wise"){fetchAndGenerateGuestReport()}
+      else{
+        fetchRoomWiseReport()
+      }
+
+    }
+
     ///Fetching Data from backend
 const fetchAndGenerateGuestReport = async()=>{
-
   let startD = moment(startingDate).format('yyyy-MM-DD')
   let currentD = moment(currentDate).format('yyyy-MM-DD')
   console.log("Start",startD)
@@ -106,7 +139,6 @@ const fetchAndGenerateGuestReport = async()=>{
           option.referenceNumber,
           option.Amount,
           option.Advance,
-          option.Balance
         ])
       })
       exportGuestReportToPDF(data,len)
@@ -124,9 +156,8 @@ const fetchAndGenerateGuestReport = async()=>{
           option.PassportNumber,
           option.bookedBy,
           option.referenceNumber,
-          option.Amount,
           option.Advance,
-          option.Balance
+          option.Amount,
         ])
       })
       exportGuestReportToPDF(data,len)
@@ -136,8 +167,58 @@ const fetchAndGenerateGuestReport = async()=>{
 else{
   alert("No Guest in specfied Category")
 }
-  
- } 
+}
+const fetchRoomWiseReport= async()=>{
+  let startD = moment(startingDate).format('yyyy-MM-DD')
+  let currentD = moment(currentDate).format('yyyy-MM-DD')
+  console.log("Start",startD)
+  console.log("End",currentD)
+  let options = await guestReport.getGuestDetails(startD,currentD,guestCategory,roomNumber)
+  let len = options.length || 0 ;
+  console.log("len",len)
+  console.log("Response",options)
+  console.log("Category",guestCategory)
+  if(options){
+      let data = options.map(option=>
+        {
+        let checkIn = moment(option.checkIn).format('D-MMMM-YYYY');
+        let checkOut = moment(option.checkOut).format('D-MMMM-YYYY');
+        return([
+          option.guestName,
+          checkIn,
+          checkOut,
+          option.roomNumber,
+          option.nationality,
+          option.bookedBy,
+          option.referenceNumber,
+          option.Amount,
+          option.Advance,
+        ])
+      })
+      exportGuestReportToPDF(data,len)
+    }
+    else{
+  alert("No Guest in specfied Category")
+    }
+
+}
+//Set Room Number
+
+const handleRoomChange = async (event) => {
+  setRoomNumber(event.target.value);
+  console.log("Room Number",roomNumber)
+};
+
+
+//Room Options
+
+const getRoomOptions = () => {
+  return roomNumbers.map(type => {
+    return { label: type, value: type};
+  });
+};
+
+
  const exportGuestReportToPDF = (reportData,len) =>{
   const unit = "pt";
   const size = "A3"; // Use A1, A2, A3 or A4
@@ -148,10 +229,15 @@ else{
   const day = moment().format('dddd')
   const doc = new jsPDF(orientation, unit, size);
   doc.setFontSize(20);
-  let title = `${guestCategory} REPORT`;
-  let headers = [["NAME OF THE GUEST","CHECKIN","CHECKOUT","NO OF ROOMS","NATIONALITY","BOOKED BY","REFERENCE NUMBER","AMOUNT","ADVANCE","BALANCE"]];
+  let title = guestCategory === "Guest" ? "Domicillary Guest Report ":`${guestCategory} REPORT`;
+  let headers = [["NAME OF THE GUEST","CHECKIN","CHECKOUT","NO OF ROOMS","NATIONALITY","BOOKED BY","REFERENCE NUMBER","BILLING ADVANCE","BILLING AMOUNT"]];
   if(guestCategory === "Foreign Guest"){
-    headers = [["NAME OF THE GUEST","CHECKIN","CHECKOUT","NO OF ROOMS","NATIONALITY","PASSPORT NUMBER","BOOKED BY","REFERENCE NUMBER","AMOUNT","ADVANCE","BALANCE"]];
+    headers = [["NAME OF THE GUEST","CHECKIN","CHECKOUT","NO OF ROOMS","NATIONALITY","PASSPORT NUMBER","BOOKED BY","REFERENCE NUMBER","BILLING ADVANCE","BILLING AMOUNT"]];
+  }
+  if(guestCategory === "Room Wise")
+  {
+   headers = [["NAME OF THE GUEST","CHECKIN","CHECKOUT","ROOM NO","NATIONALITY","BOOKED BY","REFERENCE NUMBER","BILLING ADVANCE","BILLING AMOUNT"]];
+
   }
   let content = {
     startY: 120,
@@ -172,10 +258,14 @@ else{
   doc.text("From : "+startDateString,100, 90);
   doc.text("To : "+currentDateString,250, 90);
   doc.text("No of Guests : "+len,400,90)
+  if(guestCategory === "Room Wise"){
+    doc.text("Room Number : "+roomNumber,550,90)
+  }
+   
   doc.setFontSize(12);
   doc.autoTable(content);
   doc.setTextColor("#fb3640");
-  doc.save(`${guestCategory} REPORT`)
+  doc.save(guestCategory === "Guest" ? "Domicillary Guest Report ":`${guestCategory} REPORT`)
 }
     return (
       <div>
@@ -194,6 +284,18 @@ else{
                 options: getPlanOptions(),
                 disabled: shouldDisable
               })}
+
+
+        { isRoomWise && FormUtils.renderSelect({
+                    id: "roomNumber",
+                    label: "Room Number",
+                    value: roomNumber,
+                    onChange: event => handleRoomChange(event),
+                    options: getRoomOptions(),
+                    disabled: shouldDisable
+                  })
+        }
+
           <div className="formdates"> 
               
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -230,7 +332,7 @@ else{
             </MuiPickersUtilsProvider>
             </div>  
           <div className="buttoncontainer"> 
-        <Button  type="submit" className="button" onClick={fetchAndGenerateGuestReport}>
+        <Button  type="submit" className="button" onClick={generateReport}>
           Generate
         </Button>
           </div>

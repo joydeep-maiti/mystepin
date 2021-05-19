@@ -254,6 +254,7 @@ const changePaymentOptions=(event)=>{
         ...advanceDetails,
         advance:_advance
       });
+      fetchAddAdvance()
       if (response){
         openSnackBar("Updated Successfully", success);
         setAdvance(_advance)
@@ -302,6 +303,7 @@ const changePaymentOptions=(event)=>{
     const response = await advanceService.updateAdvance(_advanceDetails);
     if (response) {
       openSnackBar("Updated Successfully", success);
+      fetchAddAdvance()
       setAdvance(temp)
     }
     else openSnackBar("Error Occurred", error);

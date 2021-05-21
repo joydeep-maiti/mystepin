@@ -15,7 +15,8 @@ import Rooms from "../Rooms/Rooms";
 import RoomCategory from "../RoomCategory/RoomCategory";
 import SeasonMaster from "../SeasonMaster/SeasonMaster";
 import RateMaster from "../RateMaster/RateMaster";
-import PropertyDetails from "../PropertyDetails/PropertyDetails"
+import PropertyDetails from "../PropertyDetails/PropertyDetails";
+import Users from "../Users/Users";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -98,6 +99,7 @@ const Configuration = ({onSnackbarEvent}) => {
           <Tab label="Season Master" {...a11yProps(3)} />
           <Tab label="Taxes" {...a11yProps(4)} />
           <Tab label="Property Details" {...a11yProps(5)} />
+          <Tab label="User Management" {...a11yProps(6)} />
         </Tabs>
       </AppBar>
       
@@ -118,6 +120,9 @@ const Configuration = ({onSnackbarEvent}) => {
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={5}>
         <PropertyDetails onSnackbarEvent={onSnackbarEvent} />
+      </TabPanel>
+      <TabPanel className={classes.tabDiv} value={value} index={6}>
+        <Users onSnackbarEvent={onSnackbarEvent} />
       </TabPanel>
     </div>
   );

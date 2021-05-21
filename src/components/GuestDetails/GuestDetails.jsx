@@ -52,9 +52,11 @@ const GuestDetails = () => {
 
     const fetchRooms = async()=>{
       const rooms = await roomService.getRooms();
+      console.log("Rooms",rooms)
       const roomN =[]
           rooms.map(room=>{
-            roomN.push(room.roomNumber)
+            let obj={roomNumber:room.roomNumber,roomType:room.roomType}
+            roomN.push(obj)
           })
           setRoomNumbers(roomN)
         }
@@ -214,7 +216,7 @@ const handleRoomChange = async (event) => {
 
 const getRoomOptions = () => {
   return roomNumbers.map(type => {
-    return { label: type, value: type};
+    return { label: type.roomNumber +" - "+type.roomType, value: type.roomNumber};
   });
 };
 
@@ -246,8 +248,13 @@ const getRoomOptions = () => {
     theme: 'striped',
     styles: {
       cellWidth:'wrap',
-      halign : "left",
+      halign : 'left',
     },
+    headerStyles: {
+      valign: 'middle', 
+      6 : { halign: 'right'},3 : { halign: 'right'},7: { halign: 'right'},8: { halign: 'right'}
+    },
+    columnStyles: { 6 : { halign: 'right'},3 : { halign: 'right'},7: { halign: 'right'},8: { halign: 'right'}},
     margin: marginLeft,
     pageBreak:'auto'
   };

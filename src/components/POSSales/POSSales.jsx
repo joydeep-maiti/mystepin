@@ -87,9 +87,10 @@ const POSSales = () => {
     console.log("Response",options)
     console.log("Category",posCategory)
    if(options){
-    let data = options.map(option=>{
-          let date = moment(option.date).format("DD-MMMM-yyyy");
-          total += parseInt(option.amount)
+    if(posCategory !== "All POS"){
+      let data = options.map(option=>{
+        let date = moment(option.date).format("DD-MMMM-yyyy");
+        total += parseInt(option.amount)
         return([
           date,
           option.roomNo,
@@ -97,11 +98,31 @@ const POSSales = () => {
           option.remarks
         ])
       })
+      setPosTotal(total)
+      console.log("POSTotal",total);
+      console.log("POSDATA",posTotal)
+      exportPOSReportToPDF(data,total)
+    }else{
+      let data = options.map(option=>{
+        let date = moment(option.date).format("DD-MMMM-yyyy");
+        total += parseInt(option.amount)
+        return([
+          date,
+          option.guestName,
+          option.Food,
+          option.Transport,
+          option.Laundary,
+          option.Agent,
+          option.Others
+        ])
+      })
+      
+      setPosTotal(total)
+      console.log("POSTotal",total);
+      console.log("POSDATA",posTotal)
+      exportPOSReportToPDF(data,total)
 
-    setPosTotal(total)
-    console.log("POSTotal",total);
-    console.log("POSDATA",posTotal)
-    exportPOSReportToPDF(data,total)
+    }
    }
   else{
     alert("No POS Sales in specfied Category")
@@ -120,6 +141,9 @@ const POSSales = () => {
     doc.setFontSize(20);
     let title = `${posCategory} REPORT`;
     let headers = [["DATE","ROOM NO","AMOUNT","REMARKS"]];
+    if(posCategory === "All POS"){
+      headers = [["DATE","GUEST NAME","FOOD","TRANSPORT","LAUNDARY","AGENT","OTHERS"]];
+    }
     let content = {
       startY: 120,
       head: headers,

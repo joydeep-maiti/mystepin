@@ -147,6 +147,7 @@ const Rooms = ({ onClose }) => {
       <DialogContent className={classes.roomsDiv}>
         <form className={classes.formGroup} noValidate autoComplete="off" onSubmit={handleFormSubmit}>
           <TextField required id="standard-required" label="Room Type" name="roomType" onChange={handleInput}/>
+          <TextField required id="standard-required" label="Description" name="roomDesc" onChange={handleInput} style={{width:"30rem"}} inputProps={{maxlength:50}}/>
           <Button 
           type="submit" 
           variant="contained" 
@@ -162,6 +163,7 @@ const Rooms = ({ onClose }) => {
               <TableRow>
                 <TableCell style={tablestyles}>ID</TableCell>
                 <TableCell align="center" style={tablestyles}>Room Type</TableCell>
+                <TableCell align="center" style={tablestyles}>Description</TableCell>
                 <TableCell align="center" style={tablestyles}>Edit</TableCell>
                 <TableCell align="center" style={tablestyles}>Delete</TableCell>
               </TableRow>
@@ -175,6 +177,10 @@ const Rooms = ({ onClose }) => {
                   {editingRow._id !== row._id && <TableCell align="center">{row.roomType}</TableCell>}
                   {editingRow._id === row._id && <TableCell align="center">
                     <TextField required id="standard-required" label="Room Type" name="roomType" value={editingRow.roomType} onChange={handleInputChange}/>
+                  </TableCell>}
+                  {editingRow._id !== row._id && <TableCell align="center">{row.roomDesc}</TableCell>}
+                  {editingRow._id === row._id && <TableCell align="center">
+                    <TextField required id="standard-required" label="Description" name="roomDesc" value={editingRow.roomDesc} onChange={handleInputChange} style={{width:"20rem"}} inputProps={{maxlength:50}}/>
                   </TableCell>}
                   {editingRow._id !== row._id && <TableCell align="center"><EditOutlinedIcon style={{cursor:"pointer"}} onClick={()=>handleEdit(row)}/></TableCell>}
                   {editingRow._id === row._id && <TableCell align="center">

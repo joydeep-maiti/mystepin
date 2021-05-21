@@ -390,7 +390,7 @@ const RateMaster = ({ onSnackbarEvent }) => {
             type="number" 
             value={newDoc.percent === 0?"0":newDoc.percent} 
             required id="standard-required" 
-            label="Percentage" 
+            label="Percentage of Regular" 
             name="percent" 
             inputProps={{min:0, max:100, step:.01}} 
             onChange={handleInput}

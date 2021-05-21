@@ -79,7 +79,7 @@ const GuestSearch = ({ allBookings, onClose, title, onSnackbarEvent, history }) 
             valign: 'middle',
             halign : 'center'
           },
-          columnStyles: { 7: { halign: 'right'},4: { halign: 'right'}},
+          columnStyles: { 7: { halign: 'right'},4: { halign: 'right'}, 3:{cellWidth:250}},
           margin: marginLeft,
           pageBreak:'auto'
         };

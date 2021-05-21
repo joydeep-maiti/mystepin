@@ -53,6 +53,15 @@ async function searchGuest(param) {
   }
 }
 
+async function searchGuestByDate(param) {
+  try {
+    const { data: bills } =  await http.get(`${http.baseUrl}/search/booking?searchdate=${param}`);
+    return bills;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 async function getTodaysCheckin() {
   try {
     let date = new Date().toISOString().split("T")[0]
@@ -63,4 +72,4 @@ async function getTodaysCheckin() {
   }
 }
 
-export default { getBookings, addBooking, updateBooking, getProofId, getDayCheckin, searchGuest, getTodaysCheckin };
+export default { getBookings, addBooking, updateBooking, getProofId, getDayCheckin, searchGuest, getTodaysCheckin, searchGuestByDate };

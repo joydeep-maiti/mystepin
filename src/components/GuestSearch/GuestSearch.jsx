@@ -16,18 +16,40 @@ import TextField from '@material-ui/core/TextField';
 import moment from 'moment';
 import jsPDF from 'jspdf';
 import "jspdf-autotable";
+import DateFnsUtils from '@date-io/date-fns';
+import {
+    MuiPickersUtilsProvider,
+    KeyboardTimePicker,
+    KeyboardDatePicker,
+} from '@material-ui/pickers';
 
 const GuestSearch = ({ allBookings, onClose, title, onSnackbarEvent, history }) => {
 
     const [bills, setBills] = React.useState(null)
     const [loading, setLoading] = React.useState(false);
     const [searchParam, setSearchParam] = React.useState("");
+    const [dateSearchParam, setDateSearchParam] = React.useState(null);
 
     const handleSearch = async (e) => {
         setBills(null)
+        setDateSearchParam(null)
         e.preventDefault();
         setLoading(true)
         const res = await bookingService.searchGuest(searchParam)
+        setLoading(false)
+        if (res) {
+            setBills(res)
+        }
+    }
+
+    const handleDateSearch = async (e) => {
+        setBills(null)
+        setSearchParam("")
+        e.preventDefault();
+        console.log("dateSearchParam",dateSearchParam)
+        console.log("dateSearchParam",dateSearchParam.toISOString().split("T")[0])
+        setLoading(true)
+        const res = await bookingService.searchGuestByDate(dateSearchParam.toISOString().split("T")[0])
         setLoading(false)
         if (res) {
             setBills(res)
@@ -42,6 +64,10 @@ const GuestSearch = ({ allBookings, onClose, title, onSnackbarEvent, history }) 
     const handleChange = (e) => {
         setSearchParam(e.target.value);
     }
+
+    const handleNewFromDateChange = (date) => {
+        setDateSearchParam(date)
+    };
 
     const exportToPDF = () =>{
         const unit = "pt";
@@ -96,7 +122,7 @@ const GuestSearch = ({ allBookings, onClose, title, onSnackbarEvent, history }) 
     return (
         <React.Fragment>
             <DialogTitle>{title}</DialogTitle>
-            <DialogContent>
+            <DialogContent style={{maxHeight:"75vh"}}>
                 {loading && <Loader color="#0088bc" />}
                 <form onSubmit={handleSearch}>
                     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "1rem" }}>
@@ -127,8 +153,42 @@ const GuestSearch = ({ allBookings, onClose, title, onSnackbarEvent, history }) 
                         </div>
                     </div>
                 </form>
+                    <div style={{textAlign:"center", margin:"1rem"}}>OR</div>
+                <form onSubmit={handleDateSearch}>
+                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "1rem" }}>
+                        <Typography
+                            style={{ width: "auto", paddingRight: "10px" }}
+                        >
+                            Checkin Date / Checkout Date
+                        </Typography>
+                        <Typography>:</Typography>
+                        <div style={{ width: "auto", padding: "0 10px" }}>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                <KeyboardDatePicker
+                                    required
+                                    disableToolbar
+                                    format="dd/MM/yyyy"
+                                    // margin="normal"
+                                    id="date-picker-inline"
+                                    label="Select Date"
+                                    name="fromDate"
+                                    value={dateSearchParam}
+                                    onChange={handleNewFromDateChange}
+                                    KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                    }}
+                                />
+                            </MuiPickersUtilsProvider>
+                        </div>
+                        <div style={{ width: "auto", paddingLeft: "10px" }}>
+                            <Button type="submit" color="primary" variant="contained">
+                                Go
+                            </Button>
+                        </div>
+                    </div>
+                </form>
                 {bills && bills.length === 0 && <h4 style={{ textAlign: "center" }}>No Data Found for the Search Parameter</h4>}
-                {bills && bills.length > 0 && <TableContainer component={Paper} style={{ marginTop: "0.7rem", maxHeight: "70vh" }}>
+                {bills && bills.length > 0 && <TableContainer component={Paper} style={{ marginTop: "0.7rem", maxHeight: "65vh" }}>
                     <div style={{display:"flex", alignItems:"center" ,justifyContent:"space-between",padding:"0 1rem"}}>
                         <h5>{`Results Found: ${bills.length}`}</h5>
                         <Button onClick={exportToPDF} color="primary" variant="contained">

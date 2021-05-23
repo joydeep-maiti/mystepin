@@ -392,6 +392,7 @@ const BookingForm = props => {
     })
   }
 
+  // console.log("TESTTING",isEdit)
   return (
     <form onSubmit={event => onFormSubmit(event)} style={{marginBottom:"2rem"}}>
       {loading && <Loader color="#0088bc" />}
@@ -700,7 +701,7 @@ const BookingForm = props => {
           disabled: Object.keys(errors).length || shouldDisable ? true : false
         })}
 
-        {data.status && !data.status.checkedIn && !isEdit && moment().toDate() >= moment(data.checkIn).startOf('date').toDate() && FormUtils.renderButton({
+        {data.status && !data.status.checkedIn && moment().startOf('date').toDate() >= moment(data.checkIn).startOf('date').toDate() && moment(data.checkOut).toDate() >= moment(data.checkIn).startOf('date').toDate() && FormUtils.renderButton({
           type: "button",
           size: "large",
           label: "CheckIn",

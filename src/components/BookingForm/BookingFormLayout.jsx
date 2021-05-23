@@ -217,7 +217,8 @@ const BookingFormLayout = ({
   };
 
   const createBooking = async bookingData => {
-    if(bookingData["checkIn"] > bookingData["checkOut"]){
+    console.log("TESTTING",bookingData["checkIn"], bookingData["checkOut"])
+    if(moment(bookingData["checkIn"]).startOf('date').toDate() > moment(bookingData["checkOut"]).startOf('date').toDate()){
       alert("Checkout Date should be greater than Checkin Date!")
       setLoading(false);
       return
@@ -232,7 +233,7 @@ const BookingFormLayout = ({
     bookingData,
     message = "Booking Updated Successfully"
   ) => {
-    if(bookingData["checkIn"] > bookingData["checkOut"]){
+    if(moment(bookingData["checkIn"]).startOf('date').toDate() > moment(bookingData["checkOut"]).startOf('date').toDate()){
       alert("Checkout Date should be greater than Checkin Date!")
       setLoading(false);
       return

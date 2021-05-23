@@ -62,10 +62,12 @@ const GuestSearch = ({ allBookings, onClose, title, onSnackbarEvent, history }) 
     }
 
     const handleChange = (e) => {
+        setBills(null)
         setSearchParam(e.target.value);
     }
 
     const handleNewFromDateChange = (date) => {
+        setBills(null)
         setDateSearchParam(date)
     };
 
@@ -123,7 +125,7 @@ const GuestSearch = ({ allBookings, onClose, title, onSnackbarEvent, history }) 
         <React.Fragment>
             <DialogTitle>{title}</DialogTitle>
             <DialogContent style={{maxHeight:"75vh"}}>
-                {loading && <Loader color="#0088bc" />}
+                
                 <form onSubmit={handleSearch}>
                     <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "1rem" }}>
                         <Typography
@@ -187,6 +189,7 @@ const GuestSearch = ({ allBookings, onClose, title, onSnackbarEvent, history }) 
                         </div>
                     </div>
                 </form>
+                {loading && <Loader color="#0088bc" />}
                 {bills && bills.length === 0 && <h4 style={{ textAlign: "center" }}>No Data Found for the Search Parameter</h4>}
                 {bills && bills.length > 0 && <TableContainer component={Paper} style={{ marginTop: "0.7rem", maxHeight: "65vh" }}>
                     <div style={{display:"flex", alignItems:"center" ,justifyContent:"space-between",padding:"0 1rem"}}>

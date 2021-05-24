@@ -230,8 +230,7 @@ const SeasonMaster = ({ onSnackbarEvent }) => {
             <KeyboardDatePicker
               required
               disableToolbar
-              variant="inline"
-              format="MM/dd/yyyy"
+              format="dd/MM/yyyy"
               margin="normal"
               id="date-picker-inline"
               label="Start date"
@@ -245,8 +244,7 @@ const SeasonMaster = ({ onSnackbarEvent }) => {
             <KeyboardDatePicker
               required
               disableToolbar
-              variant="inline"
-              format="MM/dd/yyyy"
+              format="dd/MM/yyyy"
               margin="normal"
               id="date-picker-inline"
               label="End date"
@@ -294,8 +292,7 @@ const SeasonMaster = ({ onSnackbarEvent }) => {
                       <KeyboardDatePicker
                         required
                         disableToolbar
-                        variant="inline"
-                        format="MM/dd/yyyy"
+                        format="dd/MM/yyyy"
                         margin="normal"
                         id="date-picker-inline"
                         label="Start date"
@@ -314,8 +311,7 @@ const SeasonMaster = ({ onSnackbarEvent }) => {
                       <KeyboardDatePicker
                         required
                         disableToolbar
-                        variant="inline"
-                        format="MM/dd/yyyy"
+                        format="dd/MM/yyyy"
                         margin="normal"
                         id="date-picker-inline"
                         label="End date"

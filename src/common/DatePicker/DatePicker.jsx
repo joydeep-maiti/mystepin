@@ -14,7 +14,6 @@ const CustomDatePicker = ({ label, onChange, error, ...props }) => {
         error={error && true}
         className={classes.root}
         disableToolbar
-        variant="inline"
         format="DD/MM/YYYY"
         margin="normal"
         id={label}

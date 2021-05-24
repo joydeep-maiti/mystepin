@@ -186,23 +186,23 @@ const Taxes = ({ onSnackbarEvent }) => {
                   </FormControl>
                 </StyledTableCell>}
                   {i===0 && <StyledTableCell align="center" rowSpan={3}><TextField style={{ position: "relative", width: "40%"}}
-                    variant="outlined" value="GST" disabled="true" ></TextField>
+                    variant="outlined" value="GST" disabled="true" size="small"></TextField>
                   </StyledTableCell>}
                   {/* {i===0 && <StyledTableCell align="center" rowSpan={3} ><TextField style={{ position: "relative", width: "40%" }}
                     variant="outlined" value="%" disabled="true"></TextField>
                   </StyledTableCell>} */}
                   <StyledTableCell align="center">
                     <TextField style={{ position: "relative", width: "40%" }}
-                      variant="outlined" disabled="true" value={row.greaterThan} />
+                      variant="outlined" disabled="true" value={row.greaterThan} size="small"/>
                   </StyledTableCell>
                   {i !== 2 && <StyledTableCell align="center">
                     <TextField style={{ position: "relative", width: "40%" }}
-                      variant="outlined" type="number" inputProps={{ min: 0, max: 100 }} name="lessThanAndEqual" value={row.lessThanAndEqual} onChange={(e) => handleInputChange(e, i)} ></TextField>
+                      variant="outlined" type="number" inputProps={{ min: 0, max: 100 }} name="lessThanAndEqual" value={row.lessThanAndEqual} onChange={(e) => handleInputChange(e, i)} size="small"></TextField>
                   </StyledTableCell>}
                   {i === 2 && <StyledTableCell align="center"></StyledTableCell>}
                   <StyledTableCell align="center">
                       <TextField style={{ position: "relative", width: "40%" }}
-                        variant="outlined" type="number" inputProps={{ min: 0, max: 100, step:.01 }}name="taxPercent" value={row.taxPercent} onChange={(e) => handlePercentInputChange(e, i)} ></TextField>
+                        variant="outlined" type="number" inputProps={{ min: 0, max: 100, step:.01 }}name="taxPercent" value={row.taxPercent} onChange={(e) => handlePercentInputChange(e, i)} size="small"></TextField>
                   </StyledTableCell>
                 </TableRow>
 
@@ -230,6 +230,7 @@ const Taxes = ({ onSnackbarEvent }) => {
                     variant="outlined" 
                     value={taxSlabs && taxSlabs[3] && taxSlabs[3].name} 
                     onChange={handleNameChange}
+                    size="small"
                   />
                 </StyledTableCell>
                 <StyledTableCell align="center"></StyledTableCell>
@@ -243,6 +244,7 @@ const Taxes = ({ onSnackbarEvent }) => {
                     name="taxPercent" 
                     value={taxSlabs && taxSlabs[3] && taxSlabs[3].taxPercent} 
                     onChange={(e) => handlePercentInputChange(e, 3)} 
+                    size="small"
                   />
                 </StyledTableCell>
               </TableRow>

@@ -98,12 +98,12 @@ const Users = ({ onClose }) => {
     const res = await userService.addUser(newDoc);
     setLoading(false);
     if(res.status===201){
-      setNewDoc({})
+      // setNewDoc({})
       setLoading(true);
       fetchData()
     }else {
       console.log(res)
-      setNewDoc({})
+      // setNewDoc({})
       alert("Bad Request")
     }
 
@@ -128,7 +128,7 @@ const Users = ({ onClose }) => {
 
   const handleUpdate = async () => {
     setLoading(true);
-    const res = await roomService.updateRoom(editingRow);
+    const res = await userService.updateUser(editingRow);
     setLoading(false);
     if(res){
       setEditingRow({})
@@ -138,9 +138,9 @@ const Users = ({ onClose }) => {
   }
 
   const handleDelete = async (row) => {
-    return
+    // return
     setLoading(true);
-    const res = await roomService.deleteRoom(row);
+    const res = await userService.deleteUser(row);
     setLoading(false);
     if(res){
       setLoading(true);
@@ -163,11 +163,11 @@ const Users = ({ onClose }) => {
     <React.Fragment>
       <DialogTitle>User Management</DialogTitle>
       <DialogContent className={classes.roomsDiv}>
-        <form className={classes.formGroup} noValidate autoComplete="off" onSubmit={handleFormSubmit}>
+        <form className={classes.formGroup} autoComplete="off" onSubmit={handleFormSubmit}>
           <TextField required id="standard-required" label="Username" name="username" onChange={handleInput}/>
           <TextField required id="standard-required" label="Password" name="password" onChange={handleInput}/>
           <FormControl className={classes.formControl}>
-            <InputLabel id="demo-simple-select-label">Role</InputLabel>
+            <InputLabel id="demo-simple-select-label">Role*</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"

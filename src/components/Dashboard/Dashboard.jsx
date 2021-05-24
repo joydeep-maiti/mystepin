@@ -484,7 +484,7 @@ const Dashboard = props => {
                           style={{ marginLeft: "1rem"}}>
                           <KeyboardDatePicker
                               disableToolbar
-                              format="MM/dd/yyyy"
+                              format="dd/MM/yyyy"
                               margin="normal"
                               id="date-picker-dialog"
                               label="Select Date"

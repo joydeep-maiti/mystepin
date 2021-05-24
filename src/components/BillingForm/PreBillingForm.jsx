@@ -31,7 +31,9 @@ const useStyles = makeStyles(theme => ({
   radioGroup: {
     marginBottom: 20,
     marginTop: 20,
-    textAlign:"end"
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between"
   },
 
   tableTDTitle:{
@@ -125,7 +127,7 @@ const PreBillingForm = props => {
             <td className={classes.tableTDesc} colSpan="4">{rooms}</td>
           </tr>
           <tr>
-            <td className={classes.tableTDTitle}>Chckin Date</td>
+            <td className={classes.tableTDTitle}>Checkin Date</td>
             <td>:</td>
             <td className={classes.tableTDesc}>{booking?moment(booking.checkIn).format('D.MMM.YYYY'):""}</td>
           {/* </tr>
@@ -141,6 +143,9 @@ const PreBillingForm = props => {
           </tr>
         </table>
         <div className={classes.radioGroup}>
+          <div>
+            <span className={classes.tableTDTitle}>Rate Type: </span><span className={classes.tableTDesc}>{booking.flatRoomRate?`Flat Rate `:`Plus Tax `}</span>
+          </div>
           {FormUtils.renderRadioGroup({
             label: "",
             ariaLabel: "taxInfo",

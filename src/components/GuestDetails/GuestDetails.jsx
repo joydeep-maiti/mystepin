@@ -60,7 +60,7 @@ const GuestDetails = () => {
           })
           setRoomNumbers(roomN)
         }
-        console.log("Room Numbers",roomNumbers)
+        
    useEffect(()=>{
       if(guestCategory === "Room Wise"){
         setIsRoomWise(true)
@@ -117,6 +117,7 @@ const GuestDetails = () => {
 
     ///Fetching Data from backend
 const fetchAndGenerateGuestReport = async()=>{
+  let total=0;
   let startD = moment(startingDate).format('yyyy-MM-DD')
   let currentD = moment(currentDate).format('yyyy-MM-DD')
   console.log("Start",startD)
@@ -127,10 +128,11 @@ const fetchAndGenerateGuestReport = async()=>{
   console.log("Response",options)
   console.log("Category",guestCategory)
   if(options){
-    if(guestCategory === "Guest"){
+    if(guestCategory === "Domicillary Guest"){
       let data = options.map(option=>{
         let checkIn = moment(option.checkIn).format('D-MMMM-YYYY');
         let checkOut = moment(option.checkOut).format('D-MMMM-YYYY');
+        total += parseInt(option.Amount)
         return([
           option.guestName,
           checkIn,
@@ -139,16 +141,17 @@ const fetchAndGenerateGuestReport = async()=>{
           option.nationality,
           option.bookedBy,
           option.referenceNumber,
-          option.Amount,
           option.Advance,
+          option.Amount,
         ])
       })
-      exportGuestReportToPDF(data,len)
+      exportGuestReportToPDF(data,len,total)
     }
     else{
       let data = options.map(option=>{
         let checkIn = moment(option.checkIn).format('D-MMMM-YYYY');
         let checkOut = moment(option.checkOut).format('D-MMMM-YYYY');
+        total += parseInt(option.Amount)
         return([
           option.guestName,
           checkIn,
@@ -162,7 +165,7 @@ const fetchAndGenerateGuestReport = async()=>{
           option.Amount,
         ])
       })
-      exportGuestReportToPDF(data,len)
+      exportGuestReportToPDF(data,len,total)
     }
   
 }
@@ -171,6 +174,7 @@ else{
 }
 }
 const fetchRoomWiseReport= async()=>{
+  let total=0;
   let startD = moment(startingDate).format('yyyy-MM-DD')
   let currentD = moment(currentDate).format('yyyy-MM-DD')
   console.log("Start",startD)
@@ -180,11 +184,12 @@ const fetchRoomWiseReport= async()=>{
   console.log("len",len)
   console.log("Response",options)
   console.log("Category",guestCategory)
-  if(options){
+  if(options && roomNumber){
       let data = options.map(option=>
         {
         let checkIn = moment(option.checkIn).format('D-MMMM-YYYY');
         let checkOut = moment(option.checkOut).format('D-MMMM-YYYY');
+        total += parseInt(option.Amount)
         return([
           option.guestName,
           checkIn,
@@ -193,20 +198,21 @@ const fetchRoomWiseReport= async()=>{
           option.nationality,
           option.bookedBy,
           option.referenceNumber,
-          option.Amount,
           option.Advance,
+          option.Amount,
         ])
       })
-      exportGuestReportToPDF(data,len)
+      exportGuestReportToPDF(data,len,total)
     }
     else{
-  alert("No Guest in specfied Category")
+  alert("Select the Roomnumber")
     }
 
 }
 //Set Room Number
 
 const handleRoomChange = async (event) => {
+  event.preventDefault();
   setRoomNumber(event.target.value);
   console.log("Room Number",roomNumber)
 };
@@ -218,10 +224,14 @@ const getRoomOptions = () => {
   return roomNumbers.map(type => {
     return { label: type.roomNumber +" - "+type.roomType, value: type.roomNumber};
   });
+
 };
 
 
- const exportGuestReportToPDF = (reportData,len) =>{
+ const exportGuestReportToPDF = (reportData,len,total) =>{
+
+  const roomtype = roomNumbers.filter((room)=>{if(room.roomNumber === roomNumber) {return `${room.roomNumber} - ${room.roomType}`}})
+  const room = `${roomtype[0].roomNumber} - ${roomtype[0].roomType}`
   const unit = "pt";
   const size = "A3"; // Use A1, A2, A3 or A4
   const orientation = "landscape"; // portrait or landscape
@@ -248,16 +258,33 @@ const getRoomOptions = () => {
     theme: 'striped',
     styles: {
       cellWidth:'wrap',
-      halign : 'left',
+      valign: 'middle',
     },
-    headerStyles: {
-      valign: 'middle', 
-      6 : { halign: 'right'},3 : { halign: 'right'},7: { halign: 'right'},8: { halign: 'right'}
+    headStyles: {
+      3 : { halign: 'center'},6 : { halign: 'right'},7: { halign: 'right'},8: { halign: 'right'}
     },
     columnStyles: { 6 : { halign: 'right'},3 : { halign: 'right'},7: { halign: 'right'},8: { halign: 'right'}},
     margin: marginLeft,
     pageBreak:'auto'
   };
+  if(guestCategory === "Foreign Guest"){
+    content = {
+      startY: 120,
+      head: headers,
+      body: reportData,
+      theme: 'striped',
+      styles: {
+        cellWidth:'wrap',
+        valign: 'middle',
+      },
+      headStyles: {
+        3 : { halign: 'right'},6 : { halign: 'right'},7: { halign: 'right'},8: { halign: 'right'}
+      },
+      columnStyles: { 5 : { halign: 'right'},3 : { halign: 'right'},7: { halign: 'right'},8: { halign: 'right'},9: { halign: 'right'}},
+      margin: marginLeft,
+      pageBreak:'auto'
+    };
+  }
   doc.text(title, 500, 40);
   doc.setFontSize(10);
   doc.text("Report Generated at "+generatedTime,900,40);
@@ -266,12 +293,15 @@ const getRoomOptions = () => {
   doc.text("To : "+currentDateString,250, 90);
   doc.text("No of Guests : "+len,400,90)
   if(guestCategory === "Room Wise"){
-    doc.text("Room Number : "+roomNumber,550,90)
+    doc.text("Room Number : "+room,550,90)
   }
-   
   doc.setFontSize(12);
   doc.autoTable(content);
-  doc.setTextColor("#fb3640");
+  let finalY = doc.lastAutoTable.finalY; // The y position on the page
+  doc.setDrawColor(0, 0, 0);
+  doc.setLineWidth(1.5);
+  doc.line(18, finalY+1, 1180, finalY+1)
+  doc.text(1000, finalY+40, `TOTAL AMOUNT: ${total}`);
   doc.save(guestCategory === "Guest" ? "Domicillary Guest Report ":`${guestCategory} REPORT`)
 }
     return (

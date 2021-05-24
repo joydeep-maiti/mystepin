@@ -103,9 +103,14 @@ const POSSales = () => {
       console.log("POSDATA",posTotal)
       exportPOSReportToPDF(data,total)
     }else{
+      let total=[0,0,0,0,0,0,0,0,0,0];
       let data = options.map(option=>{
         let date = moment(option.date).format("DD-MMMM-yyyy");
-        total += parseInt(option.amount)
+       total[0] += option.Food ? parseInt(option.Food) : 0;
+       total[1] += option.Transport ? parseInt(option.Transport) : 0;
+       total[2] += option.Laundary ? parseInt(option.Laundary) : 0;
+       total[3] += option.Agent ? parseInt(option.Agent) : 0;
+       total[4] += option.Others ? parseInt(option.Others) : 0;    
         return([
           date,
           option.guestName,
@@ -115,12 +120,16 @@ const POSSales = () => {
           option.Agent,
           option.Others
         ])
-      })
-      
+      })   
       setPosTotal(total)
       console.log("POSTotal",total);
-      console.log("POSDATA",posTotal)
-      exportPOSReportToPDF(data,total)
+      let data2 =[]
+      console.log("total Arrat",total)
+      data2.push(["","Total"],["Food :",`${total[0]}`],["Transport :",`${total[1]}`],
+                 ["Laundary :",`${total[2]}`],["Agent :",`${total[3]}`],
+                 ["Others :",`${total[4]}`])
+      console.log("Data2",data2)
+      exportPOSReportToPDF(data,data2)
 
     }
    }
@@ -129,7 +138,7 @@ const POSSales = () => {
   }
   } 
     
-    const exportPOSReportToPDF = (reportData) =>{
+    const exportPOSReportToPDF = (reportData,data2) =>{
     const unit = "pt";
     const size = "A4"; // Use A1, A2, A3 or A4
     const orientation = "landscape"; // portrait or landscape
@@ -165,12 +174,32 @@ const POSSales = () => {
     doc.setFontSize(12);
     doc.autoTable(content);
     doc.setFontSize(12);
-    let finalY = doc.lastAutoTable.finalY+100; // The y position on the page
+    let finalY = doc.lastAutoTable.finalY; // The y position on the page
     doc.setDrawColor(0, 0, 0);
     doc.setLineWidth(1.5);
-    doc.line(18, finalY-99, 825, finalY-99)
-    doc.text(320, finalY, `Total ${posCategory} Sales   =     ${total}`);
-    doc.setTextColor("#fb3640");
+    doc.line(18, finalY+1, 825, finalY+1)
+    if(posCategory === "All POS")
+    {
+      doc.autoTable({
+        startY: doc.lastAutoTable.finalY+10,
+        body: data2,
+        theme: 'grid',
+        tableWidth: 300,
+        styles: {
+          cellWidth:'100',
+          columnWidth: "wrap"
+        },
+        margin: {
+          right: 20,
+          left: 50
+        },
+        columnStyles: { 0 : { halign: 'left'},1 : { halign: 'right'}},
+        pageBreak:'auto'
+      });  
+    }
+    else{
+      doc.text(320, finalY+100, `Total ${posCategory} Sales   =     ${total}`);
+    }
     doc.save(`${posCategory} SALES REPORT`)
   }
     const classes = useStyles();

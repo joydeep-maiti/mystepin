@@ -150,7 +150,7 @@ else{
   doc.text(title, 300, 40);
   doc.setFontSize(10);
   doc.text("Report Generated at "+generatedTime,1400,20);
-   if(bookingCategory === "Daily Booking" || bookingCategory === "Confirmed Booking for") 
+   if(bookingCategory === "Daily Booking" || bookingCategory === "Arrival Date") 
   {
     doc.setFontSize(12)
     doc.text("Date : "+ moment().format("DD-MMMM-YYYY"),100,100)

@@ -120,10 +120,18 @@ const BillingDetails = () => {
           Number(option.Balance).toFixed(2)
         ])
       })
-    exporttoPDF(data,total);
+      let data2 =[]
+      console.log("total Arrat",total)
+      data2.push(["","Total"],["Room Rate :",`${total[0]}`],["Tax :",`${total[1]}`],
+                 ["Food :",`${total[2]}`],["Transport :",`${total[3]}`],
+                 ["Laundary :",`${total[4]}`],["Misc :",`${total[5]}`],
+                 ["Phone :",`${total[6]}`],["Total :",`${total[7]}`],
+                 ["Advance :",`${total[8]}`],["Balance :",`${total[9]}`])
+      console.log("Data2",data2)
+    exporttoPDF(data,data2);
   }
   }
-    const exporttoPDF=(data,total)=>{
+    const exporttoPDF=(data,data2)=>{
     const unit = "pt";
     const size = "A4"; // Use A1, A2, A3 or A4
     const orientation = "landscape"; // portrait or landscape
@@ -158,17 +166,22 @@ const BillingDetails = () => {
         doc.setDrawColor(0, 0, 0);
         doc.setLineWidth(1.5);
         doc.line(18, finalY+1, 825, finalY+1)
-        doc.text(350, finalY+20, `Summary`);
-        doc.text(280, finalY+40, `Room Rate`+" ".repeat(10)+`:   ${total[0]}`);
-        doc.text(280, finalY+60, `Tax`+" ".repeat(22)+`:  ${total[1]}`);
-        doc.text(280, finalY+80, `Food`+" ".repeat(20)+`:  ${total[2]}`);
-        doc.text(280, finalY+100, `Transport`+" ".repeat(13)+`:  ${total[3]}`);
-        doc.text(280, finalY+120, `Laundary`+" ".repeat(13)+`:   ${total[4]}`);
-        doc.text(280, finalY+140, `Misc`+" ".repeat(21)+`:  ${total[5]}`);
-        doc.text(280, finalY+160, `Phone`+" ".repeat(18)+`:   ${total[6]}`);
-        doc.text(280, finalY+180, `Total`+" ".repeat(20)+`:  ${total[7]}`);
-        doc.text(280, finalY+200, `Advance`+" ".repeat(14)+`:   ${total[8]}`);
-        doc.text(280, finalY+220, `Balance`+" ".repeat(15)+`:   ${total[9]}`);   
+        doc.autoTable({
+          startY: doc.lastAutoTable.finalY+10,
+          body: data2,
+          theme: 'grid',
+          tableWidth: 300,
+          styles: {
+            cellWidth:'100',
+            columnWidth: "wrap"
+          },
+          margin: {
+            right: 20,
+            left: 50
+          },
+          columnStyles: { 0 : { halign: 'left'},1 : { halign: 'right'}},
+          pageBreak:'auto'
+        });  
         doc.save(`${billingCategory}.pdf`)
   }
   //return method

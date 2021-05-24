@@ -13,6 +13,7 @@ import Occupancy from '../Occupancy/Occupancy';
 import CollectionReport from '../CollectionReport/CollectionReport';
 import GuestDetails from '../GuestDetails/GuestDetails';
 
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -74,6 +75,7 @@ const ReportComponent = () => {
     setValue(newValue);
   };
 
+  //Toggle
 
   return (
     <div className={classes.root} style={{backgroundColor:'#D6EAF8',height:"100vh"}}>
@@ -87,7 +89,7 @@ const ReportComponent = () => {
           scrollButtons="auto"
           aria-label="scrollable auto tabs example"
         >
-          <Tab label="Billing Details" {...a11yProps(0)} />
+          <Tab label="Billing Details" {...a11yProps(0)}/>
           <Tab label="Booking" {...a11yProps(1)} />
           <Tab label="POS Sales" {...a11yProps(2)} />
           <Tab label="Agent" {...a11yProps(3)} />

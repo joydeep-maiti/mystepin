@@ -13,15 +13,6 @@ import Occupancy from '../Occupancy/Occupancy';
 import CollectionReport from '../CollectionReport/CollectionReport';
 import GuestDetails from '../GuestDetails/GuestDetails';
 
-import {
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem
-} from "reactstrap";
-import { Menu, MenuItem, Button } from "@material-ui/core";
-
-
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -86,30 +77,6 @@ const ReportComponent = () => {
 
   //Toggle
 
-  const [dropdownOpen,setDropDownOpen] = useState(false)
-  const handleMouseEnter=()=>{
-    setDropDownOpen(true)
-}
-const handleMouseLeave=()=>{
-  setDropDownOpen(false)
-}
-
-const handleToggle=()=>{
-    setDropDownOpen(!dropdownOpen);
-}
-const [anchorEl, setAnchorEl] = useState(null);
-
-  const handleOpenAdvanceMenu = event => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleCloseAdvanceMenu = () => {
-    setAnchorEl(null);
-  };
-
-  const handleOpenAdvanceTabMenu = () => {
-    setAnchorEl(null);
-  };
   return (
     <div className={classes.root} style={{backgroundColor:'#D6EAF8',height:"100vh"}}>
       <AppBar position="sticky" color="default" style={{position:"sticky",top:"64px"}}>
@@ -133,22 +100,6 @@ const [anchorEl, setAnchorEl] = useState(null);
       </AppBar>
       <TabPanel className={classes.tabDiv} value={tabvalue} index={0}>
         <BillingDetails/>
-        <Menu
-    id="pos-menu"
-    anchorEl={anchorEl}
-    keepMounted
-    open={Boolean(anchorEl)}
-   onClose={handleCloseAdvanceMenu}
-   >
-      <MenuItem>Advance</MenuItem>
-       <MenuItem>Today's Checkin</MenuItem>
-       <MenuItem>Today's Checkout</MenuItem>
-      <MenuItem >Bill Settlement</MenuItem>
-      <MenuItem>Approximate Bill</MenuItem>
-      <MenuItem>Guest Details</MenuItem>
-      <MenuItem >Print Bill</MenuItem>
-      <MenuItem >Petty Cash</MenuItem>
-  </Menu>
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={tabvalue} index={1}>
         <BillingTab />

@@ -41,6 +41,8 @@ import BillSettlement from '../BillSettlement/BillSettlement'
 import GuestSearch from '../GuestSearch/GuestSearch'
 import TodayCheckIn from '../TodayCheckIn/TodayCheckIn'
 import PrintBill from '../PrintBill/PrintBill'
+import CleanRoom from '../CleanRoom/CleanRoom'
+
 const useStyles = makeStyles((theme) => ({
   formControl: {
     marginTop: "20px",
@@ -241,9 +243,9 @@ const Dashboard = props => {
     handleDialog("pos");
   };
   //Advance
-  const handleShowAdvancedDialog = (title,size) => {
+  const handleShowAdvancedDialog = (title, size) => {
     setAdvancedDialogTitle(title);
-    handleDialog("advanced",size);
+    handleDialog("advanced", size);
   };
   const handleRedirectFromNavbar = () => {
     props.history.replace("/");
@@ -282,27 +284,31 @@ const Dashboard = props => {
     setSelectedDate(selectedDate);
 
     if (bookingObj) {
-      if (bookingObj.status.checkedOut) props.history.push("/report");
+      if (bookingObj.status.checkedOut && !bookingObj.status.dirty) props.history.push("/report");
+      else if (bookingObj.status.checkedOut && bookingObj.status.dirty) props.history.push("/cleanroom", bookingObj);
       else props.history.push("/booking/viewBooking");
     } else props.history.push("/booking/newBooking");
   };
+  const handleCleanRoomRedirect = () => {
+    props.history.push("/cleanroom");
+  };
 
   const handleBookingView = (bookingObj) => {
-    console.log("bookingObj",bookingObj)
+    console.log("bookingObj", bookingObj)
     if (bookingObj) {
       setSelectedBooking(bookingObj);
       setSelectedRoom("test")
-      setTimeout(()=>{
+      setTimeout(() => {
         if (bookingObj.status.checkedOut) props.history.push("/report");
         else props.history.push("/booking/viewBooking");
-      },1000)
+      }, 1000)
     }
   };
 
   //Change color with Booking length
 
-  let bookingcolor= bookedRooms.length > 0 ?"#0088bc":"#444";
-  let occupiedcolor=occupiedRooms.length > 0?'#a22a52':"#444";
+  let bookingcolor = bookedRooms.length > 0 ? "#0088bc" : "#444";
+  let occupiedcolor = occupiedRooms.length > 0 ? '#a22a52' : "#444";
 
   return (
     <SnackBarContext.Provider value={handleSnackbarEvent}>
@@ -317,7 +323,7 @@ const Dashboard = props => {
           onRefresh={handleRefresh}
           showTaxes={handleShowTaxes}
           showPOSDialog={handleShowPOSDialog}
-          showAdvancedDialog = {handleShowAdvancedDialog}
+          showAdvancedDialog={handleShowAdvancedDialog}
           path={props.location.pathname}
           onRedirectFromNavbar={handleRedirectFromNavbar}
         />
@@ -338,25 +344,25 @@ const Dashboard = props => {
             />
           )}
           {
-            dialog.openFor.advanced && advancedDialogTitle==="Advance Collection" &&(
+            dialog.openFor.advanced && advancedDialogTitle === "Advance Collection" && (
               <AdvancedDialog
                 allBookings={allBookings}
                 title={advancedDialogTitle}
                 onClose={() => handleDialog(dialog.contentOf)}
               // onSnackbarEvent={handleSnackbarEvent}
               />
-          )}
+            )}
           {
-            dialog.openFor.advanced && advancedDialogTitle==="Today's Checkout" &&(
+            dialog.openFor.advanced && advancedDialogTitle === "Today's Checkout" && (
               <RecentCheckouts
                 // allBookings={allBookings}
                 title={advancedDialogTitle}
                 onClose={() => handleDialog(dialog.contentOf)}
               // onSnackbarEvent={handleSnackbarEvent}
               />
-          )}
+            )}
           {
-            dialog.openFor.advanced && advancedDialogTitle==="Today's Checkin" &&(
+            dialog.openFor.advanced && advancedDialogTitle === "Today's Checkin" && (
               <TodayCheckIn
                 // allBookings={allBookings}
                 title={advancedDialogTitle}
@@ -364,40 +370,40 @@ const Dashboard = props => {
                 onBookingView={handleBookingView}
               // onSnackbarEvent={handleSnackbarEvent}
               />
-          )}
+            )}
           {
-            dialog.openFor.advanced && advancedDialogTitle==="Approximate Bill" &&(
+            dialog.openFor.advanced && advancedDialogTitle === "Approximate Bill" && (
               <ApproximateBill
                 // allBookings={allBookings}
                 title={advancedDialogTitle}
                 onClose={() => handleDialog(dialog.contentOf)}
               // onSnackbarEvent={handleSnackbarEvent}
               />
-          )}
+            )}
           {
-            dialog.openFor.advanced && advancedDialogTitle==="Bill Settlement" &&(
+            dialog.openFor.advanced && advancedDialogTitle === "Bill Settlement" && (
               <BillSettlement
                 title={advancedDialogTitle}
                 onClose={() => handleDialog(dialog.contentOf)}
                 onSnackbarEvent={handleSnackbarEvent}
               />
-          )}
+            )}
           {
-            dialog.openFor.advanced && advancedDialogTitle==="Print Bill" &&(
+            dialog.openFor.advanced && advancedDialogTitle === "Print Bill" && (
               <PrintBill
                 title={advancedDialogTitle}
                 onClose={() => handleDialog(dialog.contentOf)}
                 onSnackbarEvent={handleSnackbarEvent}
               />
-          )}
+            )}
           {
-            dialog.openFor.advanced && advancedDialogTitle==="Guest Details" &&(
+            dialog.openFor.advanced && advancedDialogTitle === "Guest Details" && (
               <GuestSearch
                 title={advancedDialogTitle}
                 onClose={() => handleDialog(dialog.contentOf)}
                 onSnackbarEvent={handleSnackbarEvent}
               />
-          )}
+            )}
         </Dialog>
 
         <div className="subContainer"  >
@@ -452,8 +458,12 @@ const Dashboard = props => {
               )}
             />
             <Route
-                 path='/reports'
-                component={ReportComponent}
+              path='/reports'
+              component={ReportComponent}
+            />
+            <Route
+              path='/cleanroom'
+              component={CleanRoom}
             />
             <Route
               path="/"
@@ -477,30 +487,30 @@ const Dashboard = props => {
                       <FormControl component="fieldset" className={classes.formControl}>
                         {/* <FormLabel component="legend">View</FormLabel> */}
                         <RadioGroup aria-label="view" style={{ flexDirection: "row" }} name="view" value={view} onChange={handleViewChange}>
-                          <FormControlLabel value="day" control={<Radio style={{color:"#0088bc"}}/>} label="Day View" />
-                          <FormControlLabel value="week" control={<Radio style={{color:"#0088bc"}}/>} label="Week View" />
-                          <FormControlLabel value="month" control={<Radio style={{color:"#0088bc"}} />} label="Month view" />
-                          <MuiPickersUtilsProvider utils={DateFnsUtils} 
-                          style={{ marginLeft: "1rem"}}>
-                          <KeyboardDatePicker
+                          <FormControlLabel value="day" control={<Radio style={{ color: "#0088bc" }} />} label="Day View" />
+                          <FormControlLabel value="week" control={<Radio style={{ color: "#0088bc" }} />} label="Week View" />
+                          <FormControlLabel value="month" control={<Radio style={{ color: "#0088bc" }} />} label="Month view" />
+                          <MuiPickersUtilsProvider utils={DateFnsUtils}
+                            style={{ marginLeft: "1rem" }}>
+                            <KeyboardDatePicker
                               disableToolbar
                               format="dd/MM/yyyy"
                               margin="normal"
                               id="date-picker-dialog"
                               label="Select Date"
-                              value={currentDate}              
+                              value={currentDate}
                               onChange={handleDateChange}
                               KeyboardButtonProps={{
                                 'aria-label': 'change date',
                               }}
-                              style={{ marginLeft: "0.5rem",width:'150px'}}
+                              style={{ marginLeft: "0.5rem", width: '150px' }}
                             />
                           </MuiPickersUtilsProvider>
                         </RadioGroup>
                       </FormControl>
-                      <div style={{marginRight:"100px"}}>
-                      <h4 style={{ marginTop: "40px",color:occupiedcolor}}>{`Occupied Rooms : ${occupiedRooms.length}`}</h4>
-                      <h4 style={{color:bookingcolor}}>{`Booked Rooms : ${bookedRooms.length}`}</h4>
+                      <div style={{ marginRight: "100px" }}>
+                        <h4 style={{ marginTop: "40px", color: occupiedcolor }}>{`Occupied Rooms : ${occupiedRooms.length}`}</h4>
+                        <h4 style={{ color: bookingcolor }}>{`Booked Rooms : ${bookedRooms.length}`}</h4>
                       </div>
                     </div>
                   </div>
@@ -509,6 +519,7 @@ const Dashboard = props => {
                     currentDate={currentDate}
                     currentDateObj={currentDateObj}
                     onFormRedirect={handleFormRedirect}
+                    handleCleanRoomRedirect={handleCleanRoomRedirect}
                     allBookings={allBookings}
                     loading={loading}
                     onLoading={handleLoading}

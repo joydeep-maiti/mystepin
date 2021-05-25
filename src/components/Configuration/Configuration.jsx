@@ -17,6 +17,7 @@ import SeasonMaster from "../SeasonMaster/SeasonMaster";
 import RateMaster from "../RateMaster/RateMaster";
 import PropertyDetails from "../PropertyDetails/PropertyDetails";
 import Users from "../Users/Users";
+import Inventory from "../Inventory/Inventory";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -100,6 +101,7 @@ const Configuration = ({onSnackbarEvent}) => {
           <Tab label="Taxes" {...a11yProps(4)} />
           <Tab label="Property Details" {...a11yProps(5)} />
           <Tab label="User Management" {...a11yProps(6)} />
+          <Tab label="Inventory Management" {...a11yProps(7)} />
         </Tabs>
       </AppBar>
       
@@ -123,6 +125,9 @@ const Configuration = ({onSnackbarEvent}) => {
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={6}>
         <Users onSnackbarEvent={onSnackbarEvent} />
+      </TabPanel>
+      <TabPanel className={classes.tabDiv} value={value} index={7}>
+        <Inventory onSnackbarEvent={onSnackbarEvent} />
       </TabPanel>
     </div>
   );

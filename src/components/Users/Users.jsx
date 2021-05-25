@@ -73,7 +73,16 @@ const Users = ({ onClose }) => {
   const [rooms, setRooms] = useState([]);
   const [roles, setRoles] = useState([
     { label: "Admin", value: "Admin" },
-    { label: "Member", value: "Member" },
+    { label: "Manager", value: "Manager" },
+    { label: "General Manager", value: "General Manager" },
+    { label: "Staff", value: "Staff" },
+  ]);
+  const [departments, setDepartment] = useState([
+    { label: "Front Office", value: "Front Office" },
+    { label: "Restaurant", value: "Restaurant" },
+    { label: "Finance", value: "Finance" },
+    { label: "Operations", value: "Operations" },
+    { label: "House Keeping", value: "House Keeping" },
   ]);
   const [loading, setLoading] = useState(false);
   const [newDoc, setNewDoc] = useState({});
@@ -167,6 +176,19 @@ const Users = ({ onClose }) => {
           <TextField required id="standard-required" label="Username" name="username" onChange={handleInput}/>
           <TextField required id="standard-required" label="Password" name="password" onChange={handleInput}/>
           <FormControl className={classes.formControl}>
+            <InputLabel id="demo-simple-select-label">Department*</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              required
+              name="department"
+              value={newDoc.department}
+              onChange={handleInput}
+              >
+              {departments.map(el=><MenuItem value={el.value}>{el.label}</MenuItem>)}
+            </Select>
+          </FormControl>
+          <FormControl className={classes.formControl}>
             <InputLabel id="demo-simple-select-label">Role*</InputLabel>
             <Select
               labelId="demo-simple-select-label"
@@ -194,7 +216,8 @@ const Users = ({ onClose }) => {
               <TableRow>
                 <TableCell style={tablestyles}>ID</TableCell>
                 <TableCell align="center" style={tablestyles}>Username</TableCell>
-                {editingRow._id && <TableCell align="center" style={tablestyles}>Password</TableCell>}
+                <TableCell align="center" style={tablestyles}>Password</TableCell>
+                <TableCell align="center" style={tablestyles}>Department</TableCell>
                 <TableCell align="center" style={tablestyles}>Role</TableCell>
                 <TableCell align="center" style={tablestyles}>Edit</TableCell>
                 <TableCell align="center" style={tablestyles}>Delete</TableCell>
@@ -207,14 +230,30 @@ const Users = ({ onClose }) => {
                     {i+1}
                   </TableCell>
                   <TableCell align="center">{row.username}</TableCell>
-                  {/* {editingRow._id !== row._id && <TableCell align="center">{row.password}</TableCell>}  */}
+                  {editingRow._id !== row._id && <TableCell align="center">{row.password}</TableCell>} 
                   {editingRow._id === row._id && <TableCell align="center">
                     <TextField required id="standard-required" label="Password" name="password" value={editingRow.password} onChange={handleInputChange}/>
+                  </TableCell>}
+                  {editingRow._id !== row._id && <TableCell align="center">{row.department}</TableCell>}
+                  {editingRow._id === row._id && <TableCell align="center">
+                  <FormControl style={{width:"100%"}}>
+                    <InputLabel id="demo-simple-select-label">Department*</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      required
+                      name="department"
+                      value={editingRow.department}
+                      onChange={handleInputChange}
+                      >
+                      {departments.map(el=><MenuItem value={el.value}>{el.label}</MenuItem>)}
+                    </Select>
+                  </FormControl>
                   </TableCell>}
                   {editingRow._id !== row._id && <TableCell align="center">{row.role}</TableCell>}
                   {editingRow._id === row._id && <TableCell align="center">
                   <FormControl style={{width:"100%"}}>
-                    <InputLabel id="demo-simple-select-label">Role</InputLabel>
+                    <InputLabel id="demo-simple-select-label">Role*</InputLabel>
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"

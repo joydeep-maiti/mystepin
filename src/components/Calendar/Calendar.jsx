@@ -23,12 +23,12 @@ const Calendar = props => {
   const [rows, setRows] = useState([]);
   const [startEnd, setStartEnd] = useState(0);
   let tempRows = [];
-   useEffect(() => {
+  useEffect(() => {
     //console.log("props",props)
-    const title = getTitle(currentDate);
-    setTitle(title);
-    props.onLoading(true);
-    props.setBookings(dateObj);
+    // const title = getTitle(currentDate);
+    // setTitle(title);
+    // props.onLoading(true);
+    // props.setBookings(dateObj);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -42,7 +42,7 @@ const Calendar = props => {
       setStartEnd(start)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [view]);
+  }, [view,currentDate]);
 
   useEffect(() => {
     setRows(rows.splice(startEnd,7))
@@ -54,7 +54,7 @@ const Calendar = props => {
     if (allBookings.length > 0) showBookings(dateObj, allBookings, allRooms);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allBookings,view]);
+  }, [allBookings,view, allRooms]);
 
   useEffect(() => {
     if (allRooms.length > 0) {
@@ -69,12 +69,12 @@ const Calendar = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allRooms, dateObj,view]);
 
-  useEffect(() => {
-    const title = getTitle(currentDate);
-    setTitle(title);
-    props.onLoading(true);
-    props.setBookings(dateObj);
-  }, [currentDate]);
+  // useEffect(() => {
+  //   const title = getTitle(currentDate);
+  //   setTitle(title);
+  //   props.onLoading(true);
+  //   props.setBookings(dateObj);
+  // }, [currentDate]);
 
 
   const showBookings = (dateObj, bookings, allRooms) => {
@@ -235,10 +235,11 @@ const Calendar = props => {
           if(i===0){
             rows[index] = index===len-1?new Array(rem).fill():new Array(10).fill()
           }
-          console.log("allroomsindex",allRooms[roomIndex])
+          let roomId = allRooms[roomIndex]._id
+          console.log("allroomsindex",allRooms[roomIndex],roomId)
           rows[index][i] = {
             room: { ...allRooms[roomIndex] },
-            handleRedirect: !!allRooms[roomIndex].inactive ? ()=>{} : !!allRooms[roomIndex].dirty?()=>props.handleCleanRoomRedirect():handleRedirect ,
+            handleRedirect: !!allRooms[roomIndex].inactive ? ()=>{} : !!allRooms[roomIndex].dirty?()=>props.handleCleanRoomRedirect(roomId):handleRedirect ,
             isInactive: !!allRooms[roomIndex].inactive,
             show: false
           }
@@ -264,7 +265,7 @@ const Calendar = props => {
       rows.forEach((row, index) => {
         rows[index] = new Array(dateObj.days + 1).fill({
           room: { ...allRooms[index] },
-          handleRedirect: !!allRooms[index].inactive ? ()=>{} : !!allRooms[index].dirty?()=>props.handleCleanRoomRedirect() :handleRedirect ,
+          handleRedirect: !!allRooms[index].inactive ? ()=>{} : !!allRooms[index].dirty?()=>props.handleCleanRoomRedirect(allRooms[index]._id) :handleRedirect ,
           isInactive: !!allRooms[index].inactive,
         });
         rows[index][0] = { room: { ...allRooms[index] }, show: true };

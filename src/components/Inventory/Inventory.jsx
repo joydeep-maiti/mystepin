@@ -99,7 +99,7 @@ function Inventory() {
         <TabPanel style={{border:"2px solid #3f51b5",borderTop:"0px"}} value={value} index={1} dir={theme.direction}>
           Item Two
         </TabPanel>
-        <TabPanel vstyle={{border:"2px solid #3f51b5",borderTop:"0px"}} index={2} dir={theme.direction}>
+        <TabPanel style={{border:"2px solid #3f51b5",borderTop:"0px"}} value={value} index={2} dir={theme.direction}>
           Item Three
         </TabPanel>
     </div>

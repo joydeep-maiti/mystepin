@@ -54,6 +54,36 @@ async function updateRoom(data) {
   }
 }
 
+async function dirtyRoom(data) {
+  try {
+    const response = await http.patch(
+      `${http.baseUrl}/rooms/dirty`,
+      data
+    );
+    if(response.status === 200)
+      return true
+    return false
+  } catch (error) {
+    console.log(error);
+    return false
+  }
+}
+
+async function cleanRoom(data) {
+  try {
+    const response = await http.patch(
+      `${http.baseUrl}/rooms/clean`,
+      data
+    );
+    if(response.status === 200)
+      return true
+    return false
+  } catch (error) {
+    console.log(error);
+    return false
+  }
+}
+
 async function deleteRoom(data) {
   try {
     const response = await http.delete(
@@ -68,4 +98,4 @@ async function deleteRoom(data) {
   }
 }
 
-export default { getRooms, getAvailableRooms, addRoom, updateRoom, deleteRoom};
+export default { getRooms, getAvailableRooms, addRoom, updateRoom, dirtyRoom, cleanRoom, deleteRoom};

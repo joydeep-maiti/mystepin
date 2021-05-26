@@ -14,6 +14,7 @@ import schemas from "../../utils/joiUtils";
 import FormUtils from "../../utils/formUtils";
 import utils from "../../utils/utils";
 import bookingService from "../../services/bookingService";
+import roomService from "../../services/roomService";
 import taxService from "../../services/taxService";
 import billingService from "../../services/billingService";
 import advanceService from '../../services/advanceService'
@@ -276,6 +277,8 @@ const BillingFormLayout = props => {
     if (status === 200) {
       const { status } = await  billingService.addBilling(billingData);
       if (status === 201) {
+        const roomIds = bookingData.rooms.map(e=>e._id)
+        const response = await  roomService.dirtyRoom({rooms:roomIds});
         openSnackBar("Checked out Successfully", success);
         props.onRedirectFromBilling(bookingData);
         // props.history.push("/report")

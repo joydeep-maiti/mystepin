@@ -43,6 +43,9 @@ import TodayCheckIn from '../TodayCheckIn/TodayCheckIn'
 import PrintBill from '../PrintBill/PrintBill'
 import CleanRoom from '../CleanRoom/CleanRoom'
 import ConfirmDialog from '../../common/ConfirmDialog/ConfirmDialog'
+// import constants from "../../utils/constants";
+
+const { success, error } = constants.snackbarVariants;
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -224,7 +227,6 @@ const Dashboard = props => {
   const handleRefresh = () => {
     setLoading(true);
     setBookings(currentDateObj);
-    getRooms()
   };
 
   const handleShowTaxes = () => {
@@ -319,8 +321,11 @@ const Dashboard = props => {
     
     setLoading(false);
     if(res){
-      const snakbarObj = { open: true, message:"Room Cleaned Successfully!", variant:"Success", resetBookings: false };
+      setOpenCleanRoomDlg(false)
+      const snakbarObj = { open: true, message:"Room Cleaned Successfully!", variant:success, resetBookings: false };
       handleSnackbarEvent(snakbarObj)
+      setLoading(true);
+      setBookings(currentDateObj)
     }
   }
   const handleCleanRoomSubmit = (val)=>{

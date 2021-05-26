@@ -1,6 +1,6 @@
 import http from "./httpService";
 
-async function getDailyOccupancyReport(optiontype) {
+async function getDailyOccupancyReport() {
   try {
     const { data } = await http.get(
       `${http.baseUrl}/dailyreport`

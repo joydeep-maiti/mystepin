@@ -337,8 +337,6 @@ const renderDailyCalender=()=>{
         
   
         { dailyview ? renderFromtoCalender() : renderDailyCalender()}
-    
-   
         <div className="buttoncontainer"> 
       <Button  type="submit" className="button" onClick={generateReport}>
         Generate

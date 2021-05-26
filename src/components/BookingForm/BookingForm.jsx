@@ -30,8 +30,7 @@ import Loader from "../../common/Loader/Loader";
 import taxService from "../../services/taxService";
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-
-
+import GuestNameDialog from './GuestNameDialog'
 const BookingForm = props => {
   const classes = useStyles();
 
@@ -60,6 +59,8 @@ const BookingForm = props => {
     handleFlatRateChange,
     updatedata,
     onCheckIn,
+    setData,
+
     isEdit
   } = props;
 
@@ -305,7 +306,6 @@ const BookingForm = props => {
       const err = errors.rooms.find(error => error.index === index);
       return err ? err.message : null;
     }
-
     return null;
   };
 
@@ -393,6 +393,17 @@ const BookingForm = props => {
   }
 
   // console.log("TESTTING",isEdit)
+  //Guest Name Add
+  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+
   return (
     <form onSubmit={event => onFormSubmit(event)} style={{marginBottom:"2rem"}}>
       {loading && <Loader color="#0088bc" />}
@@ -403,6 +414,18 @@ const BookingForm = props => {
         {FormUtils.renderInput(
           getInputArgObj("lastName", "Last Name", "text", shouldDisable)
         )}
+        <GuestNameDialog open={open} onClose={handleClose} shouldDisable={shouldDisable}/>
+        <IconButton>
+       <Fab
+                size="small"
+                color="primary"
+                aria-label="add"
+                onClick={handleClickOpen}
+                disabled={shouldDisable}
+             >
+                <AddIcon />
+         </Fab>
+         </IconButton>
         {FormUtils.renderInput(
           getInputArgObj(
             "contactNumber",

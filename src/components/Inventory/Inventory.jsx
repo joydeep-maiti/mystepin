@@ -53,7 +53,8 @@ const useStyles = makeStyles((theme) => ({
     borderBottom:"0px"
   },
   white:{
-    backgroundColor:"white"
+    backgroundColor:"white",
+    height:0
   },
   panel:{
     background:"white",
@@ -77,7 +78,7 @@ function Inventory() {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" color="default">
+      <AppBar position="static" color="default" style={{boxShadow:"none"}}>
         <Tabs
           value={value}
           onChange={handleChange}
@@ -92,13 +93,13 @@ function Inventory() {
           <Tab classes={{root:classes.normal,selected:classes.selected}} label="Item Three" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
-        <TabPanel classes={classes.panel} value={value} index={0} dir={theme.direction}>
+        <TabPanel style={{border:"2px solid #3f51b5",borderTop:"0px"}} value={value} index={0} dir={theme.direction}>
           Item One
         </TabPanel>
-        <TabPanel classes={classes.panel} value={value} index={1} dir={theme.direction}>
+        <TabPanel style={{border:"2px solid #3f51b5",borderTop:"0px"}} value={value} index={1} dir={theme.direction}>
           Item Two
         </TabPanel>
-        <TabPanel value={value} index={2} dir={theme.direction}>
+        <TabPanel vstyle={{border:"2px solid #3f51b5",borderTop:"0px"}} index={2} dir={theme.direction}>
           Item Three
         </TabPanel>
     </div>

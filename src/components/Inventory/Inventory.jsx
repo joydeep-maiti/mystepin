@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 // import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col } from 'reactstrap';
 // import classnames from 'classnames';
-
+import FoodInventory from './FoodInventory'
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -39,7 +39,7 @@ function a11yProps(index) {
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    width: 800,
+    width: 1000,
     marginLeft:"auto",
     marginRight:"auto"
   },
@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function Inventory() {
+function Inventory({ onSnackbarEvent }) {
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
@@ -87,13 +87,13 @@ function Inventory() {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab classes={{root:classes.normal,selected:classes.selected}} label="Item One" {...a11yProps(0)} />
-          <Tab classes={{root:classes.normal,selected:classes.selected}} label="Item Two" {...a11yProps(1)} />
-          <Tab classes={{root:classes.normal,selected:classes.selected}} label="Item Three" {...a11yProps(2)} />
+          <Tab classes={{root:classes.normal,selected:classes.selected}} label="FOOD" {...a11yProps(0)} />
+          <Tab classes={{root:classes.normal,selected:classes.selected}} label="LAUNDARY" {...a11yProps(1)} />
+          <Tab classes={{root:classes.normal,selected:classes.selected}} label="HOUSE KEEPING" {...a11yProps(2)} />
         </Tabs>
-      </AppBar>
+        </AppBar>
         <TabPanel classes={classes.panel} value={value} index={0} dir={theme.direction}>
-          Item One
+          <FoodInventory  onSnackbarEvent={onSnackbarEvent}/>
         </TabPanel>
         <TabPanel classes={classes.panel} value={value} index={1} dir={theme.direction}>
           Item Two

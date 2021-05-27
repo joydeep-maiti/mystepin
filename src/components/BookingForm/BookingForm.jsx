@@ -154,7 +154,6 @@ const BookingForm = props => {
     calculateBookingPrice(rates,data.rooms)
   }
 
-
   const calculateBookingPrice = (rates, rooms) => {
     console.log("--------shouldDisable",shouldDisable,data.roomCharges)
     // debugger
@@ -414,7 +413,7 @@ const BookingForm = props => {
         {FormUtils.renderInput(
           getInputArgObj("lastName", "Last Name", "text", shouldDisable)
         )}
-        <GuestNameDialog open={open} onClose={handleClose} shouldDisable={shouldDisable}/>
+        {/* <GuestNameDialog open={open} onClose={handleClose} shouldDisable={shouldDisable}/>
         <IconButton>
        <Fab
                 size="small"
@@ -425,7 +424,7 @@ const BookingForm = props => {
              >
                 <AddIcon />
          </Fab>
-         </IconButton>
+         </IconButton> */}
         {FormUtils.renderInput(
           getInputArgObj(
             "contactNumber",

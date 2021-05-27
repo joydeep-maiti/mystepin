@@ -18,10 +18,10 @@ export default {
     address: Joi.string()
       .required()
       .label("Address"),
-    checkIn: Joi.string()
+    checkIn: Joi.any()
       .required()
       .label("Check In"),
-    checkOut: Joi.string()
+    checkOut: Joi.any()
       .required()
       .label("Check Out"),
     adults: Joi.number()
@@ -60,10 +60,10 @@ export default {
     address: Joi.string()
       .required()
       .label("Address"),
-    checkIn: Joi.string()
+    checkIn: Joi.any()
       .required()
       .label("Check In"),
-    checkOut: Joi.string()
+    checkOut: Joi.any()
       .required()
       .label("Check Out"),
     adults: Joi.number()

@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 // import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col } from 'reactstrap';
 // import classnames from 'classnames';
-
+import FoodInventory from './FoodInventory'
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -39,7 +39,7 @@ function a11yProps(index) {
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    width: 800,
+    width: 1000,
     marginLeft:"auto",
     marginRight:"auto"
   },
@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function Inventory() {
+function Inventory({ onSnackbarEvent }) {
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
@@ -88,14 +88,14 @@ function Inventory() {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab classes={{root:classes.normal,selected:classes.selected}} label="Item One" {...a11yProps(0)} />
-          <Tab classes={{root:classes.normal,selected:classes.selected}} label="Item Two" {...a11yProps(1)} />
-          <Tab classes={{root:classes.normal,selected:classes.selected}} label="Item Three" {...a11yProps(2)} />
+          <Tab classes={{root:classes.normal,selected:classes.selected}} label="FOOD" {...a11yProps(0)} />
+          <Tab classes={{root:classes.normal,selected:classes.selected}} label="LAUNDARY" {...a11yProps(1)} />
+          <Tab classes={{root:classes.normal,selected:classes.selected}} label="HOUSE KEEPING" {...a11yProps(2)} />
         </Tabs>
-      </AppBar>
-        <TabPanel style={{border:"2px solid #3f51b5",borderTop:"0px"}} value={value} index={0} dir={theme.direction}>
-          Item One
-        </TabPanel>
+        </AppBar>
+        <TabPanel classes={classes.panel} value={value} index={0} dir={theme.direction}>
+          <FoodInventory  onSnackbarEvent={onSnackbarEvent}/>
+          </TabPanel>
         <TabPanel style={{border:"2px solid #3f51b5",borderTop:"0px"}} value={value} index={1} dir={theme.direction}>
           Item Two
         </TabPanel>
@@ -107,65 +107,7 @@ function Inventory() {
 }
 
 
-// const Example = (props) => {
-//   const [activeTab, setActiveTab] = useState('1');
 
-//   const toggle = tab => {
-//     if(activeTab !== tab) setActiveTab(tab);
-//   }
-
-//   return (
-//     <div>
-//       <Nav tabs>
-//         <NavItem>
-//           <NavLink
-//             className={classnames({ active: activeTab === '1' })}
-//             onClick={() => { toggle('1'); }}
-//           >
-//             Tab1
-//           </NavLink>
-//         </NavItem>
-//         <NavItem>
-//           <NavLink
-//             className={classnames({ active: activeTab === '2' })}
-//             onClick={() => { toggle('2'); }}
-//           >
-//             More Tabs
-//           </NavLink>
-//         </NavItem>
-//       </Nav>
-//       <TabContent activeTab={activeTab}>
-//         <TabPane tabId="1">
-//           <Row>
-//             <Col sm="12">
-//               <h4>Tab 1 Contents</h4>
-//             </Col>
-//           </Row>
-//         </TabPane>
-//         <TabPane tabId="2">
-//           <Row>
-//             <Col sm="6">
-//               <Card body>
-//                 <CardTitle>Special Title Treatment</CardTitle>
-//                 <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-//                 <Button>Go somewhere</Button>
-//               </Card>
-//             </Col>
-//             <Col sm="6">
-//               <Card body>
-//                 <CardTitle>Special Title Treatment</CardTitle>
-//                 <CardText>With supporting text below as a natural lead-in to additional content.</CardText>
-//                 <Button>Go somewhere</Button>
-//               </Card>
-//             </Col>
-//           </Row>
-//         </TabPane>
-//       </TabContent>
-//     </div>
-//   );
-// }
-
-// export default Example;
 
 
 export default Inventory;

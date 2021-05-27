@@ -95,7 +95,7 @@ function Inventory({ onSnackbarEvent }) {
         </AppBar>
         <TabPanel classes={classes.panel} value={value} index={0} dir={theme.direction}>
           <FoodInventory  onSnackbarEvent={onSnackbarEvent}/>
-      </AppBar>
+          </TabPanel>
         <TabPanel style={{border:"2px solid #3f51b5",borderTop:"0px"}} value={value} index={1} dir={theme.direction}>
           Item Two
         </TabPanel>

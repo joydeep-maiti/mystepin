@@ -101,7 +101,7 @@ const Configuration = ({onSnackbarEvent}) => {
           <Tab label="Taxes" {...a11yProps(4)} />
           <Tab label="Property Details" {...a11yProps(5)} />
           <Tab label="User Management" {...a11yProps(6)} />
-          <Tab label="Inventory Management" {...a11yProps(7)} />
+          <Tab label="Inventory" {...a11yProps(7)} />
         </Tabs>
       </AppBar>
       

@@ -42,6 +42,10 @@ import GuestSearch from '../GuestSearch/GuestSearch'
 import TodayCheckIn from '../TodayCheckIn/TodayCheckIn'
 import PrintBill from '../PrintBill/PrintBill'
 import CleanRoom from '../CleanRoom/CleanRoom'
+import ConfirmDialog from '../../common/ConfirmDialog/ConfirmDialog'
+// import constants from "../../utils/constants";
+
+const { success, error } = constants.snackbarVariants;
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -96,6 +100,8 @@ const Dashboard = props => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [view, setView] = React.useState('day');
+  const [openCleanRoomDlg, setOpenCleanRoomDlg] = React.useState(false);
+  const [roomToClean, setRoomToClean] = React.useState(null);
 
   const handleViewChange = (event) => {
     setView(event.target.value);
@@ -105,16 +111,16 @@ const Dashboard = props => {
   const classes = useStyles();
 
   useEffect(() => {
-    const getRooms = async () => {
-      // debugger
-      const allRooms = await roomService.getRooms();
-      allRooms.length > 0 && setAllRooms(allRooms);
-    };
-
     getRooms();
   }, []);
-
+  
+  const getRooms = async () => {
+    // debugger
+    const allRooms = await roomService.getRooms();
+    allRooms.length > 0 && setAllRooms(allRooms);
+  };
   const setBookings = async dateObj => {
+    getRooms()
     const allBookings = await bookingService.getBookings(dateObj);
     if (allBookings.length > 0) {
       setAllBookings(allBookings);
@@ -255,6 +261,7 @@ const Dashboard = props => {
     setSnackbarObj(snackbarObj);
     snackbarObj.resetBookings && setLoading(true);
     snackbarObj.resetBookings && setBookings(currentDateObj);
+    snackbarObj.resetBookings && getRooms();
   };
 
   const handleSnackBar = () => {
@@ -285,12 +292,15 @@ const Dashboard = props => {
 
     if (bookingObj) {
       if (bookingObj.status.checkedOut && !bookingObj.status.dirty) props.history.push("/report");
-      else if (bookingObj.status.checkedOut && bookingObj.status.dirty) props.history.push("/cleanroom", bookingObj);
+      else if (bookingObj.status.checkedOut && bookingObj.status.dirty) setOpenCleanRoomDlg(true);
       else props.history.push("/booking/viewBooking");
     } else props.history.push("/booking/newBooking");
   };
-  const handleCleanRoomRedirect = () => {
-    props.history.push("/cleanroom");
+  const handleCleanRoomRedirect = (room) => {
+    // props.history.push("/cleanroom");
+    console.log("handleCleanRoomRedirect",room)
+    setRoomToClean(room)
+    setOpenCleanRoomDlg(true)
   };
 
   const handleBookingView = (bookingObj) => {
@@ -304,6 +314,27 @@ const Dashboard = props => {
       }, 1000)
     }
   };
+
+  const cleanRoom = async()=>{
+    setLoading(true);
+    const res = await roomService.cleanRoom({rooms:[roomToClean]})
+    
+    setLoading(false);
+    if(res){
+      setOpenCleanRoomDlg(false)
+      const snakbarObj = { open: true, message:"Room Cleaned Successfully!", variant:success, resetBookings: false };
+      handleSnackbarEvent(snakbarObj)
+      setLoading(true);
+      setBookings(currentDateObj)
+    }
+  }
+  const handleCleanRoomSubmit = (val)=>{
+    if(val){
+      cleanRoom()
+    }else {
+      setOpenCleanRoomDlg(false)
+    }
+  }
 
   //Change color with Booking length
 
@@ -519,7 +550,7 @@ const Dashboard = props => {
                     currentDate={currentDate}
                     currentDateObj={currentDateObj}
                     onFormRedirect={handleFormRedirect}
-                    handleCleanRoomRedirect={handleCleanRoomRedirect}
+                    handleCleanRoomRedirect={(room)=>handleCleanRoomRedirect(room)}
                     allBookings={allBookings}
                     loading={loading}
                     onLoading={handleLoading}
@@ -534,6 +565,13 @@ const Dashboard = props => {
             <Redirect to="/" />
           </Switch>
         </div>
+        <ConfirmDialog 
+          openDialog={openCleanRoomDlg}
+          setOpenDialog={setOpenCleanRoomDlg}
+          title="Clean Room?"
+          message="The room will be cleaned"
+          handleSubmit={handleCleanRoomSubmit}
+        />
       </div>
     </SnackBarContext.Provider>
   );

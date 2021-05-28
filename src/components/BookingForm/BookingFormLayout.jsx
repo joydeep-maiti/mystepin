@@ -87,6 +87,7 @@ const BookingFormLayout = ({
   const [loading, setLoading] = useState(false);
   const [enableFileUpload, setEnableFileUpload] = useState(false);
   const [isCheckingIn, setIsCheckingIn] = useState(false);
+  const [isDirtyroomSelected, setIsDirtyroomSelected] = useState(false);
 
   useEffect(() => {
     const { pathname } = location;
@@ -98,6 +99,17 @@ const BookingFormLayout = ({
     fetchRoomTypes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+
+  useEffect(() => {
+    console.log("roomsinlayout", data.rooms)
+    let dirtyRooms = data.rooms.filter(el=>el.dirty)
+    if(dirtyRooms.length>0){
+      setIsDirtyroomSelected(true)
+    }else {
+      setIsDirtyroomSelected(false)
+    }
+  }, [data.rooms]);
 
   // useEffect(() => {
   //   const { pathname } = location;
@@ -168,8 +180,9 @@ const BookingFormLayout = ({
 
   const setNewBookingData = async () => {
     const newData = { ...data };
-    const { roomNumber, roomType, _id } = selectedRoom;
-    const room = { roomNumber, roomType, _id };
+    // const { roomNumber, roomType, _id } = selectedRoom;
+    // const room = { roomNumber, roomType, _id };
+    const room = { ...selectedRoom };
     newData.rooms.push(room);
     newData.checkIn = selectedDate;
     newData.checkOut = moment(selectedDate).add(1, 'days').toDate();
@@ -384,10 +397,13 @@ const BookingFormLayout = ({
     else if (name === "roomNumber")
       room = availableRooms.find(room => room.roomNumber === value);
 
+    // rooms[index] = {
+    //   roomNumber: room.roomNumber,
+    //   roomType: room.roomType,
+    //   _id: room._id
+    // };
     rooms[index] = {
-      roomNumber: room.roomNumber,
-      roomType: room.roomType,
-      _id: room._id
+      ...room
     };
     setData({ ...data, rooms });
     setErrors(newErrors);
@@ -538,6 +554,7 @@ const BookingFormLayout = ({
               onCancel={handleCancel}
               onCheckIn={handleCheckIn}
               onCheckOut={handleCheckOut}
+              isDirtyroomSelected={isDirtyroomSelected}
             />
           }
           content={
@@ -566,6 +583,7 @@ const BookingFormLayout = ({
               handleFlatRateChange={handleFlatRateChange}
               updatedata={(val)=>setData({...data,...val})}
               onCheckIn={handleCheckIn}
+              isDirtyroomSelected={isDirtyroomSelected}
             />
           }
           maxWidth={700}

@@ -239,7 +239,8 @@ const Calendar = props => {
           console.log("allroomsindex",allRooms[roomIndex],roomId)
           rows[index][i] = {
             room: { ...allRooms[roomIndex] },
-            handleRedirect: !!allRooms[roomIndex].inactive ? ()=>{} : !!allRooms[roomIndex].dirty?()=>props.handleCleanRoomRedirect(roomId):handleRedirect ,
+            handleRedirect: !!allRooms[roomIndex].inactive ? ()=>{} :handleRedirect ,
+            // handleRedirect: !!allRooms[roomIndex].inactive ? ()=>{} : !!allRooms[roomIndex].dirty?()=>props.handleCleanRoomRedirect(roomId):handleRedirect ,
             isInactive: !!allRooms[roomIndex].inactive,
             show: false
           }
@@ -265,7 +266,8 @@ const Calendar = props => {
       rows.forEach((row, index) => {
         rows[index] = new Array(dateObj.days + 1).fill({
           room: { ...allRooms[index] },
-          handleRedirect: !!allRooms[index].inactive ? ()=>{} : !!allRooms[index].dirty?()=>props.handleCleanRoomRedirect(allRooms[index]._id) :handleRedirect ,
+          handleRedirect: !!allRooms[index].inactive ? ()=>{} :handleRedirect ,
+          // handleRedirect: !!allRooms[index].inactive ? ()=>{} : !!allRooms[index].dirty?()=>props.handleCleanRoomRedirect(allRooms[index]._id) :handleRedirect ,
           isInactive: !!allRooms[index].inactive,
         });
         rows[index][0] = { room: { ...allRooms[index] }, show: true };

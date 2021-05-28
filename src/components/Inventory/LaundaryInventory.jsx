@@ -21,7 +21,7 @@ import Paper from '@material-ui/core/Paper';
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
 import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
 import Fuse from 'fuse.js'
-
+import { RiShirtLine } from 'react-icons/ri';
 const { success, error } = constants.snackbarVariants;
 const useStyles = makeStyles(theme => ({
     formGroup: {
@@ -52,14 +52,14 @@ const useStyles = makeStyles(theme => ({
       justifyContent: "center"
     }
   }));
-const FoodInventory = ({onSnackbarEvent}) => {
+const LaundaryInventory = ({onSnackbarEvent}) => {
     const classes = useStyles();
-    const [food,setFood] = useState({
+    const [laundary,setLaundary] = useState({
         item : '',
         unit : '',
         price: ''
     })
-  const [foods,setFoods] = useState([])
+  const [laundarys,setlaundarys] = useState([])
   const [loading, setLoading] = useState(false);
   const [editingRow, setEditingRow] = useState({});
 
@@ -70,9 +70,9 @@ const FoodInventory = ({onSnackbarEvent}) => {
     }, [])
 
    const fetchFoods = async () => {
-       const items = await foodInventory.getFoodItems();
+       const items = await foodInventory.getLaundaryItems();
        if(items){
-            setFoods(items);
+        setlaundarys(items);
             setLoading(false);           
        }
    }
@@ -87,8 +87,8 @@ const FoodInventory = ({onSnackbarEvent}) => {
 
   const handleChange = (event) => {
     setUnit(event.target.value);
-    setFood({
-        ...food,unit:event.target.value
+    setLaundary({
+        ...laundary,unit:event.target.value
     })
   };
   const handleEdit = (row) => {
@@ -112,7 +112,7 @@ const FoodInventory = ({onSnackbarEvent}) => {
    }
    const handleUpdate = async () => {
     setLoading(true);
-    const res = await foodInventory.updateFoodItem(editingRow);
+    const res = await foodInventory.updateLaundaryItem(editingRow);
     setLoading(false);
     if(res){
       openSnackBar("Item Updated Successfully", success);
@@ -130,7 +130,7 @@ const FoodInventory = ({onSnackbarEvent}) => {
   }
   const handleDelete = async (row) => {
     setLoading(true);
-    const res = await foodInventory.deleteFoodItem(row);
+    const res = await foodInventory.deleteLaundaryItem(row);
     setLoading(false);
     if(res){
       openSnackBar("Item Deleted Successfully", success);
@@ -141,20 +141,20 @@ const FoodInventory = ({onSnackbarEvent}) => {
     //handleSubmit
       const handleSubmit = async(event)=>{
           event.preventDefault();
-            if(food){
+            if(laundary){
               const options = {
                 includeScore: true,
                 threshold : 0.1,
                 keys: ['item']
               }
-              const fuse = new Fuse(foods, options)
-              const result = fuse.search(food.item)
+              const fuse = new Fuse(laundarys, options)
+              const result = fuse.search(laundary.item)
              if(result){
               openSnackBar("Item Already Exist", error);
               }
               else{
-              console.log("BEFORE Response",food)           
-             const response = await foodInventory.addFoodItem(food);
+              console.log("BEFORE Response",laundary)           
+             const response = await foodInventory.addLaundaryItem(laundary);
                 console.log("After Response",response)
                 if(response){
                 openSnackBar("Item Added Successfully", success);
@@ -164,16 +164,16 @@ const FoodInventory = ({onSnackbarEvent}) => {
                 openSnackBar("Error Occured", error);
               }
             }
-            console.log("Food",food)
+            console.log("Food",laundary)
           }
     }
     return (
         <div>
-        <DialogTitle><FastfoodIcon/> Add Menu</DialogTitle>
+        <DialogTitle><RiShirtLine/> Add Item</DialogTitle>
         <DialogContent className={classes.roomsDiv}>
         <form className={classes.formGroup} autoComplete="off">
-          <TextField required id="standard-required" label="Item Name" name="season" value={food.item} 
-          onChange={(event)=>setFood({...food,item: event.target.value})} />
+          <TextField required id="standard-required" label="Item Name" name="season" value={laundary.item} 
+          onChange={(event)=>setLaundary({...laundary,item: event.target.value})} />
             <FormControl>
               <InputLabel id="demo-simple-select-label">Unit</InputLabel>
               <Select
@@ -182,20 +182,15 @@ const FoodInventory = ({onSnackbarEvent}) => {
                 value={unit}
                 onChange={handleChange}
                 required
-              >
-                      <MenuItem value="KG">KG</MenuItem>
-                      <MenuItem value="GRAM">GRAM</MenuItem>
-                      <MenuItem value="LTR">LTR</MenuItem>
-                      <MenuItem value="ML">ML</MenuItem>
+              >    
                       <MenuItem value="PIECE">PIECE</MenuItem>
-                      <MenuItem value="PORTION">PORTION</MenuItem>
-                      <MenuItem value="BOX">BOX</MenuItem>
-
+                      <MenuItem value="GRAM">PAIR</MenuItem>
+                      <MenuItem value="LTR">SET</MenuItem>
                      </Select>
             </FormControl>
           <TextField required id="standard-required" label="Price" name="season"
-          value={food.price}
-          onChange={(event)=>setFood({...food,price: event.target.value})}/>
+          value={laundary.price}
+          onChange={(event)=>setLaundary({...laundary,price: event.target.value})}/>
           <Button 
           type="submit" 
           variant="contained" 
@@ -219,7 +214,7 @@ const FoodInventory = ({onSnackbarEvent}) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {foods.map((row,i) => (
+              {laundarys.map((row,i) => (
                 <TableRow key={row._id}>
                   <TableCell component="th" scope="row">
                     {i+1}
@@ -274,4 +269,4 @@ const FoodInventory = ({onSnackbarEvent}) => {
     )
 }
 
-export default FoodInventory
+export default LaundaryInventory

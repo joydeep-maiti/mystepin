@@ -11,6 +11,7 @@ import utils from "../../utils/utils";
 import FormUtils from "../../utils/formUtils";
 import reportOptions from '../../services/reportOptions'
 import collectionReport from '../../services/collectionReport'
+import taxCollectionReport from '../../services/taxCollectionReport'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -80,8 +81,15 @@ const CollectionReport = () => {
       let currentD = moment(currentDate).format('yyyy-MM-DD')
       console.log("Start",startD)
       console.log("End",currentD)
-       const options = await collectionReport.getCollectionReport(startD,currentD,collectionCategory);
-       console.log("Hari",options)
+      if(collectionCategory === "Tax Collection")
+      {
+        var options = await taxCollectionReport.getTaxCollectionReport(startD,currentD,collectionCategory)
+      }
+       else{
+        var options = await collectionReport.getCollectionReport(startD,currentD,collectionCategory)
+       
+       }
+       console.log("Data",options)
        if(options){
         if(collectionCategory === "Total Collection"){
         let data = options.map(option=>{
@@ -105,30 +113,37 @@ const CollectionReport = () => {
        else if(collectionCategory === "Advance"){
           let data = options.map(option=>{
             return([
-             ` ${option.billNo} \n ${option.name}` ,
+             option.billNo,
               option.billingDate,
-              option.totalAmount,
-              option.discount,
+              option.name,
               option.grandTotal, 
-              option.advance,
-              option.due,
-              option.status
+              option.advance
             ])
          
           })
         exporttoPDF(data);
           }
+          else if(collectionCategory === "Tax Collection"){
+            let data = options.map(option=>{
+              return([
+               option.billNo,
+              option.billingDate,
+              option.name,
+                option.roomrate,
+                option.tax,
+              ])
+           
+            })
+          exporttoPDF(data);
+            }
           else if(collectionCategory === "Card"){
             let data = options.map(option=>{
               return([
-               ` ${option.billNo} \n ${option.name}` ,
+                option.billNo,
                 option.billingDate,
-                option.totalAmount,
-                option.discount,
+                option.name,
                 option.grandTotal, 
-                option.card,
-                option.due,
-                option.status
+                option.card
               ])
            
             })
@@ -138,14 +153,11 @@ const CollectionReport = () => {
             else if(collectionCategory === "Cash"){
               let data = options.map(option=>{
                 return([
-                 ` ${option.billNo} \n ${option.name}` ,
+                  option.billNo,
                   option.billingDate,
-                  option.totalAmount,
-                  option.discount,
+                  option.name,
                   option.grandTotal, 
-                  option.cash,
-                  option.due,
-                  option.status
+                  option.cash
                 ])
              
               })
@@ -154,14 +166,11 @@ const CollectionReport = () => {
               else{
                 let data = options.map(option=>{
                   return([
-                   ` ${option.billNo} \n ${option.name}` ,
+                    option.billNo,
                     option.billingDate,
-                    option.totalAmount,
-                    option.discount,
+                    option.name,
                     option.grandTotal, 
-                    option.wallet,
-                    option.due,
-                    option.status
+                    option.wallet
                   ])
                 })
               exporttoPDF(data);
@@ -180,7 +189,7 @@ const CollectionReport = () => {
           let title = `${collectionCategory} Report`;
           let headers = [[`Bill No`,"Bill Date","Total Amount","Discount","Grant Total","Advance","Cash","Card","Wallet","Due","Status"]];
           if(collectionCategory === "Advance"){
-            headers = [[`Bill No\nName`,"Bill Date","Total Amount","Discount","Grant Total","Advance","Due","Status"]];
+            headers = [["Bill No","Bill Date","Name","Grant Total","Advance"]];
           }
           else if(collectionCategory === "Total Collection")
           {
@@ -188,11 +197,16 @@ const CollectionReport = () => {
           }
           else if(collectionCategory === "Cash")
           {
-           headers = [[`Bill No\nName`,"Bill Date","Total Amount","Discount","Grant Total","Cash","Due","Status"]];
+           headers = [["Bill No","Bill Date","Name","Grant Total","Cash"]];
           }
           else if(collectionCategory === "Card")
           {
-           headers = [[`Bill No\nName`,"Bill Date","Total Amount","Discount","Grant Total","Card","Due","Status"]];
+           headers = [["Bill No","Bill Date","Name","Grant Total","Card"]];
+        
+          }
+          else if(collectionCategory === "Tax Collection")
+          {
+           headers = [["Bill No","Bill Date","Name","Room Rate","Tax"]];
         
           }
           else 

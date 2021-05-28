@@ -18,6 +18,7 @@ import RateMaster from "../RateMaster/RateMaster";
 import PropertyDetails from "../PropertyDetails/PropertyDetails";
 import Users from "../Users/Users";
 import Inventory from "../Inventory/Inventory";
+import AccessMngmt from "../AccessMngmt/AccessMngmt";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -102,6 +103,7 @@ const Configuration = ({onSnackbarEvent}) => {
           <Tab label="Property Details" {...a11yProps(5)} />
           <Tab label="User Management" {...a11yProps(6)} />
           <Tab label="Inventory" {...a11yProps(7)} />
+          <Tab label="Access" {...a11yProps(78)} />
         </Tabs>
       </AppBar>
       
@@ -128,6 +130,9 @@ const Configuration = ({onSnackbarEvent}) => {
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={7}>
         <Inventory onSnackbarEvent={onSnackbarEvent} />
+      </TabPanel>
+      <TabPanel className={classes.tabDiv} value={value} index={8}>
+        <AccessMngmt onSnackbarEvent={onSnackbarEvent} />
       </TabPanel>
     </div>
   );

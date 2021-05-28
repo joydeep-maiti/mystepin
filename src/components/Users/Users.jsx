@@ -31,14 +31,6 @@ import Select from '@material-ui/core/Select';
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
 import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
 
-const roomTypes = [
-  { label: "AC", value: "AC" },
-  { label: "Non AC", value: "Non AC" },
-  { label: "Deluxe", value: "Deluxe" },
-  { label: "Suite", value: "Suite" },
-  { label: "Dormitory", value: "Dormitory" }
-];
-
 const useStyles = makeStyles(theme => ({
   formGroup: {
     display: "flex",
@@ -195,7 +187,7 @@ const Users = ({ onClose }) => {
               id="demo-simple-select"
               required
               name="role"
-              value={newDoc.roomType}
+              value={newDoc.role}
               onChange={handleInput}
               >
               {roles.map(el=><MenuItem value={el.value}>{el.label}</MenuItem>)}

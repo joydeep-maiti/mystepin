@@ -21,6 +21,8 @@ import Paper from '@material-ui/core/Paper';
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined';
 import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
 import Fuse from 'fuse.js'
+import { GiBroom } from 'react-icons/gi';
+
 
 const { success, error } = constants.snackbarVariants;
 const useStyles = makeStyles(theme => ({
@@ -52,14 +54,14 @@ const useStyles = makeStyles(theme => ({
       justifyContent: "center"
     }
   }));
-const FoodInventory = ({onSnackbarEvent}) => {
+const HouseKeepingInventory = ({onSnackbarEvent}) => {
     const classes = useStyles();
-    const [food,setFood] = useState({
+    const [houseKeeping,sethouseKeeping] = useState({
         item : '',
         unit : '',
         price: ''
     })
-  const [foods,setFoods] = useState([])
+  const [houseKeepings,setHouseKeepings] = useState([])
   const [loading, setLoading] = useState(false);
   const [editingRow, setEditingRow] = useState({});
 
@@ -70,9 +72,9 @@ const FoodInventory = ({onSnackbarEvent}) => {
     }, [])
 
    const fetchFoods = async () => {
-       const items = await foodInventory.getFoodItems();
+       const items = await foodInventory.getHouseKeepingItems();
        if(items){
-            setFoods(items);
+        setHouseKeepings(items);
             setLoading(false);           
        }
    }
@@ -87,8 +89,8 @@ const FoodInventory = ({onSnackbarEvent}) => {
 
   const handleChange = (event) => {
     setUnit(event.target.value);
-    setFood({
-        ...food,unit:event.target.value
+    sethouseKeeping({
+        ...houseKeeping,unit:event.target.value
     })
   };
   const handleEdit = (row) => {
@@ -112,7 +114,7 @@ const FoodInventory = ({onSnackbarEvent}) => {
    }
    const handleUpdate = async () => {
     setLoading(true);
-    const res = await foodInventory.updateFoodItem(editingRow);
+    const res = await foodInventory.updateHouseKeepingItem(editingRow);
     setLoading(false);
     if(res){
       openSnackBar("Item Updated Successfully", success);
@@ -130,7 +132,7 @@ const FoodInventory = ({onSnackbarEvent}) => {
   }
   const handleDelete = async (row) => {
     setLoading(true);
-    const res = await foodInventory.deleteFoodItem(row);
+    const res = await foodInventory.deleteHouseKeepingItem(row);
     setLoading(false);
     if(res){
       openSnackBar("Item Deleted Successfully", success);
@@ -141,20 +143,20 @@ const FoodInventory = ({onSnackbarEvent}) => {
     //handleSubmit
       const handleSubmit = async(event)=>{
           event.preventDefault();
-            if(food){
+            if(houseKeeping){
               const options = {
                 includeScore: true,
                 threshold : 0.1,
                 keys: ['item']
               }
-              const fuse = new Fuse(foods, options)
-              const result = fuse.search(food.item)
+              const fuse = new Fuse(houseKeepings, options)
+              const result = fuse.search(houseKeeping.item)
              if(result){
               openSnackBar("Item Already Exist", error);
               }
               else{
-              console.log("BEFORE Response",food)           
-             const response = await foodInventory.addFoodItem(food);
+              console.log("BEFORE Response",houseKeeping)           
+             const response = await foodInventory.addHouseKeepingItem(houseKeeping);
                 console.log("After Response",response)
                 if(response){
                 openSnackBar("Item Added Successfully", success);
@@ -164,16 +166,16 @@ const FoodInventory = ({onSnackbarEvent}) => {
                 openSnackBar("Error Occured", error);
               }
             }
-            console.log("Food",food)
+            console.log("Food",houseKeeping)
           }
     }
     return (
         <div>
-        <DialogTitle><FastfoodIcon/> Add Menu</DialogTitle>
+        <DialogTitle><GiBroom/> Add Item</DialogTitle>
         <DialogContent className={classes.roomsDiv}>
         <form className={classes.formGroup} autoComplete="off">
-          <TextField required id="standard-required" label="Item Name" name="season" value={food.item} 
-          onChange={(event)=>setFood({...food,item: event.target.value})} />
+          <TextField required id="standard-required" label="Item Name" name="season" value={houseKeeping.item} 
+          onChange={(event)=>sethouseKeeping({...houseKeeping,item: event.target.value})} />
             <FormControl>
               <InputLabel id="demo-simple-select-label">Unit</InputLabel>
               <Select
@@ -183,19 +185,14 @@ const FoodInventory = ({onSnackbarEvent}) => {
                 onChange={handleChange}
                 required
               >
-                      <MenuItem value="KG">KG</MenuItem>
-                      <MenuItem value="GRAM">GRAM</MenuItem>
-                      <MenuItem value="LTR">LTR</MenuItem>
-                      <MenuItem value="ML">ML</MenuItem>
-                      <MenuItem value="PIECE">PIECE</MenuItem>
-                      <MenuItem value="PORTION">PORTION</MenuItem>
-                      <MenuItem value="BOX">BOX</MenuItem>
-
+                      <MenuItem value="KG">BOX</MenuItem>
+                      <MenuItem value="GRAM">PACKET</MenuItem>
+                      <MenuItem value="LTR">ITEM</MenuItem>
                      </Select>
             </FormControl>
           <TextField required id="standard-required" label="Price" name="season"
-          value={food.price}
-          onChange={(event)=>setFood({...food,price: event.target.value})}/>
+          value={houseKeeping.price}
+          onChange={(event)=>sethouseKeeping({...houseKeeping,price: event.target.value})}/>
           <Button 
           type="submit" 
           variant="contained" 
@@ -219,7 +216,7 @@ const FoodInventory = ({onSnackbarEvent}) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {foods.map((row,i) => (
+              {houseKeepings.map((row,i) => (
                 <TableRow key={row._id}>
                   <TableCell component="th" scope="row">
                     {i+1}
@@ -274,4 +271,4 @@ const FoodInventory = ({onSnackbarEvent}) => {
     )
 }
 
-export default FoodInventory
+export default HouseKeepingInventory

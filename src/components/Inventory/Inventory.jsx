@@ -8,6 +8,8 @@ import Box from '@material-ui/core/Box';
 // import { TabContent, TabPane, Nav, NavItem, NavLink, Card, Button, CardTitle, CardText, Row, Col } from 'reactstrap';
 // import classnames from 'classnames';
 import FoodInventory from './FoodInventory'
+import LaundaryInventory from './LaundaryInventory';
+import HouseKeepingInventory from './HouseKeepingInventory';
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -95,12 +97,12 @@ function Inventory({ onSnackbarEvent }) {
         </AppBar>
         <TabPanel classes={classes.panel} value={value} index={0} dir={theme.direction}>
           <FoodInventory  onSnackbarEvent={onSnackbarEvent}/>
-          </TabPanel>
+        </TabPanel>
         <TabPanel style={{border:"2px solid #3f51b5",borderTop:"0px"}} value={value} index={1} dir={theme.direction}>
-          Item Two
+          <LaundaryInventory onSnackbarEvent={onSnackbarEvent} />
         </TabPanel>
         <TabPanel style={{border:"2px solid #3f51b5",borderTop:"0px"}} value={value} index={2} dir={theme.direction}>
-          Item Three
+          <HouseKeepingInventory onSnackbarEvent={onSnackbarEvent}/>
         </TabPanel>
     </div>
   );

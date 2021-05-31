@@ -107,7 +107,7 @@ async function deleteLaundaryItem(data) {
 // ********************************************* House Keeping ***************************************************************
 async function getHouseKeepingItems() {
   try {
-    const { data: items } = await http.get(`${http.baseUrl}/laundaryInventory`);
+    const { data: items } = await http.get(`${http.baseUrl}/houseKeepingInventory`);
     console.log("item response",items)
     return items;
   } catch (error) {
@@ -118,7 +118,7 @@ async function getHouseKeepingItems() {
 async function addHouseKeepingItem(data) {
   try {
     const response = await http.post(
-      `${http.baseUrl}/laundaryInventory`,
+      `${http.baseUrl}/houseKeepingInventory`,
       data
     );
     return response
@@ -131,7 +131,7 @@ async function addHouseKeepingItem(data) {
 async function updateHouseKeepingItem(data) {
   try {
     const response = await http.patch(
-      `${http.baseUrl}/laundaryInventory/`,
+      `${http.baseUrl}/houseKeepingInventory/`,
       data
     );
     if(response.status === 200)
@@ -146,7 +146,7 @@ async function updateHouseKeepingItem(data) {
 async function deleteHouseKeepingItem(data) {
   try {
     const response = await http.delete(
-      `${http.baseUrl}/laundaryInventory/${data._id}`
+      `${http.baseUrl}/houseKeepingInventory/${data._id}`
     );
     if(response.status === 200)
       return true

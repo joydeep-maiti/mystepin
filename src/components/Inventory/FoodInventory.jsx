@@ -4,7 +4,7 @@ import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import TextField from '@material-ui/core/TextField';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import { DialogContent,DialogTitle,Typography,Button,makeStyles} from "@material-ui/core";
-import foodInventory from '../../services/foodInventory';
+import inventory from '../../services/inventory';
 import constants from "../../utils/constants";
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -70,7 +70,7 @@ const FoodInventory = ({onSnackbarEvent}) => {
     }, [])
 
    const fetchFoods = async () => {
-       const items = await foodInventory.getFoodItems();
+       const items = await inventory.getFoodItems();
        if(items){
             setFoods(items);
             setLoading(false);           
@@ -112,7 +112,7 @@ const FoodInventory = ({onSnackbarEvent}) => {
    }
    const handleUpdate = async () => {
     setLoading(true);
-    const res = await foodInventory.updateFoodItem(editingRow);
+    const res = await inventory.updateFoodItem(editingRow);
     setLoading(false);
     if(res){
       openSnackBar("Item Updated Successfully", success);
@@ -130,7 +130,7 @@ const FoodInventory = ({onSnackbarEvent}) => {
   }
   const handleDelete = async (row) => {
     setLoading(true);
-    const res = await foodInventory.deleteFoodItem(row);
+    const res = await inventory.deleteFoodItem(row);
     setLoading(false);
     if(res){
       openSnackBar("Item Deleted Successfully", success);
@@ -144,17 +144,18 @@ const FoodInventory = ({onSnackbarEvent}) => {
             if(food){
               const options = {
                 includeScore: true,
-                threshold : 0.1,
+                threshold : 0.5,
                 keys: ['item']
               }
               const fuse = new Fuse(foods, options)
               const result = fuse.search(food.item)
-             if(result){
+              console.log("result of fuse",result)
+             if(result.length !== 0){
               openSnackBar("Item Already Exist", error);
               }
               else{
               console.log("BEFORE Response",food)           
-             const response = await foodInventory.addFoodItem(food);
+             const response = await inventory.addFoodItem(food);
                 console.log("After Response",response)
                 if(response){
                 openSnackBar("Item Added Successfully", success);
@@ -164,7 +165,6 @@ const FoodInventory = ({onSnackbarEvent}) => {
                 openSnackBar("Error Occured", error);
               }
             }
-            console.log("Food",food)
           }
     }
     return (

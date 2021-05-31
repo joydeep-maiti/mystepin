@@ -4,7 +4,7 @@ import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import TextField from '@material-ui/core/TextField';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import { DialogContent,DialogTitle,Typography,Button,makeStyles} from "@material-ui/core";
-import foodInventory from '../../services/foodInventory';
+import inventory from '../../services/inventory';
 import constants from "../../utils/constants";
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -70,7 +70,7 @@ const LaundaryInventory = ({onSnackbarEvent}) => {
     }, [])
 
    const fetchFoods = async () => {
-       const items = await foodInventory.getLaundaryItems();
+       const items = await inventory.getLaundaryItems();
        if(items){
         setlaundarys(items);
             setLoading(false);           
@@ -84,7 +84,6 @@ const LaundaryInventory = ({onSnackbarEvent}) => {
 
   //Handle Changes
   const [unit, setUnit] = React.useState('');
-
   const handleChange = (event) => {
     setUnit(event.target.value);
     setLaundary({
@@ -102,7 +101,7 @@ const LaundaryInventory = ({onSnackbarEvent}) => {
   const handleUpdateSelect=(event)=>{
     setEditingRow({
       ...editingRow,
-      unit :event.target.value
+      unit : event.target.value
     })
   }
 
@@ -112,7 +111,7 @@ const LaundaryInventory = ({onSnackbarEvent}) => {
    }
    const handleUpdate = async () => {
     setLoading(true);
-    const res = await foodInventory.updateLaundaryItem(editingRow);
+    const res = await inventory.updateLaundaryItem(editingRow);
     setLoading(false);
     if(res){
       openSnackBar("Item Updated Successfully", success);
@@ -130,7 +129,7 @@ const LaundaryInventory = ({onSnackbarEvent}) => {
   }
   const handleDelete = async (row) => {
     setLoading(true);
-    const res = await foodInventory.deleteLaundaryItem(row);
+    const res = await inventory.deleteLaundaryItem(row);
     setLoading(false);
     if(res){
       openSnackBar("Item Deleted Successfully", success);
@@ -149,12 +148,12 @@ const LaundaryInventory = ({onSnackbarEvent}) => {
               }
               const fuse = new Fuse(laundarys, options)
               const result = fuse.search(laundary.item)
-             if(result){
+             if(result.length !== 0){
               openSnackBar("Item Already Exist", error);
               }
               else{
               console.log("BEFORE Response",laundary)           
-             const response = await foodInventory.addLaundaryItem(laundary);
+             const response = await inventory.addLaundaryItem(laundary);
                 console.log("After Response",response)
                 if(response){
                 openSnackBar("Item Added Successfully", success);
@@ -163,7 +162,7 @@ const LaundaryInventory = ({onSnackbarEvent}) => {
               }else {
                 openSnackBar("Error Occured", error);
               }
-            }
+             }
             console.log("Food",laundary)
           }
     }
@@ -184,8 +183,8 @@ const LaundaryInventory = ({onSnackbarEvent}) => {
                 required
               >    
                       <MenuItem value="PIECE">PIECE</MenuItem>
-                      <MenuItem value="GRAM">PAIR</MenuItem>
-                      <MenuItem value="LTR">SET</MenuItem>
+                      <MenuItem value="PAIR">PAIR</MenuItem>
+                      <MenuItem value="SET">SET</MenuItem>
                      </Select>
             </FormControl>
           <TextField required id="standard-required" label="Price" name="season"
@@ -234,13 +233,9 @@ const LaundaryInventory = ({onSnackbarEvent}) => {
                       onChange={handleUpdateSelect}
                       required
                        >
-                      <MenuItem value="KG">KG</MenuItem>
-                      <MenuItem value="GRAM">GRAM</MenuItem>
-                      <MenuItem value="LTR">LTR</MenuItem>
-                      <MenuItem value="ML">ML</MenuItem>
-                      <MenuItem value="PIECE">PIECE</MenuItem>
-                      <MenuItem value="PORTION">PORTION</MenuItem>
                       <MenuItem value="BOX">BOX</MenuItem>
+                      <MenuItem value="PACKET">PACKET</MenuItem>
+                      <MenuItem value="ITEM">ITEM</MenuItem>
                      </Select>
                      </FormControl>
                   </TableCell>}
@@ -248,7 +243,7 @@ const LaundaryInventory = ({onSnackbarEvent}) => {
                   {editingRow._id === row._id && <TableCell align="center">
                     <TextField required id="standard-required" label="price" name="price" value={editingRow.price} onChange={handleInputChange}/>
                   </TableCell>}
-                 
+              
                   {editingRow._id !== row._id && <TableCell align="center">
                     {row._id!=="5d3edc251c9d4400006bc08e" && <EditOutlinedIcon style={{cursor:"pointer"}} onClick={()=>handleEdit(row)}/>}
                   </TableCell>}

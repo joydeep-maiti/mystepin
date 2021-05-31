@@ -113,7 +113,7 @@ const Dashboard = props => {
   useEffect(() => {
     getRooms();
   }, []);
-  
+
   const getRooms = async () => {
     // debugger
     const allRooms = await roomService.getRooms();
@@ -283,12 +283,16 @@ const Dashboard = props => {
   };
 
   const handleFormRedirect = (bookingObj, roomObj, selectedDate) => {
+    console.log("handleCleanRoomRedirect", roomObj)
     const selectedBooking = bookingObj && { ...bookingObj };
     const selectedRoom = { ...roomObj };
     setSelectedBooking(selectedBooking);
     setSelectedRoom(selectedRoom);
     setSelectedDate(selectedDate);
-
+    if (roomObj.dirty) {
+      handleCleanRoomRedirect(roomObj._id)
+      return
+    }
     if (bookingObj) {
       if (bookingObj.status.checkedOut && !bookingObj.status.dirty) props.history.push("/report");
       else if (bookingObj.status.checkedOut && bookingObj.status.dirty) setOpenCleanRoomDlg(true);
@@ -297,7 +301,7 @@ const Dashboard = props => {
   };
   const handleCleanRoomRedirect = (room) => {
     // props.history.push("/cleanroom");
-    console.log("handleCleanRoomRedirect",room)
+    console.log("handleCleanRoomRedirect", room)
     setRoomToClean(room)
     setOpenCleanRoomDlg(true)
   };
@@ -314,25 +318,35 @@ const Dashboard = props => {
     }
   };
 
-  const cleanRoom = async()=>{
+  const cleanRoom = async () => {
     setLoading(true);
-    const res = await roomService.cleanRoom({rooms:[roomToClean]})
-    
+    const res = await roomService.cleanRoom({ rooms: [roomToClean] })
+
     setLoading(false);
-    if(res){
+    if (res) {
       setOpenCleanRoomDlg(false)
-      const snakbarObj = { open: true, message:"Room Cleaned Successfully!", variant:success, resetBookings: false };
+      const snakbarObj = { open: true, message: "Room Cleaned Successfully!", variant: success, resetBookings: false };
       handleSnackbarEvent(snakbarObj)
       setLoading(true);
       setBookings(currentDateObj)
     }
   }
-  const handleCleanRoomSubmit = (val)=>{
-    if(val){
-      cleanRoom()
-    }else {
-      setOpenCleanRoomDlg(false)
+  const handleCleanRoomSubmit = (val) => {
+    switch (val) {
+      case "close": setOpenCleanRoomDlg(false);
+        break;
+      case "book": setOpenCleanRoomDlg(false)
+        if (selectedBooking) {
+          props.history.push("/booking/viewBooking");
+        } else props.history.push("/booking/newBooking");
+        break;
+      case "clean": cleanRoom()
     }
+    // if(val){
+    //   cleanRoom()
+    // }else {
+    //   setOpenCleanRoomDlg(false)
+    // }
   }
 
   //Change color with Booking length
@@ -549,7 +563,7 @@ const Dashboard = props => {
                     currentDate={currentDate}
                     currentDateObj={currentDateObj}
                     onFormRedirect={handleFormRedirect}
-                    handleCleanRoomRedirect={(room)=>handleCleanRoomRedirect(room)}
+                    handleCleanRoomRedirect={(room) => handleCleanRoomRedirect(room)}
                     allBookings={allBookings}
                     loading={loading}
                     onLoading={handleLoading}
@@ -564,12 +578,13 @@ const Dashboard = props => {
             <Redirect to="/" />
           </Switch>
         </div>
-        <ConfirmDialog 
+        <ConfirmDialog
           openDialog={openCleanRoomDlg}
           setOpenDialog={setOpenCleanRoomDlg}
-          title="Clean Room?"
-          message="The room will be cleaned"
+          title="Clean Room or Book Room?"
+          message="Click on Clean button to clean the room and Clicl on Book button to proceed with booking."
           handleSubmit={handleCleanRoomSubmit}
+          cleanModal={true}
         />
       </div>
     </SnackBarContext.Provider>

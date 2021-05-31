@@ -11,6 +11,7 @@ import utils from "../../utils/utils";
 import FormUtils from "../../utils/formUtils";
 import reportOptions from '../../services/reportOptions'
 import collectionReport from '../../services/collectionReport'
+import taxCollectionReport from '../../services/taxCollectionReport'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -80,14 +81,31 @@ const CollectionReport = () => {
       let currentD = moment(currentDate).format('yyyy-MM-DD')
       console.log("Start",startD)
       console.log("End",currentD)
-       const options = await collectionReport.getCollectionReport(startD,currentD,collectionCategory);
-       console.log("Hari",options)
+      if(collectionCategory === "Tax Collection")
+      {
+        var options = await taxCollectionReport.getTaxCollectionReport(startD,currentD,collectionCategory)
+      }
+       else{
+        var options = await collectionReport.getCollectionReport(startD,currentD,collectionCategory)
+       
+       }
+       console.log("Data",options)
        if(options){
         if(collectionCategory === "Total Collection"){
-        let data = options.map(option=>{
+          let total=[0,0,0,0,0,0,0,0];
+          let data = options.map(option=>{
+            let billingDate = moment(option.billingDate).format('D-MMMM-YYYY');
+            total[0] += option.totalAmount ? parseInt(option.totalAmount) : 0;
+            total[1] += option.discount ? parseInt(option.discount.toFixed(2)) : 0;
+            total[2] += option.grandTotal ? parseInt(option.grandTotal) : 0;
+            total[3] += option.advance ? parseInt(option.advance) : 0;
+            total[4] += option.cash ? parseInt(option.cash) : 0;
+            total[5] += option.card ? parseInt(option.card) : 0;
+            total[6] += option.wallet ? parseInt(option.wallet) : 0; 
+            total[7] += option.due ? parseInt(option.due) : 0; 
           return([
            ` ${option.billNo} \n ${option.name}` ,
-            option.billingDate,
+            billingDate,
             option.totalAmount,
             option.discount,
             option.grandTotal, 
@@ -98,78 +116,133 @@ const CollectionReport = () => {
             option.due,
             option.status
           ])
-       
         })
-      exporttoPDF(data);
+        let data2 =[]
+      console.log("total Array",total)
+      data2.push(["","Total"],["Total Amount :",`${total[0]}`],["Discount :",`${total[1]}`],
+                 ["Grand Total :",`${total[2]}`],["Advance :",`${total[3]}`],
+                 ["Cash :",`${total[4]}`],["Card :",`${total[5]}`],
+                 ["UPI :",`${total[6]}`],["Due :",`${total[7]}`])
+      console.log("Data2",data2)
+    exporttoPDF(data,data2);
+      //exporttoPDF(data);
         }
        else if(collectionCategory === "Advance"){
-          let data = options.map(option=>{
+        let total=[0,0];
+        let data = options.map(option=>{
+          let billingDate = moment(option.billingDate).format('D-MMMM-YYYY');
+          total[0] += option.grandTotal ? parseInt(option.grandTotal) : 0;
+          total[1] += option.advance ? parseInt(option.advance) : 0;
             return([
-             ` ${option.billNo} \n ${option.name}` ,
-              option.billingDate,
-              option.totalAmount,
-              option.discount,
+             option.billNo,
+              billingDate,
+              option.name,
               option.grandTotal, 
-              option.advance,
-              option.due,
-              option.status
+              option.advance
             ])
          
           })
-        exporttoPDF(data);
+          let data2 =[]
+          console.log("total Array",total)
+          data2.push(["","Total"],
+                     ["Grand Total :",`${total[0]}`],["Advance :",`${total[1]}`])
+          console.log("Data2",data2)
+        exporttoPDF(data,data2);
           }
-          else if(collectionCategory === "Card"){
-            let data = options.map(option=>{
+          else if(collectionCategory === "Tax Collection"){
+            let total=[0,0];
+        let data = options.map(option=>{
+          let billingDate = moment(option.billingDate).format('D-MMMM-YYYY');
+          total[0] += option.roomrate ? parseInt(option.roomrate) : 0;
+          total[1] += option.tax ? parseInt(option.tax) : 0;
               return([
-               ` ${option.billNo} \n ${option.name}` ,
-                option.billingDate,
-                option.totalAmount,
-                option.discount,
-                option.grandTotal, 
-                option.card,
-                option.due,
-                option.status
+               option.billNo,
+              billingDate,
+              option.name,
+                option.roomrate,
+                option.tax,
               ])
            
             })
-            
-          exporttoPDF(data);
+            let data2 =[]
+          console.log("total Array",total)
+          data2.push(["","Total"],
+                     ["Room Rate :",`${total[0]}`],["Tax :",`${total[1]}`])
+          console.log("Data2",data2)
+          exporttoPDF(data,data2);
+            }
+          else if(collectionCategory === "Card"){
+            let total=[0,0];
+        let data = options.map(option=>{
+          let billingDate = moment(option.billingDate).format('D-MMMM-YYYY');
+          total[0] += option.grandTotal ? parseInt(option.grandTotal) : 0;
+          total[1] += option.card ? parseInt(option.card) : 0;
+              return([
+                option.billNo,
+                billingDate,
+                option.name,
+                option.grandTotal, 
+                option.card
+              ])
+           
+            })
+            let data2 =[]
+            console.log("total Array",total)
+            data2.push(["","Total"],
+                       ["Grand Total :",`${total[0]}`],
+                       ["Card :",`${total[1]}`])
+            console.log("Data2",data2)
+          exporttoPDF(data,data2);
             }
             else if(collectionCategory === "Cash"){
+              let total=[0,0];
               let data = options.map(option=>{
+                let billingDate = moment(option.billingDate).format('D-MMMM-YYYY');
+                total[0] += option.grandTotal ? parseInt(option.grandTotal) : 0;
+                total[1] += option.cash ? parseInt(option.cash) : 0;
                 return([
-                 ` ${option.billNo} \n ${option.name}` ,
-                  option.billingDate,
-                  option.totalAmount,
-                  option.discount,
+                  option.billNo,
+                  billingDate,
+                  option.name,
                   option.grandTotal, 
-                  option.cash,
-                  option.due,
-                  option.status
+                  option.cash
                 ])
              
               })
-            exporttoPDF(data);
+              let data2 =[]
+              console.log("total Array",total)
+              data2.push(["","Total"],
+                         ["Grand Total :",`${total[0]}`],
+                         ["Cash :",`${total[1]}`])
+              console.log("Data2",data2)
+            exporttoPDF(data,data2);
               }
               else{
+                let total=[0,0];
                 let data = options.map(option=>{
+                  let billingDate = moment(option.billingDate).format('D-MMMM-YYYY');
+                  total[0] += option.grandTotal ? parseInt(option.grandTotal) : 0;
+                  total[1] += option.wallet ? parseInt(option.wallet) : 0;
                   return([
-                   ` ${option.billNo} \n ${option.name}` ,
-                    option.billingDate,
-                    option.totalAmount,
-                    option.discount,
+                    option.billNo,
+                    billingDate,
+                    option.name,
                     option.grandTotal, 
-                    option.wallet,
-                    option.due,
-                    option.status
+                    option.wallet
                   ])
                 })
-              exporttoPDF(data);
+                let data2 =[]
+                console.log("total Array",total)
+                data2.push(["","Total"],
+                           ["Grand Total :",`${total[0]}`],
+                           ["UPI :",`${total[1]}`])
+                console.log("Data2",data2)
+              exporttoPDF(data,data2);
 
               }
     }
     }
-      const exporttoPDF=(data)=>{
+      const exporttoPDF=(data,data2)=>{
       const unit = "pt";
       const size = "A4"; // Use A1, A2, A3 or A4
       const orientation = "landscape"; // portrait or landscape
@@ -180,7 +253,7 @@ const CollectionReport = () => {
           let title = `${collectionCategory} Report`;
           let headers = [[`Bill No`,"Bill Date","Total Amount","Discount","Grant Total","Advance","Cash","Card","Wallet","Due","Status"]];
           if(collectionCategory === "Advance"){
-            headers = [[`Bill No\nName`,"Bill Date","Total Amount","Discount","Grant Total","Advance","Due","Status"]];
+            headers = [["Bill No","Bill Date","Name","Grant Total","Advance"]];
           }
           else if(collectionCategory === "Total Collection")
           {
@@ -188,11 +261,16 @@ const CollectionReport = () => {
           }
           else if(collectionCategory === "Cash")
           {
-           headers = [[`Bill No\nName`,"Bill Date","Total Amount","Discount","Grant Total","Cash","Due","Status"]];
+           headers = [["Bill No","Bill Date","Name","Grant Total","Cash"]];
           }
           else if(collectionCategory === "Card")
           {
-           headers = [[`Bill No\nName`,"Bill Date","Total Amount","Discount","Grant Total","Card","Due","Status"]];
+           headers = [["Bill No","Bill Date","Name","Grant Total","Card"]];
+        
+          }
+          else if(collectionCategory === "Tax Collection")
+          {
+           headers = [["Bill No","Bill Date","Name","Room Rate","Tax"]];
         
           }
           else 
@@ -228,12 +306,12 @@ const CollectionReport = () => {
           doc.line(18, finalY+1, 825, finalY+1)
           doc.autoTable({
             startY: doc.lastAutoTable.finalY+10,
-            
-            theme: 'grid',
-            tableWidth: 300,
-            styles: {
-              cellWidth:'100',
-              columnWidth: "wrap"
+            body: data2,
+          theme: 'grid',
+          tableWidth: 300,
+          styles: {
+            cellWidth:'100',
+            columnWidth: "wrap"
             },
             margin: {
               right: 20,

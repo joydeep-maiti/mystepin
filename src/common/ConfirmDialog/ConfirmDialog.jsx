@@ -9,7 +9,7 @@ import {
     DialogContentText
 } from "@material-ui/core";
 
-const ConfirmDialog = ({ openDialog, setOpenDialog, title, message, handleSubmit }) => {
+const ConfirmDialog = ({ openDialog, setOpenDialog, title, message, handleSubmit, cleanModal }) => {
     return (
         <Dialog
             open={openDialog}
@@ -23,14 +23,25 @@ const ConfirmDialog = ({ openDialog, setOpenDialog, title, message, handleSubmit
                     {message}
                 </DialogContentText>
             </DialogContent>
-            <DialogActions>
+            {!cleanModal && <DialogActions>
                 <Button onClick={() => handleSubmit(false)} color="secondary" variant="contained">
                     NO
                 </Button>
                 <Button onClick={() => handleSubmit(true)} color="primary" autoFocus variant="contained">
                     YES
                 </Button>
-            </DialogActions>
+            </DialogActions>}
+            {cleanModal && <DialogActions>
+                <Button onClick={() => handleSubmit("close")} color="secondary" variant="contained">
+                    CLOSE
+                </Button>
+                <Button onClick={() => handleSubmit("book")} color="primary" autoFocus variant="contained">
+                    BOOK
+                </Button>
+                <Button onClick={() => handleSubmit("clean")} color="primary" autoFocus variant="contained">
+                    CLEAN
+                </Button>
+            </DialogActions>}
         </Dialog>
     )
 }

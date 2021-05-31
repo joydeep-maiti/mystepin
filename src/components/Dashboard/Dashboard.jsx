@@ -129,7 +129,6 @@ const Dashboard = props => {
   };
 
   useEffect(() => {
-
     let rooms = [];
     let bookedRooms = [];
     const filteredBookings = allBookings.filter(

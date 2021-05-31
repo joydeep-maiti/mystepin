@@ -238,6 +238,8 @@ const changePaymentOptions=(event)=>{
     if (errors) return;
     const {_id,date,advanceP,modeofpayment,reciptNumber} = data;
     //Recipt Duplicate
+    if(!reciptNumbers.includes("Booking")) reciptNumbers.push("Booking")
+    if(!reciptNumbers.includes("booking")) reciptNumbers.push("booking")
     if(reciptNumbers.includes(reciptNumber)){
       openSnackBar("Recipt Number Must be Unique", error);
     }

@@ -39,6 +39,19 @@ async function addRoom(data) {
   }
 }
 
+async function getRoomStatus(data) {
+  try {
+    const res = await http.post(
+      `${http.baseUrl}/rooms/getstatus`,
+      data
+    );
+    return res
+  } catch (error) {
+    console.log(error);
+    return false
+  }
+}
+
 async function updateRoom(data) {
   try {
     const response = await http.patch(
@@ -98,4 +111,4 @@ async function deleteRoom(data) {
   }
 }
 
-export default { getRooms, getAvailableRooms, addRoom, updateRoom, dirtyRoom, cleanRoom, deleteRoom};
+export default { getRooms, getAvailableRooms, addRoom, getRoomStatus, updateRoom, dirtyRoom, cleanRoom, deleteRoom};

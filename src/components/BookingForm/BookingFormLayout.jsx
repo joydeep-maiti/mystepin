@@ -103,13 +103,29 @@ const BookingFormLayout = ({
 
   useEffect(() => {
     console.log("roomsinlayout", data.rooms)
-    let dirtyRooms = data.rooms.filter(el=>el.dirty)
-    if(dirtyRooms.length>0){
-      setIsDirtyroomSelected(true)
-    }else {
-      setIsDirtyroomSelected(false)
-    }
+    let newRoom = data.rooms.filter(el=>el._id=="")
+    if (newRoom.length)
+      return
+    let roomIds = data.rooms.map(el=>el._id)
+    if(roomIds.length)
+    fetchRoomStatus(roomIds)
   }, [data.rooms]);
+
+  const fetchRoomStatus = async(roomIds) => {
+    setLoading(true)
+    const res = await roomService.getRoomStatus({rooms:roomIds})
+    setLoading(false)
+    // console.log("roomsinlayout res", res)
+    if(res.status === 200){
+      // console.log("roomsinlayout resdata", res.data)
+      let dirtyRooms = res.data.filter(el=>el.dirty)
+      if(dirtyRooms.length>0){
+        setIsDirtyroomSelected(true)
+      }else {
+        setIsDirtyroomSelected(false)
+      }
+    }
+  }
 
   // useEffect(() => {
   //   const { pathname } = location;
@@ -180,9 +196,9 @@ const BookingFormLayout = ({
 
   const setNewBookingData = async () => {
     const newData = { ...data };
-    // const { roomNumber, roomType, _id } = selectedRoom;
-    // const room = { roomNumber, roomType, _id };
-    const room = { ...selectedRoom };
+    const { roomNumber, roomType, _id } = selectedRoom;
+    const room = { roomNumber, roomType, _id };
+    // const room = { ...selectedRoom };
     newData.rooms.push(room);
     newData.checkIn = selectedDate;
     newData.checkOut = moment(selectedDate).add(1, 'days').toDate();
@@ -397,11 +413,11 @@ const BookingFormLayout = ({
     else if (name === "roomNumber")
       room = availableRooms.find(room => room.roomNumber === value);
 
-    // rooms[index] = {
-    //   roomNumber: room.roomNumber,
-    //   roomType: room.roomType,
-    //   _id: room._id
-    // };
+    rooms[index] = {
+      roomNumber: room.roomNumber,
+      roomType: room.roomType,
+      _id: room._id
+    };
     rooms[index] = {
       ...room
     };

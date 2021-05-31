@@ -4,7 +4,7 @@ import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import TextField from '@material-ui/core/TextField';
 import FastfoodIcon from '@material-ui/icons/Fastfood';
 import { DialogContent,DialogTitle,Typography,Button,makeStyles} from "@material-ui/core";
-import foodInventory from '../../services/foodInventory';
+import inventory from '../../services/inventory';
 import constants from "../../utils/constants";
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -72,7 +72,7 @@ const HouseKeepingInventory = ({onSnackbarEvent}) => {
     }, [])
 
    const fetchFoods = async () => {
-       const items = await foodInventory.getHouseKeepingItems();
+       const items = await inventory.getHouseKeepingItems();
        if(items){
         setHouseKeepings(items);
             setLoading(false);           
@@ -114,7 +114,7 @@ const HouseKeepingInventory = ({onSnackbarEvent}) => {
    }
    const handleUpdate = async () => {
     setLoading(true);
-    const res = await foodInventory.updateHouseKeepingItem(editingRow);
+    const res = await inventory.updateHouseKeepingItem(editingRow);
     setLoading(false);
     if(res){
       openSnackBar("Item Updated Successfully", success);
@@ -132,7 +132,7 @@ const HouseKeepingInventory = ({onSnackbarEvent}) => {
   }
   const handleDelete = async (row) => {
     setLoading(true);
-    const res = await foodInventory.deleteHouseKeepingItem(row);
+    const res = await inventory.deleteHouseKeepingItem(row);
     setLoading(false);
     if(res){
       openSnackBar("Item Deleted Successfully", success);
@@ -151,12 +151,12 @@ const HouseKeepingInventory = ({onSnackbarEvent}) => {
               }
               const fuse = new Fuse(houseKeepings, options)
               const result = fuse.search(houseKeeping.item)
-             if(result){
+             if(result.length !== 0){
               openSnackBar("Item Already Exist", error);
               }
               else{
               console.log("BEFORE Response",houseKeeping)           
-             const response = await foodInventory.addHouseKeepingItem(houseKeeping);
+             const response = await inventory.addHouseKeepingItem(houseKeeping);
                 console.log("After Response",response)
                 if(response){
                 openSnackBar("Item Added Successfully", success);
@@ -165,7 +165,7 @@ const HouseKeepingInventory = ({onSnackbarEvent}) => {
               }else {
                 openSnackBar("Error Occured", error);
               }
-            }
+             }
             console.log("Food",houseKeeping)
           }
     }
@@ -185,9 +185,9 @@ const HouseKeepingInventory = ({onSnackbarEvent}) => {
                 onChange={handleChange}
                 required
               >
-                      <MenuItem value="KG">BOX</MenuItem>
-                      <MenuItem value="GRAM">PACKET</MenuItem>
-                      <MenuItem value="LTR">ITEM</MenuItem>
+                      <MenuItem value="BOX">BOX</MenuItem>
+                      <MenuItem value="PACKET">PACKET</MenuItem>
+                      <MenuItem value="ITEM">ITEM</MenuItem>
                      </Select>
             </FormControl>
           <TextField required id="standard-required" label="Price" name="season"
@@ -236,13 +236,9 @@ const HouseKeepingInventory = ({onSnackbarEvent}) => {
                       onChange={handleUpdateSelect}
                       required
                        >
-                      <MenuItem value="KG">KG</MenuItem>
-                      <MenuItem value="GRAM">GRAM</MenuItem>
-                      <MenuItem value="LTR">LTR</MenuItem>
-                      <MenuItem value="ML">ML</MenuItem>
-                      <MenuItem value="PIECE">PIECE</MenuItem>
-                      <MenuItem value="PORTION">PORTION</MenuItem>
                       <MenuItem value="BOX">BOX</MenuItem>
+                      <MenuItem value="PACKET">PACKET</MenuItem>
+                      <MenuItem value="ITEM">ITEM</MenuItem>
                      </Select>
                      </FormControl>
                   </TableCell>}

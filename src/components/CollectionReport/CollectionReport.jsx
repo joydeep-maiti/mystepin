@@ -11,7 +11,7 @@ import utils from "../../utils/utils";
 import FormUtils from "../../utils/formUtils";
 import reportOptions from '../../services/reportOptions'
 import collectionReport from '../../services/collectionReport'
-import taxCollectionReport from '../../services/taxCollectionReport'
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -58,10 +58,14 @@ const CollectionReport = () => {
     //Handle starting date Change
     const handleStartingDateChange =(date)=>{
       setStartingDate(utils.getDate(date));  
+      var d = moment(date);
+      setStartDateString(d.format('DD')+"-"+d.format('MMMM')+"-"+d.format('YYYY'));
           };
     //Handle current date Change
     const handleCurrentDateChange = (date) => {  
       setCurrentDate(utils.getDate(date));
+      var d = moment(date);
+    setCurrentDateString(d.format('DD')+"-"+d.format('MMMM')+"-"+d.format('YYYY'));
      };
     //Get Plan Options
     const getPlanOptions = () => {
@@ -83,7 +87,7 @@ const CollectionReport = () => {
       console.log("End",currentD)
       if(collectionCategory === "Tax Collection")
       {
-        var options = await taxCollectionReport.getTaxCollectionReport(startD,currentD,collectionCategory)
+        var options = await collectionReport.getTaxCollectionReport(startD,currentD,collectionCategory)
       }
        else{
         var options = await collectionReport.getCollectionReport(startD,currentD,collectionCategory)
@@ -130,22 +134,24 @@ const CollectionReport = () => {
        else if(collectionCategory === "Advance"){
         let total=[0,0];
         let data = options.map(option=>{
-          let billingDate = moment(option.billingDate).format('D-MMMM-YYYY');
-          total[0] += option.grandTotal ? parseInt(option.grandTotal) : 0;
-          total[1] += option.advance ? parseInt(option.advance) : 0;
+          let advanceDate = moment(option.advanceDate).format('D-MMMM-YYYY');
+          //total[0] += option.grandTotal ? parseInt(option.grandTotal) : 0;
+          total[0] += option.advance ? parseInt(option.advance) : 0;
             return([
-             option.billNo,
-              billingDate,
+             advanceDate,
+              option.roomNumber,
               option.name,
-              option.grandTotal, 
-              option.advance
+              option.modeOfPayment, 
+              option.receiptNumber,
+              option.advance,
+              option.billNo
             ])
          
           })
           let data2 =[]
           console.log("total Array",total)
           data2.push(["","Total"],
-                     ["Grand Total :",`${total[0]}`],["Advance :",`${total[1]}`])
+                     ["Advance Amount :",`${total[0]}`])
           console.log("Data2",data2)
         exporttoPDF(data,data2);
           }
@@ -182,6 +188,7 @@ const CollectionReport = () => {
                 billingDate,
                 option.name,
                 option.grandTotal, 
+                option.cardType,
                 option.card
               ])
            
@@ -218,24 +225,37 @@ const CollectionReport = () => {
             exporttoPDF(data,data2);
               }
               else{
-                let total=[0,0];
+                let total=[0,0,0,0,0];
                 let data = options.map(option=>{
                   let billingDate = moment(option.billingDate).format('D-MMMM-YYYY');
                   total[0] += option.grandTotal ? parseInt(option.grandTotal) : 0;
+                  if(option.walletType === "GooglePay")
                   total[1] += option.wallet ? parseInt(option.wallet) : 0;
+                  if(option.walletType === "Phonepe")
+                  total[2] += option.wallet ? parseInt(option.wallet) : 0;
+                  if(option.walletType === "Paytm")
+                  total[3] += option.wallet ? parseInt(option.wallet) : 0;
+                  if(option.walletType === "Others")
+                  total[4] += option.wallet ? parseInt(option.wallet) : 0;
+
+
                   return([
                     option.billNo,
                     billingDate,
                     option.name,
                     option.grandTotal, 
-                    option.wallet
+                    option.wallet,
+                    option.walletType
                   ])
                 })
                 let data2 =[]
                 console.log("total Array",total)
                 data2.push(["","Total"],
                            ["Grand Total :",`${total[0]}`],
-                           ["UPI :",`${total[1]}`])
+                           ["Google Pay :",`${total[1]}`],
+                           ["Phonepe :",`${total[2]}`],
+                           ["Paytm :",`${total[3]}`],
+                           ["Others :",`${total[4]}`])
                 console.log("Data2",data2)
               exporttoPDF(data,data2);
 
@@ -253,7 +273,7 @@ const CollectionReport = () => {
           let title = `${collectionCategory} Report`;
           let headers = [[`Bill No`,"Bill Date","Total Amount","Discount","Grant Total","Advance","Cash","Card","Wallet","Due","Status"]];
           if(collectionCategory === "Advance"){
-            headers = [["Bill No","Bill Date","Name","Grant Total","Advance"]];
+            headers = [["Advance Date","Room Number","Guest Name","Mode of Payment","Receipt Number","Amount","Bill No/Booking ID"]];
           }
           else if(collectionCategory === "Total Collection")
           {
@@ -265,7 +285,7 @@ const CollectionReport = () => {
           }
           else if(collectionCategory === "Card")
           {
-           headers = [["Bill No","Bill Date","Name","Grant Total","Card"]];
+           headers = [["Bill No","Bill Date","Name","Grant Total","Card Number","Card"]];
         
           }
           else if(collectionCategory === "Tax Collection")
@@ -275,7 +295,7 @@ const CollectionReport = () => {
           }
           else 
           {
-           headers = [[`Bill No\nName`,"Bill Date","Total Amount","Discount","Grant Total","Wallet","Due","Status"]];;
+            headers = [["Bill No","Bill Date","Name","Grand Total","UPI","UPI Type"]];
         
           }
 

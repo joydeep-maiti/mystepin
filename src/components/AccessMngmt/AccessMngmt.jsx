@@ -77,14 +77,16 @@ const AccessMngmt = ({ onClose }) => {
   ]);
   const permissions = {
     Configuration: ["Rooms", "Room Category", "Rate Master", "Season Master", "Taxes", "Property Details", "User Management", "Inventory", "Access Management"],
-    Reports: ["Billing Details", "Booking", "POS Sales", "Agent", "Occupancy", "Collection Report", "Guest Details"],
-    Others: ["Utility", "POS", "Room Chart Read", "Room Chart Write"]
+    Reports: ["Billing Details", "Booking Report", "POS Sales", "Agent", "Occupancy", "Collection Report", "Guest Details"],
+    Others: ["Utility", "POS", "Booking", "Checkin/Checkout"],
+    Default: ["Room Chart", "Occupancy Chart"]
   }
   const [loading, setLoading] = useState(false);
   const [newDoc, setNewDoc] = useState({});
   const [editingRow, setEditingRow] = useState();
   const [checkbox, setCheckbox] = useState(false);
   const [disable, setDisable] = useState(true);
+  const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
     // setLoading(true);
@@ -101,9 +103,10 @@ const AccessMngmt = ({ onClose }) => {
     console.log(res)
     if (res && res.status === 200) {
       setEditingRow({
-        role:res.data.role || newDoc.role,
-        department:res.data.department || newDoc.department,
-        permissions:res.data.permissions || []
+        role: res.data.role || newDoc.role,
+        department: res.data.department || newDoc.department,
+        permissions: res.data.permissions || permissions.Default,
+        selectAll: res.data.selectAll
       })
       setDisable(false)
     } else {
@@ -144,19 +147,55 @@ const AccessMngmt = ({ onClose }) => {
   const handleCheckBoxChange = (e) => {
     // return
     console.log(e.target.name, e.target.checked)
+    let _doc = { ...editingRow }
     let _permission = e.target.name
     let _checked = e.target.checked
     let userPermissions = editingRow.permissions || []
     if (_checked) {
       userPermissions.push(_permission)
+      if(checkIfALlSelected(userPermissions)){
+        _doc.selectAll = true
+      }
     } else {
-      userPermissions.splice(userPermissions.indexOf(_permission))
+      userPermissions.splice(userPermissions.indexOf(_permission),1)
+      _doc.selectAll = false
     }
-    let _doc = { ...editingRow }
     _doc.permissions = userPermissions
-    setNewDoc(_doc)
+    // setNewDoc(_doc)
+    console.log("userPermissions",_doc)
+    setEditingRow(_doc)
   }
 
+  const handleSelectAllChange = (e) => {
+    // return
+    console.log(e.target.name, e.target.checked)
+    let _doc = { ...editingRow }
+    let _permission = e.target.name
+    let _checked = e.target.checked
+    let userPermissions = []
+    if (_checked) {
+      Object.keys(permissions).map(el => {
+        userPermissions = userPermissions.concat(permissions[el])
+      })
+      _doc.selectAll = true
+    } else {
+      userPermissions = permissions.Default
+      _doc.selectAll = false
+    }
+    
+    console.log("userPermissions",_doc)
+    _doc.permissions = userPermissions
+    // setNewDoc(_doc)
+    setEditingRow(_doc)
+  }
+
+  const checkIfALlSelected = (_permissions) => {
+    let total = 0
+    Object.keys(permissions).map(el=>{
+      total+= permissions[el].length
+    })
+    return _permissions.length===total
+  }
   const handleInputChange = (e) => {
     setEditingRow({
       ...editingRow,
@@ -210,6 +249,20 @@ const AccessMngmt = ({ onClose }) => {
         </form>
         {loading && <Loader color="#0088bc" />}
         {editingRow && <TableContainer className={classes.table} component={Paper}>
+          <FormControl style={{ float:"right" }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={editingRow.selectAll}
+                  onChange={handleSelectAllChange}
+                  name="Select All"
+                  color="primary"
+                />
+              }
+              label="Select All"
+              style={{ minWidth: "max-content", marginLeft: "0.3rem" }}
+            ></FormControlLabel>
+          </FormControl>
           <Table className={classes.table} size="small" stickyHeader aria-label="sticky table">
             <TableBody>
               {Object.keys(permissions).map(el => {
@@ -228,6 +281,7 @@ const AccessMngmt = ({ onClose }) => {
                                     onChange={handleCheckBoxChange}
                                     name={permission}
                                     color="primary"
+                                    disabled={el === "Default"}
                                   />
                                 }
                                 label={permission}
@@ -244,12 +298,12 @@ const AccessMngmt = ({ onClose }) => {
           </Table>
         </TableContainer>}
       </DialogContent>
-      <DialogActions style={{paddingRight:"24px"}}>
-        {editingRow && 
-        <Button onClick={handleUpdate} autoFocus variant="contained" 
-          style={disable?{ backgroundColor: "rgba(0, 0, 0, 0.12)", color: 'rgba(0, 0, 0, 0.26)' }:{ backgroundColor: "#0088bc", color: 'white' }} 
-          disabled={disable}>
-          SAVE
+      <DialogActions style={{ paddingRight: "24px" }}>
+        {editingRow &&
+          <Button onClick={handleUpdate} autoFocus variant="contained"
+            style={disable ? { backgroundColor: "rgba(0, 0, 0, 0.12)", color: 'rgba(0, 0, 0, 0.26)' } : { backgroundColor: "#0088bc", color: 'white' }}
+            disabled={disable}>
+            SAVE
         </Button>}
       </DialogActions>
     </React.Fragment>

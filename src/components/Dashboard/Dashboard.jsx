@@ -111,7 +111,7 @@ const Dashboard = props => {
   const classes = useStyles();
 
   useEffect(() => {
-    getRooms();
+    // getRooms();
   }, []);
 
   const getRooms = async () => {

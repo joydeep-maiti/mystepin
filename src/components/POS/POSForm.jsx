@@ -275,10 +275,20 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
     // onClose();
   };
 
+
+  const handleKot=()=>{
+    // if(data.roomNumber === null){
+    //   openSnackBar("Select Room Number", error);
+    // }
+
+  }
+
   return (
+    <> 
+    <div className="kot">
+         <Button onClick={handleKot()}>KOT</Button>
+        </div>
     <form onSubmit={event => onFormSubmit(event)}>
-      
-      
       <DialogContent>
         <div className="form-group">
           {FormUtils.renderSelect({
@@ -316,16 +326,16 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
           <div style={{ width: "100%" }} onClick={handleDatePicker}>
             {FormUtils.renderDatepicker(
               getDateArgObj("date", "Date", "text", minDate, disable)
-            )}
+              )}
           </div>
           {FormUtils.renderInput(
             getInputArgObj("amount", "Amount", "text", disable)
-          )}
+            )}
         </div>
         <div className="form-group">
           {FormUtils.renderInput(
             getInputArgObj("remarks", "Remarks", "text", disable)
-          )}
+            )}
         </div>
       </DialogContent>
       <DialogActions style={{paddingRight:"2rem"}}>
@@ -340,8 +350,9 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
         pos={pos[title]}
         title={title}
         handlePosDelete={handlePosDelete}
-      />}
+        />}
     </form>
+    </>
   );
 };
 

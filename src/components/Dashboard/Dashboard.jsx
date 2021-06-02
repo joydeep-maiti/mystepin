@@ -182,6 +182,9 @@ const Dashboard = props => {
     });
 
     setOccupiedRooms(rooms);
+
+    console.log("Occupied Rooms",occupiedRooms)
+
     setBookedRooms(bookedRooms);
   }, [allBookings]);
 

@@ -71,15 +71,23 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Configuration = ({onSnackbarEvent}) => {
+const Configuration = ({onSnackbarEvent,userData}) => {
   const classes = useStyles();
   const [taxSlabs, setTaxSlabs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [value, setValue] = React.useState(0);
+  const [userPermissions, setUserPermissions] = React.useState(["Rooms", "Room Category", "Rate Master", "Season Master", "Taxes", "Property Details", "User Management", "Inventory", "Access Management"]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  React.useEffect(()=>{
+    console.log("props.userData per",userData)
+    if(userData){
+      // setUserPermissions(userData.permissions)
+    }
+  },[userData])
 
 
   return (
@@ -108,31 +116,31 @@ const Configuration = ({onSnackbarEvent}) => {
       </AppBar>
       
       <TabPanel className={classes.tabDiv} value={value} index={0}>
-        <Rooms onSnackbarEvent={onSnackbarEvent} />
+        {userPermissions.includes("Rooms")?<Rooms onSnackbarEvent={onSnackbarEvent} />:<h1>You Dont have access to view this.</h1>}
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={1}>
-        <RoomCategory onSnackbarEvent={onSnackbarEvent} />
+        {userPermissions.includes("Room Category")?<RoomCategory onSnackbarEvent={onSnackbarEvent} />:<h1>You Dont have access to view this.</h1>}
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={2}>
-        <RateMaster onSnackbarEvent={onSnackbarEvent}/>
+        {userPermissions.includes("Rate Master")?<RateMaster onSnackbarEvent={onSnackbarEvent}/>:<h1>You Dont have access to view this.</h1>}
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={3}>
-        <SeasonMaster onSnackbarEvent={onSnackbarEvent} />
+      {userPermissions.includes("Season Master")?<SeasonMaster onSnackbarEvent={onSnackbarEvent} />:<h1>You Dont have access to view this.</h1>}
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={4}>
-        <Taxes onSnackbarEvent={onSnackbarEvent} />
+        {userPermissions.includes("Taxes") ?<Taxes onSnackbarEvent={onSnackbarEvent} />:<h1>You Dont have access to view this.</h1>}
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={5}>
-        <PropertyDetails onSnackbarEvent={onSnackbarEvent} />
+      {userPermissions.includes("Property Details")?<PropertyDetails onSnackbarEvent={onSnackbarEvent} />:<h1>You Dont have access to view this.</h1>}
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={6}>
-        <Users onSnackbarEvent={onSnackbarEvent} />
+      {userPermissions.includes("User Management")?<Users onSnackbarEvent={onSnackbarEvent} />:<h1>You Dont have access to view this.</h1>}
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={7}>
-        <Inventory onSnackbarEvent={onSnackbarEvent} />
+      {userPermissions.includes("Inventory")?<Inventory onSnackbarEvent={onSnackbarEvent} />:<h1>You Dont have access to view this.</h1>}
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={8}>
-        <AccessMngmt onSnackbarEvent={onSnackbarEvent} />
+      {userPermissions.includes("Access Management")?<AccessMngmt onSnackbarEvent={onSnackbarEvent} />:<h1>You Dont have access to view this.</h1>}
       </TabPanel>
     </div>
   );

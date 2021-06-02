@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -102,6 +102,7 @@ const Dashboard = props => {
   const [view, setView] = React.useState('day');
   const [openCleanRoomDlg, setOpenCleanRoomDlg] = React.useState(false);
   const [roomToClean, setRoomToClean] = React.useState(null);
+  const [userData, setUserData] = React.useState(null);
 
   const handleViewChange = (event) => {
     setView(event.target.value);
@@ -112,6 +113,12 @@ const Dashboard = props => {
 
   useEffect(() => {
     // getRooms();
+    console.log("props.userData",props.userData)
+    if(!props.userData){
+      // props.history.push("/login")
+      // return
+    }
+    setUserData(props.userData)
   }, []);
 
   const getRooms = async () => {
@@ -373,6 +380,7 @@ const Dashboard = props => {
           showAdvancedDialog={handleShowAdvancedDialog}
           path={props.location.pathname}
           onRedirectFromNavbar={handleRedirectFromNavbar}
+          userData={props.userData}
         />
         <Dialog
           open={dialog.open}
@@ -500,6 +508,7 @@ const Dashboard = props => {
               render={props => (
                 <Configuration
                   onSnackbarEvent={handleSnackbarEvent}
+                  userData={userData}
                   {...props}
                 />
               )}
@@ -507,11 +516,9 @@ const Dashboard = props => {
             <Route
               path='/reports'
               component={ReportComponent}
+              userData={props.userData}
             />
-            <Route
-              path='/cleanroom'
-              component={CleanRoom}
-            />
+
             <Route
               path="/"
               exact
@@ -594,4 +601,4 @@ const Dashboard = props => {
   );
 };
 
-export default Dashboard;
+export default withRouter(Dashboard);

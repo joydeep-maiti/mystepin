@@ -416,7 +416,7 @@ const BookingForm = props => {
         )}
 
         <GuestNameDialog open={open} onClose={handleClose} shouldDisable={shouldDisable}/>
-        {/* <IconButton>
+        <IconButton>
 
        <Fab
                 size="small"
@@ -427,7 +427,7 @@ const BookingForm = props => {
              >
                 <AddIcon />
          </Fab>
-         </IconButton> */}
+         </IconButton>
         {FormUtils.renderInput(
           getInputArgObj(
             "contactNumber",

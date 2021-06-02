@@ -144,7 +144,7 @@ const FoodInventory = ({onSnackbarEvent}) => {
             if(food){
               const options = {
                 includeScore: true,
-                threshold : 0.5,
+                threshold : 0.1,
                 keys: ['item']
               }
               const fuse = new Fuse(foods, options)

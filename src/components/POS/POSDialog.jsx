@@ -2,7 +2,7 @@ import React from "react";
 
 import POSForm from "./POSForm";
 
-import { DialogTitle } from "@material-ui/core";
+import { DialogTitle} from "@material-ui/core";
 
 const POSDialog = ({ allBookings, onClose, title, onSnackbarEvent }) => {
 
@@ -11,6 +11,7 @@ const POSDialog = ({ allBookings, onClose, title, onSnackbarEvent }) => {
   return (
     <React.Fragment>
       <DialogTitle>POS-{title}</DialogTitle>
+       
       <POSForm
         allBookings={allBookings}
         onClose={onClose}

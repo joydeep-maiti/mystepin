@@ -160,25 +160,35 @@ const Occupancy = () => {
     doc.save("Monthly Occupancy Report.pdf")
   }
   
+  const bookingExists = (bookings, booking) => {
+    let arr = bookings.filter(el=>el.id === booking.id)
+    if(arr.length)
+      return true
+    return false
+  }
 
   //************************Daily Occupancy Report****************************
   const fetchAndGenerateDailyOccupanyReport = async()=>{
     let options = await reportService.getDailyOccupancyReport();
     let adults = 0
     let children = 0
-    let plans = [{},{}] 
+    let plans = [{},{}]
+    let bookings = [] 
     let occupied = 0
     let continuing =0
     if(options){
       let data = options.map(el=>{
-        adults+=Number(el.adults)
-        children+=Number(el.children)
-        if(el.planType && el.planType.trim()!=="" && !plans[0][el.planType]){
-          plans[0][el.planType] = Number(el.adults)
-          plans[1][el.planType] = Number(el.children)
-        }else if(el.planType && el.planType.trim()!=="" ){
-          plans[0][el.planType] = Number(plans[0][el.planType])+Number(el.adults)
-          plans[1][el.planType] = Number(plans[1][el.planType])+Number(el.children)
+        // adults+=Number(el.adults)
+        // children+=Number(el.children)
+        // if(el.planType && el.planType.trim()!=="" && !plans[0][el.planType]){
+        //   plans[0][el.planType] = Number(el.adults)
+        //   plans[1][el.planType] = Number(el.children)
+        // }else if(el.planType && el.planType.trim()!=="" ){
+        //   plans[0][el.planType] = Number(plans[0][el.planType])+Number(el.adults)
+        //   plans[1][el.planType] = Number(plans[1][el.planType])+Number(el.children)
+        // }
+        if(!bookingExists(bookings,el)){
+          bookings.push(el)
         }
         if(el.guestName && el.guestName.trim()!=="" && moment(el.arraivalDate).format('D.MMM.YYYY') === moment().format('D.MMM.YYYY')){
           occupied+=1
@@ -194,6 +204,17 @@ const Occupancy = () => {
           el.departureDate?moment(el.departureDate).format('D.MMM.YYYY'):"",
           el.stay,
         ])
+      })
+      bookings.map(el=>{
+        adults+=Number(el.adults)
+        children+=Number(el.children)
+        if(el.planType && el.planType.trim()!=="" && !plans[0][el.planType]){
+          plans[0][el.planType] = Number(el.adults)
+          plans[1][el.planType] = Number(el.children)
+        }else if(el.planType && el.planType.trim()!=="" ){
+          plans[0][el.planType] = Number(plans[0][el.planType])+Number(el.adults)
+          plans[1][el.planType] = Number(plans[1][el.planType])+Number(el.children)
+        }
       })
       console.log("plans",plans,adults,children)
       let data2 =[]

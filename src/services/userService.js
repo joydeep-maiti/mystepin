@@ -22,6 +22,19 @@ async function addUser(data) {
   }
 }
 
+async function login(data) {
+  try {
+    const {data:response } = await http.post(
+      `${http.baseUrl}/user/login`,
+      data
+    );
+    return response
+  } catch (error) {
+    console.log(error);
+    return false
+  }
+}
+
 async function updateUser(data) {
   try {
     const response = await http.patch(
@@ -51,4 +64,4 @@ async function deleteUser(data) {
   }
 }
 
-export default { getUsers, addUser, updateUser, deleteUser };
+export default { getUsers, addUser, updateUser, deleteUser, login };

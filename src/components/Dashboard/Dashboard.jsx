@@ -515,8 +515,13 @@ const Dashboard = props => {
             />
             <Route
               path='/reports'
-              component={ReportComponent}
-              userData={props.userData}
+              render={props => (
+                <ReportComponent
+                  onSnackbarEvent={handleSnackbarEvent}
+                  userData={userData}
+                  {...props}
+                />
+              )}
             />
 
             <Route

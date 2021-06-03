@@ -31,8 +31,8 @@ const Login = (props) => {
     const classes = useStyles();
 
     const [userData, setUserData] = React.useState({
-        username: null,
-        password: null
+        username: "guest",
+        password: "guest"
     })
 
     const onFormSubmit = async(e)=>{

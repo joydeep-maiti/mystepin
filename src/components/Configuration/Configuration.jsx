@@ -76,18 +76,59 @@ const Configuration = ({onSnackbarEvent,userData}) => {
   const [taxSlabs, setTaxSlabs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [value, setValue] = React.useState(0);
-  const [userPermissions, setUserPermissions] = React.useState(["Rooms", "Room Category", "Rate Master", "Season Master", "Taxes", "Property Details", "User Management", "Inventory", "Access Management"]);
+  // const [userPermissions, setUserPermissions] = React.useState(["Rooms", "Room Category", "Rate Master", "Season Master", "Taxes", "Property Details", "User Management", "Inventory", "Access Management"]);
+  const [userPermissions, setUserPermissions] = React.useState([]);
 
+  // const handleChange = (newValue) => {
+  //   console.log("newValue",newValue)
+  //   setValue(newValue);
+  // };
   const handleChange = (event, newValue) => {
+    console.log("newValue",newValue)
     setValue(newValue);
   };
 
   React.useEffect(()=>{
     console.log("props.userData per",userData)
     if(userData){
-      // setUserPermissions(userData.permissions)
+      setUserPermissions(userData.permissions)
     }
   },[userData])
+
+  const getTabs = (permissions)=>{
+    console.log(permissions)
+    let i = -1
+    return permissions.map((el)=>{
+      switch(el){
+        case "Rooms": i++;return <Tab label="Rooms" {...a11yProps(i)} /> 
+        case "Room Category": i++;return <Tab label="Rooms Category" {...a11yProps(i)} /> 
+        case "Rate Master": i++;return <Tab label="Rate Master" {...a11yProps(i)} /> 
+        case "Season Master": i++;return <Tab label="Season Master" {...a11yProps(i)} /> 
+        case "Taxes": i++;return <Tab label="Taxes" {...a11yProps(i)} /> 
+        case "Property Details": i++;return <Tab label="Property Details" {...a11yProps(i)} /> 
+        case "User Management": i++;return <Tab label="User Management" {...a11yProps(i)} /> 
+        case "Inventory": i++;return <Tab label="Inventory" {...a11yProps(i)} /> 
+        case "Access": i++;return <Tab label="Access" {...a11yProps(i)} /> 
+      }
+    })
+  }
+
+  const getTabPanels = (permissions)=>{
+    let i = -1
+    return permissions.map((el)=>{
+      switch(el){
+        case "Rooms": i++;return <TabPanel className={classes.tabDiv} value={value} index={i}><Rooms onSnackbarEvent={onSnackbarEvent} /></TabPanel>
+        case "Room Category": i++;return <TabPanel className={classes.tabDiv} value={value} index={i}><RoomCategory onSnackbarEvent={onSnackbarEvent} /></TabPanel> 
+        case "Rate Master": i++;return <TabPanel className={classes.tabDiv} value={value} index={i}><RateMaster onSnackbarEvent={onSnackbarEvent} /></TabPanel> 
+        case "Season Master": i++;return <TabPanel className={classes.tabDiv} value={value} index={i}><SeasonMaster onSnackbarEvent={onSnackbarEvent} /></TabPanel>
+        case "Taxes": i++;return <TabPanel className={classes.tabDiv} value={value} index={i}><Taxes onSnackbarEvent={onSnackbarEvent} /></TabPanel>
+        case "Property Details": i++;return <TabPanel className={classes.tabDiv} value={value} index={i}><PropertyDetails onSnackbarEvent={onSnackbarEvent} /></TabPanel> 
+        case "User Management": i++;return <TabPanel className={classes.tabDiv} value={value} index={i}><Users onSnackbarEvent={onSnackbarEvent} /></TabPanel>
+        case "Inventory": i++;return <TabPanel className={classes.tabDiv} value={value} index={i}><Inventory onSnackbarEvent={onSnackbarEvent} /></TabPanel>
+        case "Access": i++;return <TabPanel className={classes.tabDiv} value={value} index={i}><AccessMngmt onSnackbarEvent={onSnackbarEvent} /></TabPanel> 
+      }
+    })
+  }
 
 
   return (
@@ -101,21 +142,34 @@ const Configuration = ({onSnackbarEvent,userData}) => {
           variant="scrollable"
           scrollButtons="auto"
           aria-label="scrollable auto tabs example"
-        >
+        > 
+        {
+          getTabs(userPermissions)
+        }
           
-          <Tab label="Rooms" {...a11yProps(0)} />
-          <Tab label="Room Category" {...a11yProps(1)} />
-          <Tab label="Rate Master" {...a11yProps(2)} />
-          <Tab label="Season Master" {...a11yProps(3)} />
-          <Tab label="Taxes" {...a11yProps(4)} />
-          <Tab label="Property Details" {...a11yProps(5)} />
-          <Tab label="User Management" {...a11yProps(6)} />
-          <Tab label="Inventory" {...a11yProps(7)} />
-          <Tab label="Access" {...a11yProps(78)} />
+          {/* <Tab label="Rooms" />
+          <Tab label="Room Category" onClick={()=>handleChange(1)}/>
+          <Tab label="Rate Master"  onClick={()=>handleChange(2)}/>
+          <Tab label="Season Master" onClick={()=>handleChange(3)} />
+          <Tab label="Taxes" onClick={()=>handleChange(4)} />
+          <Tab label="Property Details" onClick={()=>handleChange(5)} />
+          <Tab label="User Management" onClick={()=>handleChange(6)} />
+          <Tab label="Inventory" onClick={()=>handleChange(7)} />
+          <Tab label="Access" onClick={()=>handleChange(8)} /> */}
+
+          {/* <Tab label="Rooms" {...a11yProps(0)} />
+          <Tab label="Room Category" {...a11yProps(1)} onClick={()=>handleChange(1)}/>
+          <Tab label="Rate Master" {...a11yProps(2)}  onClick={()=>handleChange(2)}/>
+          <Tab label="Season Master" {...a11yProps(3)} onClick={()=>handleChange(3)} />
+          <Tab label="Taxes" {...a11yProps(4)} onClick={()=>handleChange(4)} />
+          <Tab label="Property Details" {...a11yProps(5)} onClick={()=>handleChange(5)} />
+          <Tab label="User Management" {...a11yProps(6)} onClick={()=>handleChange(6)} />
+          <Tab label="Inventory" {...a11yProps(7)} onClick={()=>handleChange(7)} />
+          <Tab label="Access" {...a11yProps(8)} onClick={()=>handleChange(8)} /> */}
         </Tabs>
       </AppBar>
-      
-      <TabPanel className={classes.tabDiv} value={value} index={0}>
+      {getTabPanels(userPermissions)}
+      {/* <TabPanel className={classes.tabDiv} value={value} index={0}>
         {userPermissions.includes("Rooms")?<Rooms onSnackbarEvent={onSnackbarEvent} />:<h1>You Dont have access to view this.</h1>}
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={1}>
@@ -141,7 +195,7 @@ const Configuration = ({onSnackbarEvent,userData}) => {
       </TabPanel>
       <TabPanel className={classes.tabDiv} value={value} index={8}>
       {userPermissions.includes("Access Management")?<AccessMngmt onSnackbarEvent={onSnackbarEvent} />:<h1>You Dont have access to view this.</h1>}
-      </TabPanel>
+      </TabPanel> */}
     </div>
   );
 };

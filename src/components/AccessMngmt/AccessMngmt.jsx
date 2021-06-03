@@ -73,7 +73,7 @@ const AccessMngmt = ({ onClose }) => {
     { label: "Restaurant", value: "Restaurant" },
     { label: "Finance", value: "Finance" },
     { label: "Operations", value: "Operations" },
-    { label: "House Keeping", value: "House Keeping" },
+    { label: "House Keeping", value: "House Keeping" }
   ]);
   const permissions = {
     Configuration: ["Rooms", "Room Category", "Rate Master", "Season Master", "Taxes", "Property Details", "User Management", "Inventory", "Access Management"],

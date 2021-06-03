@@ -115,8 +115,8 @@ const Dashboard = props => {
     // getRooms();
     console.log("props.userData",props.userData)
     if(!props.userData){
-      // props.history.push("/login")
-      // return
+      props.history.push("/login")
+      return
     }
     setUserData(props.userData)
   }, []);

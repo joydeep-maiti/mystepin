@@ -340,7 +340,7 @@ const Calendar = props => {
 
     props.setDateObj(newDateObj, newDate);
     props.onLoading(true);
-    props.setBookings(newDateObj);
+    // props.setBookings(newDateObj);
 
   };
 

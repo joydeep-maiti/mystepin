@@ -127,7 +127,7 @@ const Dashboard = props => {
     allRooms.length > 0 && setAllRooms(allRooms);
   };
   const setBookings = async dateObj => {
-    getRooms()
+    await getRooms()
     const allBookings = await bookingService.getBookings(dateObj);
     if (allBookings.length > 0) {
       setAllBookings(allBookings);
@@ -380,7 +380,7 @@ const Dashboard = props => {
           showAdvancedDialog={handleShowAdvancedDialog}
           path={props.location.pathname}
           onRedirectFromNavbar={handleRedirectFromNavbar}
-          userData={props.userData}
+          userData={userData}
         />
         <Dialog
           open={dialog.open}

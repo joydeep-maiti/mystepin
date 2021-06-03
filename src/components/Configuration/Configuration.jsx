@@ -108,7 +108,7 @@ const Configuration = ({onSnackbarEvent,userData}) => {
         case "Property Details": i++;return <Tab label="Property Details" {...a11yProps(i)} /> 
         case "User Management": i++;return <Tab label="User Management" {...a11yProps(i)} /> 
         case "Inventory": i++;return <Tab label="Inventory" {...a11yProps(i)} /> 
-        case "Access": i++;return <Tab label="Access" {...a11yProps(i)} /> 
+        case "Access Management": i++;return <Tab label="Access" {...a11yProps(i)} /> 
       }
     })
   }
@@ -125,7 +125,7 @@ const Configuration = ({onSnackbarEvent,userData}) => {
         case "Property Details": i++;return <TabPanel className={classes.tabDiv} value={value} index={i}><PropertyDetails onSnackbarEvent={onSnackbarEvent} /></TabPanel> 
         case "User Management": i++;return <TabPanel className={classes.tabDiv} value={value} index={i}><Users onSnackbarEvent={onSnackbarEvent} /></TabPanel>
         case "Inventory": i++;return <TabPanel className={classes.tabDiv} value={value} index={i}><Inventory onSnackbarEvent={onSnackbarEvent} /></TabPanel>
-        case "Access": i++;return <TabPanel className={classes.tabDiv} value={value} index={i}><AccessMngmt onSnackbarEvent={onSnackbarEvent} /></TabPanel> 
+        case "Access Management": i++;return <TabPanel className={classes.tabDiv} value={value} index={i}><AccessMngmt onSnackbarEvent={onSnackbarEvent} /></TabPanel> 
       }
     })
   }

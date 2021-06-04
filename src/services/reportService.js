@@ -15,7 +15,7 @@ async function getDailyOccupancyReport() {
 
 async function getMonthlyOccupancyReport(category,startDate,endDate) {
   try {
-    const {data} = await http.get(`${http.baseUrl}/monthlyreport?reportType=${category}&fromDate=${startDate}&toDate=${endDate}`);
+    const {data} = await http.get(`http://localhost:5000/monthlyreport?reportType=${category}&fromDate=${startDate}&toDate=${endDate}`);
     return data;
   } catch (error) {
     console.log(error);

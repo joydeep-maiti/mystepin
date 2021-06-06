@@ -37,6 +37,9 @@ const Agent = () => {
   const [agent,setAgent] = useState("");
   const [shouldDisable, setShouldDisable] = useState(false);
   const [agentTypes, setAgentTypes] = useState([]);
+  const [isAgentCommission,setIsAgentCommission] = useState(false)
+  const [AgentCommissionOptions1,setAgentCommissionOptions1] = useState([])
+  const [AgentCommissioncategory,setAgentCommissioncategory] = useState("")
   const [generatedTime,setGeneratedTime] = useState(
     moment().format('DD-MMMM-YYYY')+'-'+moment().format('h:mm A')
   )
@@ -45,7 +48,27 @@ const Agent = () => {
   useEffect(()=>{
     fetchBillingTypes()
    },[])
+   useEffect(()=>{
+    fetchAgentCommissionOptions()
+ },[])
+ useEffect(()=>{
+  if(agent === "Agent Commission"){
+    setIsAgentCommission(true)
+  }
+  else{
+    setIsAgentCommission(false)
+  }
+},[agent])
+ const fetchAgentCommissionOptions = async() =>{
+  let options = await reportOptions.getAgentCommssion("Agent");
+    const types = []
+    options.forEach(option=>{
+      types.push(option)
+    })
+    setAgentCommissionOptions1(types)
+ }
 
+  
   const fetchBillingTypes = async()=>{
     let options = await reportOptions.getBillingOptions("Agent");
     const types = []
@@ -70,6 +93,7 @@ const Agent = () => {
     //Get Plan Options
     const getPlanOptions = () => {
         return agentTypes.map(type => {
+          console.log("Slected type",type)
         return { label: type, value: type};
       });
     };
@@ -78,14 +102,21 @@ const Agent = () => {
       setAgent(event.target.value);
       console.log("event",agent);
       }
-  const getAgentReport = async() =>{
+      const getAgentReport=()=>{
+        if(agent !== "Agent Commission"){getAgentReportforothers()}
+        else{
+          fetchAgentCommisionReport()
+        }
+  
+      }
+  const getAgentReportforothers = async() =>{
     let startD = moment(startingDate).format('yyyy-MM-DD')
       let currentD = moment(currentDate).format('yyyy-MM-DD')
       console.log("Start",startD)
       console.log("End",currentD)
       const options = await agentService.getAgentDetails(startD,currentD,agent);
       console.log("Navy",options)
-      if(agent == "Agent Collection"){
+      if(agent == "Agent Collection(Billed)"){
         let total=[0,0,0,0,0,0,0,0];
         let data = options.map(option=>{
           let billingDate = moment(option.billingDate).format('D-MMMM-YYYY');
@@ -103,7 +134,8 @@ const Agent = () => {
          
          exporttoPDF(data);
       }
-      else if(agent == "Due from Agent"){
+      
+      if(agent == "Due from Agent"){
         let total=[0,0,0,0,0,0,0,0];
         let data = options.map(option=>{
           let billingDate = moment(option.billingDate).format('D-MMMM-YYYY');
@@ -113,6 +145,7 @@ const Agent = () => {
              option.guestName,
              option.roomrate, 
              option.refnumber,
+             option.bookedBy,
              option.agentname,
              option.status
            ])
@@ -121,7 +154,81 @@ const Agent = () => {
          
          exporttoPDF(data);
       }
+      if(agent == "Agent Collection(Non-Billed)"){
+        let total=[0,0,0,0,0,0,0,0];
+        let data = options.map(option=>{
+         
+           let checkIn = moment(option.checkIn).format('YYYY-MMMM-D');
+           let checkOut = moment(option.checkOut).format('YYYY-MMMM-D');
+          return([
+            option.guestName,
+            checkIn,
+            checkOut,
+             option.roomrate,
+             option.bookedBy, 
+             option.refnumber,
+             option.agentname,
+           ])
+         })
+         
+         
+         exporttoPDF(data);
+      }
   }
+
+  const fetchAgentCommisionReport = async()=>{
+    let total=0;
+    let startD = moment(startingDate).format('yyyy-MM-DD')
+    let currentD = moment(currentDate).format('yyyy-MM-DD')
+    console.log("Start",startD)
+    console.log("End",currentD)
+    let options = await agentService.getAgentCommissionDetails(startD,currentD,agent,AgentCommissioncategory)
+    let len = options.length || 0 ;
+    console.log("len",len)
+    console.log("Response",options)
+    console.log("Category",AgentCommissioncategory)
+    if(options && AgentCommissioncategory){
+        let data = options.map(option=>
+          {
+          let checkIn = moment(option.checkIn).format('D-MMMM-YYYY');
+          let checkOut = moment(option.checkOut).format('D-MMMM-YYYY');
+          total += parseInt(option.Amount)
+          return([
+            option.billNo,
+            option.billingDate,
+            option.guestName,
+            option.roomrate,
+            option.refnumber,
+            option.agentname,
+            option.commisionPercent,
+            option.commission
+          ])
+        })
+        exporttoPDF(data,len,total)
+      }
+      else{
+    alert("Select the Agent type")
+      }
+
+
+  }
+  //Set AgentCommssion
+
+const handleAgentCommission = async (event) => {
+  setAgentCommissioncategory(event.target.value);
+      console.log("event",agent);
+};
+
+
+//commission Options
+
+const getAgentCommissionOptions = () => {
+  return AgentCommissionOptions1.map(type => {
+    console.log("Slected type",type)
+    return { label: type, value: type};
+  });
+
+};
   const exporttoPDF=(data)=>{
     const unit = "pt";
     const size = "A4"; // Use A1, A2, A3 or A4
@@ -132,18 +239,18 @@ const Agent = () => {
         doc.setFontSize(20);
         let title = `${agent} Report`;
         let headers = [[`Bill No`,"Bill Date","guestName","roomrate","bookedBy","refnumber","agentname"]];
-        if(agent === "Agent Collection"){
+        if(agent === "Agent Collection(Billed)"){
           headers = [[`Bill No`,"Bill Date","guestName","roomrate","bookedBy","refnumber","agentname"]];
         }
         else if(agent === "Due from Agent")
         {
          headers = [[`Bill No`,"Bill Date","guestName","roomrate","bookedBy","refnumber","agentname","status"]];
         }
-        else if(agent === "Card")
+        else if(agent === "Agent Collection(Non-Billed)")
         {
-         headers = [["Bill No","Bill Date","Name","Grant Total","Card"]];
-      
+         headers = [["GuestName","CheckIn","CheckOut","roomrate","bookedBy","refnumber","agentname"]];
         }
+       
        
         let content = {
           startY: 120,
@@ -195,6 +302,15 @@ const Agent = () => {
                 options: getPlanOptions(),
                 disabled: shouldDisable
               })}
+               { isAgentCommission && FormUtils.renderSelect({
+                    id: "agent",
+                    label: "agent",
+                    value: AgentCommissioncategory,
+                    onChange: event => handleAgentCommission(event),
+                    options: getAgentCommissionOptions(),
+                    disabled: shouldDisable
+                  })
+        }
 
           <div className="formdates"> 
               

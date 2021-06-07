@@ -56,9 +56,9 @@ const GuestSearch = ({ allBookings, onClose, title, onSnackbarEvent, history }) 
         }
     }
 
-    const handleReport = (el) => {
+    const handleProof = (el) => {
         onClose();
-        history.push("/report", el);
+        history.push("/idproof", el._id);
     }
 
     const handleChange = (e) => {
@@ -208,11 +208,13 @@ const GuestSearch = ({ allBookings, onClose, title, onSnackbarEvent, history }) 
                                 <TableCell style={{ background: "#0088bc", color: "white" }} align="center">Contact</TableCell>
                                 <TableCell style={{ background: "#0088bc", color: "white" }} align="center">CheckIn Date</TableCell>
                                 <TableCell style={{ background: "#0088bc", color: "white" }} align="center">CheckOut Date</TableCell>
+                                <TableCell style={{ background: "#0088bc", color: "white" }} align="center">ID Proof</TableCell>
                                 <TableCell style={{ background: "#0088bc", color: "white" }} align="center">Bill Amount</TableCell>
                             </TableRow>
                         </TableHead>
                         {
                             bills.map(el => {
+                                console.log("el._id",el.proofs)
                                 let _rooms = el.rooms && el.rooms.map(ele => {
                                     return ele.roomNumber
                                 })
@@ -229,6 +231,7 @@ const GuestSearch = ({ allBookings, onClose, title, onSnackbarEvent, history }) 
                                         <TableCell align="center">{el.contactNumber}</TableCell>
                                         <TableCell align="center">{el.checkIn?moment(el.checkIn).format('D.MMM.YYYY'):""}</TableCell>
                                         <TableCell align="center">{el.checkOut?moment(el.checkOut).format('D.MMM.YYYY'):""}</TableCell>
+                                        <TableCell align="center">{el.proofs?<span style={{cursor:"pointer", color:"blue"}} onClick={()=>handleProof(el)}>{el.proofs}</span>:"No ID Proof"}</TableCell>
                                         <TableCell align="center">{billAmount}</TableCell>
                                     </TableRow>
                                 )

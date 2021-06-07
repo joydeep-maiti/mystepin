@@ -42,6 +42,7 @@ import GuestSearch from '../GuestSearch/GuestSearch'
 import TodayCheckIn from '../TodayCheckIn/TodayCheckIn'
 import PrintBill from '../PrintBill/PrintBill'
 import CleanRoom from '../CleanRoom/CleanRoom'
+import IdProof from '../IdProof/IdProof'
 import ConfirmDialog from '../../common/ConfirmDialog/ConfirmDialog'
 // import constants from "../../utils/constants";
 
@@ -501,6 +502,12 @@ const Dashboard = props => {
               path="/report"
               render={props => (
                 <Report selectedBooking={selectedBooking} {...props} />
+              )}
+            />
+            <Route
+              path="/idproof"
+              render={props => (
+                <IdProof/>
               )}
             />
             <Route

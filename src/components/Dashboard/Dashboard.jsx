@@ -382,6 +382,7 @@ const Dashboard = props => {
           path={props.location.pathname}
           onRedirectFromNavbar={handleRedirectFromNavbar}
           userData={userData}
+          onLogout={props.onLogout}
         />
         <Dialog
           open={dialog.open}

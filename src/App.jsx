@@ -13,11 +13,16 @@ const App = (props) => {
     props.history.push("/")
   }
 
+  const handleUserLogout = ()=>{
+    setUserData(null)
+    props.history.push("/login")
+  }
+
   return (
     <div style={{ height: "100%" }}>
       <Switch>
         <Route path="/login" render={()=><Login onLoggedIn={handleUserLogin}/>} />
-        <Route path="/" render={()=><Dashboard userData={userData}/>}/>
+        <Route path="/" render={()=><Dashboard userData={userData} onLogout={handleUserLogout}/>}/>
       </Switch>
     </div>
   );

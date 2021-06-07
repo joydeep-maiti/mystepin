@@ -17,6 +17,8 @@ import jsPDF from 'jspdf';
 import "jspdf-autotable";
 import moment from "moment";
 import { fetchAndGenerateDailyOccupanyReport } from '../Occupancy/Occupancy'
+import AccountCircle from '@material-ui/icons/AccountCircle';
+
 
 const useStyles = makeStyles(theme => ({
   stepIn: {
@@ -45,18 +47,51 @@ const HeaderNavbar = ({
   showAdvancedDialog,
   showPOSDialog,
   userData,
+  onLogout,
   ...props
 }) => {
   const classes = useStyles();
 
   const [userPermissions, setUserPermissions] = React.useState([]);
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
-  React.useEffect(()=>{
-    console.log("props.userData per",userData)
-    if(userData){
+  const isMenuOpen = Boolean(anchorEl);
+  const menuId = 'primary-search-account-menu';
+
+  React.useEffect(() => {
+    console.log("props.userData per", userData)
+    if (userData) {
       setUserPermissions(userData.permissions)
     }
-  },[userData])
+  }, [userData])
+
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    handleMenuClose()
+    onLogout()
+  };
+
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem onClick={handleLogout}>Logout</MenuItem>
+    </Menu>
+  );
+
 
   return (
     <div className={classes.root}>
@@ -77,7 +112,7 @@ const HeaderNavbar = ({
             <TableChartIcon />
             Occupancy Chart
           </Button>
-         { userPermissions.includes("Utility") && <React.Fragment>
+          {userPermissions.includes("Utility") && <React.Fragment>
             <AdvanceMenu showAdvancedDialog={showAdvancedDialog} />
           </React.Fragment>}
 
@@ -106,8 +141,13 @@ const HeaderNavbar = ({
               </Button>
             </React.Fragment>
           )}
+          <Button color="inherit" onClick={handleProfileMenuOpen}>
+            <AccountCircle />
+            {userData? userData.username: ""}
+          </Button>
         </Toolbar>
       </AppBar>
+      {renderMenu}
     </div>
   );
 };

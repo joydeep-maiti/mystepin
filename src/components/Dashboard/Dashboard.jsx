@@ -37,6 +37,7 @@ import ReportComponent from '../ReportComponent/ReportComponent'
 import AdvancedDialog from '../AdvancedTab/AdvancedDialog'
 import RecentCheckouts from '../RecentCheckouts/RecentCheckouts'
 import ApproximateBill from '../ApproximateBill/ApproximateBill'
+import ExpectedCheckout from '../ExpectedCheckout/ExpectedCheckout'
 import BillSettlement from '../BillSettlement/BillSettlement'
 import GuestSearch from '../GuestSearch/GuestSearch'
 import TodayCheckIn from '../TodayCheckIn/TodayCheckIn'
@@ -431,6 +432,15 @@ const Dashboard = props => {
           {
             dialog.openFor.advanced && advancedDialogTitle === "Approximate Bill" && (
               <ApproximateBill
+                // allBookings={allBookings}
+                title={advancedDialogTitle}
+                onClose={() => handleDialog(dialog.contentOf)}
+              // onSnackbarEvent={handleSnackbarEvent}
+              />
+            )}
+          {
+            dialog.openFor.advanced && advancedDialogTitle === "Expected Checkout" && (
+              <ExpectedCheckout
                 // allBookings={allBookings}
                 title={advancedDialogTitle}
                 onClose={() => handleDialog(dialog.contentOf)}

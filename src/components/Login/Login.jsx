@@ -12,17 +12,29 @@ const useStyles = makeStyles((theme) => ({
             width: '23rem',
         },
     },
+    inputs: {
+        backgroundColor:"white"
+    },
     loginDiv: {
         display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "85%",
-        // backgroundImage: "url('image.png')"
+        // alignItems: "center",
+        // justifyContent: "center",
+        // height: "85%",
+        alignItems: "flex-end",
+        justifyContent: "flex-end",
+        height: "100%",
+        backgroundImage: "url('image.png')",
+        backgroundPosition: "top",
+        backgroundSize: "cover"
     },
     formDiv: {
         display: "flex",
-        flexDirection: "column"
-
+        flexDirection: "column",
+        padding: "2rem 1rem", 
+        margin: "5rem",
+        backgroundColor: "rgba(255, 255, 255, 0.89)",
+        border: "1px solid rgba(0, 0, 0, 0.23)",
+        borderRadius: "4px"
     },
     back: {
         clipPath: "ellipse(40vw 60vh at 90% 50%)",
@@ -62,15 +74,15 @@ const Login = (props) => {
 
     return (
         <React.Fragment>
-            <div className={classes.back}></div>
+            {/* <div className={classes.back}></div> */}
             <div className={classes.loginDiv}>
                 <form className={`${classes.root} ${classes.formDiv}`} autoComplete="off" onSubmit={onFormSubmit}>
                     <Typography variant="h3" gutterBottom>
                         Login
                     </Typography>
-                    <TextField id="outlined-basic" label="Username" variant="outlined" name="username" onChange={handleInput} value={userData.username} />
-                    <TextField id="outlined-basic" type="password" label="Password" variant="outlined" name="password" onChange={handleInput} value={userData.password} />
-                    <Button variant="outlined" color="primary" type="submit">
+                    <TextField id="outlined-basic" className={classes.inputs} label="Username" variant="outlined" name="username" onChange={handleInput} value={userData.username} />
+                    <TextField id="outlined-basic" className={classes.inputs} type="password" label="Password" variant="outlined" name="password" onChange={handleInput} value={userData.password} />
+                    <Button variant="contained" color="primary" type="submit">
                         Submit
                      </Button>
                 </form>

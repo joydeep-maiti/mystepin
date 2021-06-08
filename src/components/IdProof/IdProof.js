@@ -1,5 +1,5 @@
 import React from 'react'
-import { withRouter } from 'react-router-dom'
+import { withRouter, useParams } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles';
 import bookingService from '../../services/bookingService'
 import Loader from "../../common/Loader/Loader";
@@ -26,13 +26,21 @@ const IdProof = (props) => {
 
     const [data, setData] = React.useState("")
     const [loading, setLoading] = React.useState(false);
+    let { id } = useParams()
+
+    // React.useEffect(()=>{
+    //     console.log("IdProofprops",props,id)
+    //     if(props.location.state){
+    //         fetchId(props.location.state)
+    //     }
+    // },[])
 
     React.useEffect(()=>{
-        console.log("IdProofprops",props)
-        if(props.location.state){
-            fetchId(props.location.state)
+        console.log("IdProofprops",id)
+        if(id){
+            fetchId(id)
         }
-    },[])
+    },[id])
 
     const fetchId = async(id)=>{
         setLoading(true)
@@ -47,7 +55,7 @@ const IdProof = (props) => {
     return (
         <React.Fragment>
             {loading && <Loader color="#0088bc" />}
-            {data && <div className={classes.divi}><img src={data} style={{height:"60vh"}}/></div>}
+            {data && <div className={classes.divi}><img src={data} style={{maxHeight:"90vh", maxWidth:"90vw"}}/></div>}
             {!data && !loading && <div className={classes.divi}>NO IDPROOF FOUND</div>}
         </React.Fragment>
     )

@@ -1,5 +1,5 @@
 import React from "react";
-import { withRouter } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { DialogTitle, DialogContent, Button, DialogActions } from "@material-ui/core";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -231,7 +231,8 @@ const GuestSearch = ({ allBookings, onClose, title, onSnackbarEvent, history }) 
                                         <TableCell align="center">{el.contactNumber}</TableCell>
                                         <TableCell align="center">{el.checkIn?moment(el.checkIn).format('D.MMM.YYYY'):""}</TableCell>
                                         <TableCell align="center">{el.checkOut?moment(el.checkOut).format('D.MMM.YYYY'):""}</TableCell>
-                                        <TableCell align="center">{el.proofs?<span style={{cursor:"pointer", color:"blue"}} onClick={()=>handleProof(el)}>{el.proofs}</span>:"No ID Proof"}</TableCell>
+                                        {/* <TableCell align="center">{el.proofs?<span style={{cursor:"pointer", color:"blue"}} onClick={()=>handleProof(el)}>{el.proofs}</span>:"No ID Proof"}</TableCell> */}
+                                        <TableCell align="center">{el.proofs?<Link to={{pathname:`/idproof/${el._id}`}} target="_blank" >{el.proofs}</Link>:"No ID Proof"}</TableCell>
                                         <TableCell align="center">{billAmount}</TableCell>
                                     </TableRow>
                                 )

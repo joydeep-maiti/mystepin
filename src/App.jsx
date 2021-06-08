@@ -3,6 +3,7 @@ import { Route, Switch, withRouter } from "react-router-dom";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Login from "./components/Login/Login";
 import IdProof from './components/IdProof/IdProof'
+import userService from './services/userService'
 
 const App = (props) => {
 
@@ -14,9 +15,13 @@ const App = (props) => {
     props.history.push("/")
   }
 
-  const handleUserLogout = ()=>{
-    setUserData(null)
-    props.history.push("/login")
+  const handleUserLogout = async()=>{
+    const res = await userService.logout({username:userData.username})
+    console.log("res", res)
+    if (res.status===200) {
+        setUserData(null)
+        props.history.push("/login")
+    }
   }
 
   return (

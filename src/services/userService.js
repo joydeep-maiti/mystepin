@@ -35,6 +35,19 @@ async function login(data) {
   }
 }
 
+async function logout(data) {
+  try {
+    const response = await http.post(
+      `${http.baseUrl}/user/logout`,
+      data
+    );
+    return response
+  } catch (error) {
+    console.log(error);
+    return false
+  }
+}
+
 async function updateUser(data) {
   try {
     const response = await http.patch(
@@ -64,4 +77,4 @@ async function deleteUser(data) {
   }
 }
 
-export default { getUsers, addUser, updateUser, deleteUser, login };
+export default { getUsers, addUser, updateUser, deleteUser, login, logout };

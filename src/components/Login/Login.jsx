@@ -16,7 +16,8 @@ const useStyles = makeStyles((theme) => ({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        height: "85%"
+        height: "85%",
+        // backgroundImage: "url('image.png')"
     },
     formDiv: {
         display: "flex",
@@ -66,12 +67,12 @@ const Login = (props) => {
                 <form className={`${classes.root} ${classes.formDiv}`} autoComplete="off" onSubmit={onFormSubmit}>
                     <Typography variant="h3" gutterBottom>
                         Login
-                </Typography>
+                    </Typography>
                     <TextField id="outlined-basic" label="Username" variant="outlined" name="username" onChange={handleInput} value={userData.username} />
                     <TextField id="outlined-basic" type="password" label="Password" variant="outlined" name="password" onChange={handleInput} value={userData.password} />
                     <Button variant="outlined" color="primary" type="submit">
                         Submit
-                </Button>
+                     </Button>
                 </form>
             </div>
         </React.Fragment>

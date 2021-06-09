@@ -113,7 +113,6 @@ const Dashboard = props => {
     window.addEventListener('beforeunload', function (e) {
       e.preventDefault();
       userData && userService.logout({username:userData.username})
-      // userData && userService.logout({username:userData.username})
       e.returnValue = '';
     });
 

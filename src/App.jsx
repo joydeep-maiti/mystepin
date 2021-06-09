@@ -9,20 +9,24 @@ const App = (props) => {
 
   const [userData, setUserData] = React.useState(null)
 
-  const handleUserLogin = (_userData)=>{
-    console.log("UserLoggedin")
-    setUserData(_userData)
-    props.history.push("/")
-  }
-
   const handleUserLogout = async()=>{
+    console.log("res")
     const res = await userService.logout({username:userData.username})
     console.log("res", res)
     if (res.status===200) {
         setUserData(null)
         props.history.push("/login")
     }
+    console.log("res")
+    return ("MESSAGE")
   }
+
+  const handleUserLogin = (_userData)=>{
+    console.log("UserLoggedin")
+    setUserData(_userData)
+    props.history.push("/")
+  }
+
 
   return (
     <div style={{ height: "100%" }}>

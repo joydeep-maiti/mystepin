@@ -43,7 +43,7 @@ import GuestSearch from '../GuestSearch/GuestSearch'
 import TodayCheckIn from '../TodayCheckIn/TodayCheckIn'
 import PrintBill from '../PrintBill/PrintBill'
 import CleanRoom from '../CleanRoom/CleanRoom'
-
+import userService from '../../services/userService'
 import ConfirmDialog from '../../common/ConfirmDialog/ConfirmDialog'
 // import constants from "../../utils/constants";
 
@@ -69,6 +69,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Dashboard = props => {
+
+
   const [allRooms, setAllRooms] = useState([]);
   const [allBookings, setAllBookings] = useState([]);
   const [occupiedRooms, setOccupiedRooms] = useState([]);
@@ -105,6 +107,17 @@ const Dashboard = props => {
   const [openCleanRoomDlg, setOpenCleanRoomDlg] = React.useState(false);
   const [roomToClean, setRoomToClean] = React.useState(null);
   const [userData, setUserData] = React.useState(null);
+
+
+  React.useEffect(()=>{
+    window.addEventListener('beforeunload', function (e) {
+      e.preventDefault();
+      userData && userService.logout({username:userData.username})
+      // userData && userService.logout({username:userData.username})
+      e.returnValue = '';
+    });
+
+  },[userData])
 
   const handleViewChange = (event) => {
     setView(event.target.value);

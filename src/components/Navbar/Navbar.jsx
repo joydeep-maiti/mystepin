@@ -132,7 +132,14 @@ const HeaderNavbar = ({
             <AssessmentIcon />
             Reports
           </Button>
-          {path === "/" && (
+          
+          {userPermissions.includes("POS") && <POSMenu showPOSDialog={showPOSDialog} />}
+          <Button color="inherit" onClick={onRefresh}>
+            <RefreshIcon />
+            Refresh
+          </Button>
+            
+          {/* {path === "/" && (
             <React.Fragment>
               {userPermissions.includes("POS") && <POSMenu showPOSDialog={showPOSDialog} />}
               <Button color="inherit" onClick={onRefresh}>
@@ -140,7 +147,7 @@ const HeaderNavbar = ({
                 Refresh
               </Button>
             </React.Fragment>
-          )}
+          )} */}
           <Button color="inherit" onClick={handleProfileMenuOpen}>
             <AccountCircle />
             {userData? userData.username: ""}

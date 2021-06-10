@@ -120,9 +120,12 @@ const Agent = () => {
         let total=[0,0,0,0,0,0,0,0];
         let data = options.map(option=>{
           let billingDate = moment(option.billingDate).format('D-MMMM-YYYY');
+          let checkIn = moment(option.checkIn).format('YYYY-MMMM-D');
+          let checkOut = moment(option.checkOut).format('YYYY-MMMM-D');
           return([
             ` ${option.billNo} ` ,
-             billingDate,
+             checkIn,
+             checkOut,
              option.guestName,
              option.roomrate,
              option.bookedBy, 
@@ -138,16 +141,22 @@ const Agent = () => {
       if(agent == "Due from Agent"){
         let total=[0,0,0,0,0,0,0,0];
         let data = options.map(option=>{
+          let checkIn = moment(option.checkIn).format('YYYY-MMMM-D');
+          let checkOut = moment(option.checkOut).format('YYYY-MMMM-D');
           let billingDate = moment(option.billingDate).format('D-MMMM-YYYY');
           return([
             ` ${option.billNo} ` ,
-             billingDate,
+            checkIn,
+            checkOut,
              option.guestName,
-             option.roomrate, 
-             option.refnumber,
-             option.bookedBy,
+             option.bookedBy, 
              option.agentname,
-             option.status
+             option.refnumber,
+             option.TotalAmount,
+             option.Advance,
+             option.Amount,
+             
+             
            ])
          })
          
@@ -192,16 +201,20 @@ const Agent = () => {
           {
           let checkIn = moment(option.checkIn).format('D-MMMM-YYYY');
           let checkOut = moment(option.checkOut).format('D-MMMM-YYYY');
+          let billingDate = moment(option.billingDate).format('D-MMMM-YYYY');
           total += parseInt(option.Amount)
           return([
             option.billNo,
-            option.billingDate,
+            checkIn,
+            checkOut,
             option.guestName,
-            option.roomrate,
-            option.refnumber,
+            
             option.agentname,
-            option.commisionPercent,
-            option.commission
+            option.refnumber,
+            option.roomrate,
+            option.commission,
+            
+            
           ])
         })
         exporttoPDF(data,len,total)
@@ -238,17 +251,23 @@ const getAgentCommissionOptions = () => {
     const doc = new jsPDF(orientation, unit, size);
         doc.setFontSize(20);
         let title = `${agent} Report`;
-        let headers = [[`Bill No`,"Bill Date","guestName","roomrate","bookedBy","refnumber","agentname"]];
+        let sam = "Commisiosn";
+        let headers = [[`Bill No`,"CheckIn","CheckOut","guestName","Amount","bookedBy","refnumber","agentname"]];
         if(agent === "Agent Collection(Billed)"){
-          headers = [[`Bill No`,"Bill Date","guestName","roomrate","bookedBy","refnumber","agentname"]];
+          headers = [[`Bill No`,"CheckIn","CheckOut","guestName","Amount","bookedBy","refnumber","agentname"]];
         }
         else if(agent === "Due from Agent")
         {
-         headers = [[`Bill No`,"Bill Date","guestName","roomrate","bookedBy","refnumber","agentname","status"]];
+         headers = [[`Bill No`,"CheckIn","CheckOut","guestName","bookedBy","agentname","refnumber","Total Amount","Advance","Due Amount"]];
         }
         else if(agent === "Agent Collection(Non-Billed)")
         {
-         headers = [["GuestName","CheckIn","CheckOut","roomrate","bookedBy","refnumber","agentname"]];
+         headers = [["GuestName","CheckIn","CheckOut","Amount","bookedBy","refnumber","agentname"]];
+        }
+        else if(agent === "Agent Commission")
+        {
+          
+         headers = [["Bill No","CheckIn","CheckOut","GuestName","agentname","refnumber","Amount","commission"]];
         }
        
        
@@ -270,6 +289,13 @@ const getAgentCommissionOptions = () => {
         doc.setFontSize(15);
         doc.text("From : "+startDateString,100, 90);
         doc.text("To : "+currentDateString,250, 90);
+        if(agent === "Due from Agent"){
+          doc.text("Status : Due ",20, 110);
+        }
+
+        if(agent === "Agent Commission"){
+          doc.text("Commission % : 15 ",20, 110);
+        }
         doc.setFontSize(12);
         doc.autoTable(content);
         doc.setFontSize(12);
@@ -313,8 +339,9 @@ const getAgentCommissionOptions = () => {
         }
 
           <div className="formdates"> 
-              
+             
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
+       
          <KeyboardDatePicker
               disableToolbar
               format="dd/MMMM/yyyy"

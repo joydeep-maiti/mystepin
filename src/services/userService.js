@@ -9,6 +9,15 @@ async function getUsers() {
   }
 }
 
+async function getActiveUsers() {
+  try {
+    const { data: rooms } = await http.get(`${http.baseUrl}/userlog/active`);
+    return rooms;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 async function addUser(data) {
   try {
     const response = await http.post(
@@ -77,4 +86,4 @@ async function deleteUser(data) {
   }
 }
 
-export default { getUsers, addUser, updateUser, deleteUser, login, logout };
+export default { getUsers, addUser, updateUser, deleteUser, login, logout, getActiveUsers };

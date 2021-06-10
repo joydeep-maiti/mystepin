@@ -40,7 +40,7 @@ const ExpectedCheckout = ({ allBookings, onClose, title, onSnackbarEvent, histor
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>
         {loading && <Loader color="#0088bc" />}
-        {bills && bills.length===0 && <h4 style={{textAlign:"center"}}>No Checkouts Found for Today</h4>}
+        {bills && bills.length===0 && <h4 style={{textAlign:"center"}}>No Expected Checkouts Found for Today</h4>}
         {bills && bills.length>0 && <TableContainer component={Paper} style={{marginTop:"0.7rem", maxHeight:"70vh"}}>
             <Table size="small" stickyHeader aria-label="sticky table">
                 <TableHead>

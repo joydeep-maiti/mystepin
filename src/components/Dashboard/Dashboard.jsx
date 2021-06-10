@@ -41,6 +41,7 @@ import ExpectedCheckout from '../ExpectedCheckout/ExpectedCheckout'
 import BillSettlement from '../BillSettlement/BillSettlement'
 import GuestSearch from '../GuestSearch/GuestSearch'
 import TodayCheckIn from '../TodayCheckIn/TodayCheckIn'
+import ActiveUsers from '../ActiveUsers/ActiveUsers'
 import PrintBill from '../PrintBill/PrintBill'
 import CleanRoom from '../CleanRoom/CleanRoom'
 import userService from '../../services/userService'
@@ -478,6 +479,14 @@ const Dashboard = props => {
           {
             dialog.openFor.advanced && advancedDialogTitle === "Guest Details" && (
               <GuestSearch
+                title={advancedDialogTitle}
+                onClose={() => handleDialog(dialog.contentOf)}
+                onSnackbarEvent={handleSnackbarEvent}
+              />
+            )}
+          {
+            dialog.openFor.advanced && advancedDialogTitle === "Active Users" && (
+              <ActiveUsers
                 title={advancedDialogTitle}
                 onClose={() => handleDialog(dialog.contentOf)}
                 onSnackbarEvent={handleSnackbarEvent}

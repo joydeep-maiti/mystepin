@@ -36,23 +36,46 @@ const POSList = (props) => {
       <TableContainer component={Paper} style={{marginTop:"0.7rem"}}>
         <Table size="small" stickyHeader aria-label="sticky table">
               <TableHead>
-                <TableRow>
-                  <TableCell align="center">Date</TableCell>
-                  <TableCell align="center">Amount</TableCell>
-                  <TableCell align="center">Remarks</TableCell>
+                 {
+                  props.view === "kot" ? 
+                  <TableRow>
+                   <TableCell align="center">KOT ID</TableCell>
+                  <TableCell align="center">DATE</TableCell>
+                  <TableCell align="center">AMOUNT</TableCell>
                   <TableCell align="center">Delete</TableCell>
-                </TableRow>
+                  </TableRow>
+                  :
+                    <TableRow>
+                    <TableCell align="center">Date</TableCell>
+                   <TableCell align="center">Amount</TableCell>
+                   <TableCell align="center">Remarks</TableCell>
+                   <TableCell align="center">Delete</TableCell>
+                   </TableRow>
+                  
+                 }  
+                 
+                 
               </TableHead>
               <TableBody>
               {
                 pos && pos.map(el => {
                   return(
-                    <TableRow>
+  
+                      props.view === "kot" ? 
+                      <TableRow>
+                      <TableCell align="center">KOTID</TableCell>
+                      <TableCell align="center">{moment(el.date).format("Do MMMM YYYY")}</TableCell>
+                      <TableCell align="center">{el.amount}</TableCell>
+                      <TableCell align="center"><DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(el)}/></TableCell>
+                     </TableRow>
+                      :
+                      <TableRow>
                       <TableCell align="center">{moment(el.date).format("Do MMMM YYYY")}</TableCell>
                       <TableCell align="center">{el.amount}</TableCell>
                       <TableCell align="center">{el.remarks}</TableCell>
                       <TableCell align="center"><DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(el)}/></TableCell>
                     </TableRow>
+                     
                   )
                 })
               }

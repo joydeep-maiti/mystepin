@@ -2,28 +2,60 @@ import React, { useState, useEffect, useContext } from "react";
 import SnackBarContext from "./../../context/snackBarContext";
 import { DialogTitle,DialogActions, DialogContent, Button } from "@material-ui/core";
 import moment from "moment";
-
 import POSList from "./POSList";
 import bookingService from "../../services/bookingService";
 import posService from "../../services/posService";
 import FormUtils from "../../utils/formUtils";
 import utils from "../../utils/utils";
 import schemas from "../../utils/joiUtils";
-
 import constants from "../../utils/constants";
 import "./POS.scss";
-
+//********************* KOT */
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import Dialog from '@material-ui/core/Dialog';
+import FastfoodIcon from '@material-ui/icons/Fastfood';
+import TextField from '@material-ui/core/TextField';
+import {makeStyles} from "@material-ui/core";
+import inventory from '../../services/inventory';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import InventoryList from './InventoryList'
+import kotService from "../../services/kotService";
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+const useStyles = makeStyles(theme => ({
+    formGroup: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: 20,
+      paddingRight: 20,
+      '& > div': {
+        margin: theme.spacing(1),
+        width: '25ch',
+      },
+    },
+    inputItems: {
+      width: "70%"
+    },
+    span: {
+      color: "#0088bc"
+    },
+    table: {
+      maxWidth:1400,
+      maxHeight: "70vh"
+    },
+    roomsDiv:{
+      display: "flex",
+      flexFlow: "row wrap",
+      alignItems: "flex-start",
+      justifyContent: "center"
+    }
+  }));
 const { success, error } = constants.snackbarVariants;
 const schema = schemas.POSFormSchema;
-
+let total = 0;
 const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
-  const [data, setData] = useState({
-    roomNumber: "",
-    bookingId: "",
-    date: utils.getDate(),
-    amount: "",
-    remarks: ""
-  });
   const [errors, setErrors] = useState({});
   const [openDatePicker, setOpenDatePicker] = useState(false);
   const [minDate, setMinDate] = useState(utils.getDate());
@@ -34,11 +66,85 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
   const [bookingOptions, setBookingOptions] = useState([]);
   const [roomOptions, setRoomOptions] = useState([]);
   const [disable] = useState(false);
-
   const handleSnackbarEvent = useContext(SnackBarContext);
-
+//***************** KOT*/
+const [open, setOpen] = React.useState(false);
+const classes = useStyles();
+const [item,setItem] = useState({
+      itemName:"",
+      itemQuantity: 1,
+      itemPrice: Number,
+})
+const [kotDetails,setkotDetails] = useState({})
+const [kot,setKot]=useState(null)
+const [view, setView] = useState('manual');
+const [foods,setFoods] = useState([])
+const [loading, setLoading] = useState(false);
+const [initialP,setInitialP]= useState(1)
+const [bid,setBid]=useState(null)
+useEffect(() => {
+  setLoading(true);
+      fetchFoods()  
+  }, [])
+ const fetchFoods = async () => {
+     const items = await inventory.getFoodItems();
+     if(items){
+          setFoods(items);
+          setLoading(false);           
+     }
+ }
+ const [data, setData] = useState(
+{
+  roomNumber: "",
+  bookingId: "",
+  date: utils.getDate(),
+  amount: "",
+  remarks: "Manual Entry",
+  kotId:""
+}
+);
+const [kotArray,setKotArray] = useState([])
+const [showKot,setShowKot] = useState(true)
+useEffect(() => {
+ view === "kot" ?setShowKot(false) :setShowKot(true)
+}, [view])
+const handleKOTOpen = () => {
+  setOpen(true);
+};
+const handleKOTClose = () => {
+  setOpen(false);
+};
+const handleKot=()=>{
+  if(data.roomNumber === ""){
+    openSnackBar("Room Number is Empty", error);
+  }
+  else{
+    handleKOTOpen()
+  }
+}
+const  handleChange = (value) => {
+  setItem({...item,
+   itemName:`${value.item} ${value.unit}`,
+   itemQuantity:1,
+   itemPrice: value.price})
+   setInitialP(value.price)
+}
+const handleQuantityChange=(e)=>{
+   let quantity = e.target.value;
+   if(quantity<1){
+     openSnackBar("Minimum Number is 1", error);
+     setItem({...item,itemQuantity:1})
+   }
+   if(quantity !== null){
+     setItem({...item,itemQuantity:quantity,
+                      itemPrice: initialP*quantity})
+    }
+ }
+ // *********************************************************
+ const handleViewChange = (event) => {
+   setView(event.target.value);
+};
   useEffect(() => {
-    
     let POSData = [];
     const filteredBookings = allBookings.filter(
       booking => booking.status.checkedIn && !booking.status.checkedOut
@@ -73,7 +179,8 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
     }));
     setRoomOptions(options);
   }, [posData]);
-
+  
+//Useeffect
   const getUpdatedValues = (booking, dateObj) => {
     let { checkIn, checkOut, months } = booking;
     const { month, year, days } = dateObj;
@@ -105,7 +212,6 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
       disabled: shouldDisable
     };
   };
-
   const getDateArgObj = (id, label, type, minDate, shouldDisable) => {
     return {
       id,
@@ -120,7 +226,6 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
       open: openDatePicker
     };
   };
-
   const handleInputChange = (event, id) => {
     const updatedState = FormUtils.handleInputChange(
       event.currentTarget,
@@ -152,19 +257,18 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
     const filteredArray = posData.filter(
       data => data.room.roomNumber === roomNo
     );
-    console.log("filteredArray",filteredArray)
+   // console.log("filteredArray",filteredArray)
     const options = filteredArray.map(item => ({
       label: `${item.booking.firstName} ${item.booking.lastName}`,
       value: item.booking._id
     }));
-    console.log("options",options)
+    //console.log("options",options)
 
     setBookingOptions(options);
     setBookingId(options[0])
     setData({ ...data, roomNumber: roomNo, _id: options[0].value });
     setErrors(updatedErrors);
   };
-
   const setBookingId = async(option) => {
     // let updatedErrors = { ...errors };
     // delete updatedErrors[input.name];
@@ -176,15 +280,30 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
     setData({ ...data, date: minDate, _id: option.value});
     setGuest(option.label)
     const response = await posService.getPosByBookingId(option.value);
-     console.log("posgetresponse",response)
+    // console.log("posgetresponse",response)
     if(response){
       setPosDetails(response)
       setPos(response.pos)
     }
-    console.log("bookingId",data)
+    setBid(option.value)
+    console.log("bid",option.value)
+   // console.log("bookingId",data)
     setMinDate(minDate);
     // setErrors(updatedErrors);
   };
+
+  useEffect(() => {
+   fetchKOT()
+  }, [bid])
+const fetchKOT=async()=>{
+  const items = await kotService.getKOTByBookingId(bid);
+  if(items){
+    console.log("KOT",items)
+    console.log("Items",items)
+    setkotDetails(items)
+    setKot(items.kot)
+  }
+}
 
   const checkForErrors = () => {
     let errors = FormUtils.validate(data, schema);
@@ -193,18 +312,14 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
     setErrors(errors);
     return Object.keys(errors).length;
   };
-
-  const onFormSubmit = async event => {
-    event.preventDefault();
-    // console.log("in")
+  const onFormSubmit = async (e) => {
+    e.preventDefault();
     const errors = checkForErrors();
     if (errors) return;
-
-    const { _id, date, amount, remarks } = data;
+    const { _id, date, amount, remarks} = data;
     const booking = {
       ...allBookings.find(booking => booking._id === _id)
     };
-
     if (pos) {
       let _pos = { ...pos };
       _pos[title] = _pos[title]
@@ -237,14 +352,6 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
       } 
       else openSnackBar("Error Occurred", error);
     }
-
-    // const response = await bookingService.updateBooking(booking);
-    // if (response.status === 200){
-    //   openSnackBar("Updated Successfully", success);
-    //   setPos(booking.pos)
-    // } 
-    // else openSnackBar("Error Occurred", error);
-    // onClose();
   };
 
   const openSnackBar = (message, variant) => {
@@ -256,12 +363,7 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
     let index = pos[title].findIndex(e => e.date === obj.date)
     let temp = JSON.parse(JSON.stringify(pos))
     temp[title].splice(index,1)
-    // console.log("pos",pos, temp)
     setPos(temp)
-    // const { _id, date, amount, remarks } = data;
-    // const booking = {
-    //   ...allBookings.find(booking => booking._id === _id)
-    // };
     const _posDetails = {
       ...posDetails,
       pos:temp
@@ -275,19 +377,109 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
     // onClose();
   };
 
+//For dialog Open
+const handleKOTSUBMIT = async (e)=>{
+    e.preventDefault();
+    handleKOTClose();
+    if(kotArray){
+    if(kot){
+      console.log("Update Method")
+      const response = await kotService.updateKOT({bookingId:bid,kotArray:kotArray})
+      if(response.status === 200){
+        console.log("data and status ",response.data.kotId)
+        setData({...data,kotId:response.data.kotId})
+        openSnackBar("Element added Successfully", success);
+        fetchKOT()
+        handlePOSKOTUpload()
+      }
+        else{
+           openSnackBar("Error Occurred", error);
+       }
+    }
+    else{
+      console.log("Post Method")
+      const res = await kotService.addKOT({bookingId:bid,date:data.date,kotArray:kotArray})
+      if(res){
+      openSnackBar("Element added Successfully", success);
+      console.log("First Insertion",res)
+      fetchKOT()
+      handlePOSKOTUpload();
+      }
+      else{
+       openSnackBar("Error Occurred", error);
+      }
+    }
+    }
+}
+const handlePOSKOTUpload = async()=>{ 
+    const { _id,kotId,date, amount} = data;
+    const booking = {
+      ...allBookings.find(booking => booking._id === _id)
+    };
+    if (pos) {
+      let _pos = { ...pos };
+      _pos[title] = _pos[title]
+        ? [..._pos[title], { kotId,date,amount }]
+        : [{kotId,date,amount}];
+      // booking.pos = _pos;
+      const response = await posService.updatePos({
+        ...posDetails,
+        pos:_pos
+      });
+      if (response){
+        openSnackBar("Updated Successfully", success);
+        setPos(_pos)
+      } 
+      else openSnackBar("Error Occurred", error);
+    } else {
+      let _pos = {};
+      _pos[title] = [{kotId,date,amount}];
+      const _posDetails = {
+        pos:_pos,
+        bookingId:booking._id,
+        guestName: guest,
+        rooms:booking.rooms
+      }
+      const response = await posService.addPos(_posDetails);
+      if (response.status === 201){
+        openSnackBar("Updated Successfully", success);
+        setPos(_pos)
+        setPosDetails(_posDetails)
+      } 
+      else openSnackBar("Error Occurred", error);
+    }
+    setKotArray([])
+    }
 
-  const handleKot=()=>{
-    // if(data.roomNumber === null){
-    //   openSnackBar("Select Room Number", error);
-    // }
-
-  }
-
+const handleKOT= async (e)=>{
+  e.preventDefault();
+  let kottemp = [...kotArray];
+  console.log("setdata",data)
+  console.log("Item",item);
+  kottemp.push(item);
+  setKotArray(kottemp)
+  setItem({
+    itemName:"",
+    itemQuantity: 1,
+    itemPrice: Number,
+})
+  console.log("kotArray",kottemp)
+}
+////////////////***************** ENd  **********************************/
   return (
     <> 
-    <div className="kot">
-         <Button onClick={handleKot()}>KOT</Button>
-        </div>
+    <div className="radioButtons">
+    <FormControl component="fieldset" >
+    <RadioGroup aria-label="view" style={{ flexDirection: "row" }} name="view" value={view} onChange={handleViewChange}>
+      <FormControlLabel value="manual" control={<Radio style={{ color: "#0088bc" }} />} label="MANUAL" />
+   { title === "Food" && <FormControlLabel value="kot" control={<Radio style={{ color: "#0088bc" }} />} label="KOT" /> }
+    { title === "Laundary" &&  <FormControlLabel value="linen" control={<Radio style={{ color: "#0088bc" }} />} label="LENIN" /> }
+
+     {title ==="Food" && <Button onClick={handleKot} disabled={showKot}>KOT</Button> }
+     {title ==="Laundary" && <Button disabled={showKot}>LINEN</Button> }
+    </RadioGroup>                                           
+    </FormControl>
+    </div>   
     <form onSubmit={event => onFormSubmit(event)}>
       <DialogContent>
         <div className="form-group">
@@ -322,7 +514,9 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
             disabled: true
           })}
         </div>
-        <div className="form-group">
+     { view === 'manual' &&  
+     <>
+       <div className="form-group">
           <div style={{ width: "100%" }} onClick={handleDatePicker}>
             {FormUtils.renderDatepicker(
               getDateArgObj("date", "Date", "text", minDate, disable)
@@ -337,7 +531,11 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
             getInputArgObj("remarks", "Remarks", "text", disable)
             )}
         </div>
+        </>
+}
       </DialogContent>
+      { view === 'manual' &&  
+     <>
       <DialogActions style={{paddingRight:"2rem"}}>
         <Button onClick={onClose} color="secondary" variant="contained">
           Close
@@ -346,12 +544,64 @@ const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
           Save
         </Button>
       </DialogActions>
+      </>
+      }
       {pos && <POSList 
         pos={pos[title]}
         title={title}
+        view= {view}
         handlePosDelete={handlePosDelete}
         />}
     </form>
+    {/* ********************************* KOT *****************************************/}
+    {title === "Food" &&
+        <Dialog onClose={handleKOTClose} aria-labelledby="simple-dialog-title" open={open} maxWidth="lg">
+        <DialogTitle><FastfoodIcon/> KOT</DialogTitle>
+        <DialogContent className={classes.roomsDiv}>
+        <form className={classes.formGroup} autoComplete="off">
+        <div  onClick={handleDatePicker}>
+            {FormUtils.renderDatepicker(
+              getDateArgObj("date", "Date", "text", minDate, disable)
+              )}
+          </div>
+           <Autocomplete
+            id="combo-box-demo"
+            options={foods}
+            disableClearable
+            onChange={(event,value) => handleChange(value)}
+            getOptionLabel={(food) => ` ${food.item} ${food.unit}`}
+            style={{ width: 300 }}
+            renderInput={(params) => <TextField {...params} label="Search Item"  />}
+            />
+          <TextField required id="standard-required" label="Quantity" name="food"
+          type="number"
+          value={item.itemQuantity}
+          onChange={handleQuantityChange}
+          />
+           <TextField required id="standard-required" label="Amount" name="food"
+            value={item.itemPrice}
+            disabled
+          />
+          <Button 
+          type="submit" 
+          variant="contained" 
+          style={{backgroundColor:"#0088bc",color:'white'}}
+          onClick={handleKOT}
+          >
+            ADD ITEM
+          </Button>
+        </form>
+        </DialogContent>
+        {kotArray && <InventoryList 
+        kotArray={kotArray}
+        title={title}
+        data={data}
+        setData = {setData}
+        handlePosDelete={handlePosDelete}
+        handleKOTSUBMIT={handleKOTSUBMIT}
+        />}
+    </Dialog>
+   }
     </>
   );
 };

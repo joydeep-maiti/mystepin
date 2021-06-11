@@ -33,14 +33,14 @@ async function addUser(data) {
 
 async function login(data) {
   try {
-    const {data:response } = await http.post(
+    const response = await http.post(
       `${http.baseUrl}/user/login`,
       data
     );
     return response
   } catch (error) {
     console.log(error);
-    return false
+    return error.response
   }
 }
 

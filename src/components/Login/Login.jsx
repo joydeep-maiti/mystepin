@@ -3,6 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 import userService from '../../services/userService'
 
 const useStyles = makeStyles((theme) => ({
@@ -45,6 +47,9 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const Login = (props) => {
 
@@ -54,14 +59,28 @@ const Login = (props) => {
         username: "admin",
         password: "admin"
     })
+    const [openSnack, setOpenSnack] = React.useState({
+        open:false,
+        msg: ""
+    })
 
     const onFormSubmit = async (e) => {
         e.preventDefault();
         console.log("userData", userData)
         const res = await userService.login(userData)
         console.log("res", res)
-        if (res) {
-            props.onLoggedIn(res[0])
+        if (res && res.status === 200) {
+            props.onLoggedIn(res.data[0])
+        }else if(res && res.status===401){
+            setOpenSnack({
+                open:true,
+                msg:res.data.msg
+            })
+        }else {
+            setOpenSnack({
+                open:true,
+                msg:"Something went wrong"
+            })
         }
     }
 
@@ -72,9 +91,21 @@ const Login = (props) => {
         })
     }
 
+    const handleClose = (e) => {
+        setOpenSnack({
+            open:false,
+            msg:""
+        })
+    }
+
     return (
         <React.Fragment>
             {/* <div className={classes.back}></div> */}
+            <Snackbar open={openSnack.open} autoHideDuration={6000} onClose={handleClose} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+                <Alert onClose={handleClose} severity="error">
+                    {openSnack.msg}
+                </Alert>
+            </Snackbar>
             <div className={classes.loginDiv}>
                 <form className={`${classes.root} ${classes.formDiv}`} autoComplete="off" onSubmit={onFormSubmit}>
                     <Typography variant="h3" gutterBottom>

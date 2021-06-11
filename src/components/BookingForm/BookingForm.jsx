@@ -63,6 +63,7 @@ const BookingForm = props => {
     isDirtyroomSelected,
     isEdit
   } = props;
+  console.log("errorsshouldDisable",errors,shouldDisable)
 
   const [loading, setLoading] = React.useState(false);
   const [openPriceModal, setOpenPriceModal] = React.useState(false)
@@ -415,7 +416,7 @@ const BookingForm = props => {
         )}
 
         <GuestNameDialog open={open} onClose={handleClose} shouldDisable={shouldDisable}/>
-        {/* <IconButton>
+        <IconButton>
 
        <Fab
                 size="small"
@@ -426,7 +427,7 @@ const BookingForm = props => {
              >
                 <AddIcon />
          </Fab>
-         </IconButton> */}
+         </IconButton>
         {FormUtils.renderInput(
           getInputArgObj(
             "contactNumber",
@@ -725,16 +726,17 @@ const BookingForm = props => {
           disabled: Object.keys(errors).length || shouldDisable ? true : false
         })}
 
-        {data.status && !isDirtyroomSelected && !data.status.checkedIn && moment().startOf('date').toDate() >= moment(data.checkIn).startOf('date').toDate() && moment(data.checkOut).toDate() >= moment(data.checkIn).startOf('date').toDate() && FormUtils.renderButton({
+        {data.status && !isDirtyroomSelected && !data.status.checkedIn && !isEdit && moment().startOf('date').toDate() >= moment(data.checkIn).startOf('date').toDate()  && FormUtils.renderButton({
           type: "button",
           size: "large",
           label: "CheckIn",
           color: "primary",
           className: null,
-          disabled: Object.keys(errors).length || shouldDisable ? true : false,
+          disabled: Object.keys(errors).length ? true : false,
           style: {marginLeft:"1rem"},
           onClick: onCheckIn
         })}
+        {/* && moment(data.checkOut).toDate() >= moment(data.checkIn).startOf('date').toDate() */}
       </div>
       <Dialog onClose={()=>setOpenPriceModal(false)} aria-labelledby="simple-dialog-title" open={openPriceModal} maxWidth="md" fullWidth={true}>
         {/* <div style={{textAlign:"right", padding:"0.5rem"}}>

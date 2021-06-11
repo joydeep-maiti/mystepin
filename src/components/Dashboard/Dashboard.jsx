@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -37,11 +37,14 @@ import ReportComponent from '../ReportComponent/ReportComponent'
 import AdvancedDialog from '../AdvancedTab/AdvancedDialog'
 import RecentCheckouts from '../RecentCheckouts/RecentCheckouts'
 import ApproximateBill from '../ApproximateBill/ApproximateBill'
+import ExpectedCheckout from '../ExpectedCheckout/ExpectedCheckout'
 import BillSettlement from '../BillSettlement/BillSettlement'
 import GuestSearch from '../GuestSearch/GuestSearch'
 import TodayCheckIn from '../TodayCheckIn/TodayCheckIn'
+import ActiveUsers from '../ActiveUsers/ActiveUsers'
 import PrintBill from '../PrintBill/PrintBill'
 import CleanRoom from '../CleanRoom/CleanRoom'
+import userService from '../../services/userService'
 import ConfirmDialog from '../../common/ConfirmDialog/ConfirmDialog'
 // import constants from "../../utils/constants";
 
@@ -67,6 +70,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Dashboard = props => {
+
+
   const [allRooms, setAllRooms] = useState([]);
   const [allBookings, setAllBookings] = useState([]);
   const [occupiedRooms, setOccupiedRooms] = useState([]);
@@ -102,6 +107,17 @@ const Dashboard = props => {
   const [view, setView] = React.useState('day');
   const [openCleanRoomDlg, setOpenCleanRoomDlg] = React.useState(false);
   const [roomToClean, setRoomToClean] = React.useState(null);
+  const [userData, setUserData] = React.useState(null);
+
+
+  React.useEffect(()=>{
+    window.addEventListener('beforeunload', function (e) {
+      e.preventDefault();
+      userData && userService.logout({username:userData.username})
+      e.returnValue = '';
+    });
+
+  },[userData])
 
   const handleViewChange = (event) => {
     setView(event.target.value);
@@ -111,7 +127,13 @@ const Dashboard = props => {
   const classes = useStyles();
 
   useEffect(() => {
-    getRooms();
+    // getRooms();
+    console.log("props.userData",props.userData)
+    if(!props.userData){
+      props.history.push("/login")
+      return
+    }
+    setUserData(props.userData)
   }, []);
 
   const getRooms = async () => {
@@ -120,7 +142,7 @@ const Dashboard = props => {
     allRooms.length > 0 && setAllRooms(allRooms);
   };
   const setBookings = async dateObj => {
-    getRooms()
+    await getRooms()
     const allBookings = await bookingService.getBookings(dateObj);
     if (allBookings.length > 0) {
       setAllBookings(allBookings);
@@ -373,6 +395,8 @@ const Dashboard = props => {
           showAdvancedDialog={handleShowAdvancedDialog}
           path={props.location.pathname}
           onRedirectFromNavbar={handleRedirectFromNavbar}
+          userData={userData}
+          onLogout={props.onLogout}
         />
         <Dialog
           open={dialog.open}
@@ -428,6 +452,15 @@ const Dashboard = props => {
               />
             )}
           {
+            dialog.openFor.advanced && advancedDialogTitle === "Expected Checkout" && (
+              <ExpectedCheckout
+                // allBookings={allBookings}
+                title={advancedDialogTitle}
+                onClose={() => handleDialog(dialog.contentOf)}
+              // onSnackbarEvent={handleSnackbarEvent}
+              />
+            )}
+          {
             dialog.openFor.advanced && advancedDialogTitle === "Bill Settlement" && (
               <BillSettlement
                 title={advancedDialogTitle}
@@ -446,6 +479,14 @@ const Dashboard = props => {
           {
             dialog.openFor.advanced && advancedDialogTitle === "Guest Details" && (
               <GuestSearch
+                title={advancedDialogTitle}
+                onClose={() => handleDialog(dialog.contentOf)}
+                onSnackbarEvent={handleSnackbarEvent}
+              />
+            )}
+          {
+            dialog.openFor.advanced && advancedDialogTitle === "Active Users" && (
+              <ActiveUsers
                 title={advancedDialogTitle}
                 onClose={() => handleDialog(dialog.contentOf)}
                 onSnackbarEvent={handleSnackbarEvent}
@@ -500,18 +541,22 @@ const Dashboard = props => {
               render={props => (
                 <Configuration
                   onSnackbarEvent={handleSnackbarEvent}
+                  userData={userData}
                   {...props}
                 />
               )}
             />
             <Route
               path='/reports'
-              component={ReportComponent}
+              render={props => (
+                <ReportComponent
+                  onSnackbarEvent={handleSnackbarEvent}
+                  userData={userData}
+                  {...props}
+                />
+              )}
             />
-            <Route
-              path='/cleanroom'
-              component={CleanRoom}
-            />
+
             <Route
               path="/"
               exact
@@ -594,4 +639,4 @@ const Dashboard = props => {
   );
 };
 
-export default Dashboard;
+export default withRouter(Dashboard);

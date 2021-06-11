@@ -75,6 +75,7 @@ const Users = ({ onClose }) => {
     { label: "Finance", value: "Finance" },
     { label: "Operations", value: "Operations" },
     { label: "House Keeping", value: "House Keeping" },
+    { label: "IT", value: "IT" },
   ]);
   const [loading, setLoading] = useState(false);
   const [newDoc, setNewDoc] = useState({});

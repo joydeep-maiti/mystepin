@@ -171,6 +171,7 @@ const BookingFormLayout = ({
     fetchProofId()
     setData(booking);
     setShouldDisable(!isEdit);
+    // setShouldDisable(isEdit);
     setAvailableRooms(booking.rooms);
     setStartDate(booking.checkIn);
     setEndDate(booking.checkOut);

@@ -9,10 +9,45 @@ async function getUsers() {
   }
 }
 
+async function getActiveUsers() {
+  try {
+    const { data: rooms } = await http.get(`${http.baseUrl}/userlog/active`);
+    return rooms;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 async function addUser(data) {
   try {
     const response = await http.post(
       `${http.baseUrl}/user`,
+      data
+    );
+    return response
+  } catch (error) {
+    console.log(error);
+    return false
+  }
+}
+
+async function login(data) {
+  try {
+    const {data:response } = await http.post(
+      `${http.baseUrl}/user/login`,
+      data
+    );
+    return response
+  } catch (error) {
+    console.log(error);
+    return false
+  }
+}
+
+async function logout(data) {
+  try {
+    const response = await http.post(
+      `${http.baseUrl}/user/logout`,
       data
     );
     return response
@@ -51,4 +86,4 @@ async function deleteUser(data) {
   }
 }
 
-export default { getUsers, addUser, updateUser, deleteUser };
+export default { getUsers, addUser, updateUser, deleteUser, login, logout, getActiveUsers };

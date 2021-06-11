@@ -2,9 +2,9 @@ let gatewayApi;
 
 console.log(process.env.NODE_ENV);
 
-//gatewayApi = "https://stepin-api.herokuapp.com";
+gatewayApi = "https://stepin-api.herokuapp.com";
 // gatewayApi = process.env.API_URL;
-gatewayApi = "http://localhost:5000";
+// gatewayApi = "http://localhost:5000";
 // gatewayApi = process.env.API_URL;
 
 // gatewayApi = "http://localhost:5000";

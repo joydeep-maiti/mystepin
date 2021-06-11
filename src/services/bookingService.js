@@ -72,4 +72,13 @@ async function getTodaysCheckin() {
   }
 }
 
-export default { getBookings, addBooking, updateBooking, getProofId, getDayCheckin, searchGuest, getTodaysCheckin, searchGuestByDate };
+async function getExpectedCheckouts() {
+  try {
+    const { data: bills } =  await http.get(`${http.baseUrl}/expectedcheckouts`);
+    return bills;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export default { getBookings, addBooking, updateBooking, getProofId, getDayCheckin, searchGuest, getTodaysCheckin, searchGuestByDate, getExpectedCheckouts };

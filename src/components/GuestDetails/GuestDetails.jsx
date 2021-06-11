@@ -147,7 +147,7 @@ const fetchAndGenerateGuestReport = async()=>{
       })
       exportGuestReportToPDF(data,len,total)
     }
-    else{
+    else if(guestCategory === "Foreign Guest"){
       let data = options.map(option=>{
         let checkIn = moment(option.checkIn).format('D-MMMM-YYYY');
         let checkOut = moment(option.checkOut).format('D-MMMM-YYYY');
@@ -159,6 +159,25 @@ const fetchAndGenerateGuestReport = async()=>{
           option.NoofRooms,
           option.nationality,
           option.PassportNumber,
+          option.bookedBy,
+          option.referenceNumber,
+          option.Advance,
+          option.Amount,
+        ])
+      })
+      exportGuestReportToPDF(data,len,total)
+    }
+    if(guestCategory === "Consolidated Guest"){
+      let data = options.map(option=>{
+        let checkIn = moment(option.checkIn).format('D-MMMM-YYYY');
+        let checkOut = moment(option.checkOut).format('D-MMMM-YYYY');
+        total += parseInt(option.Amount)
+        return([
+          option.guestName,
+          checkIn,
+          checkOut,
+          option.NoofRooms,
+          option.nationality,
           option.bookedBy,
           option.referenceNumber,
           option.Advance,
@@ -197,8 +216,6 @@ const fetchRoomWiseReport= async()=>{
           option.roomNumber,
           option.nationality,
           option.bookedBy,
-          option.referenceNumber,
-          option.Advance,
           option.Amount,
         ])
       })
@@ -231,7 +248,13 @@ const getRoomOptions = () => {
  const exportGuestReportToPDF = (reportData,len,total) =>{
 
   const roomtype = roomNumbers.filter((room)=>{if(room.roomNumber === roomNumber) {return `${room.roomNumber} - ${room.roomType}`}})
-  const room = `${roomtype[0].roomNumber} - ${roomtype[0].roomType}`
+  //const room = `${roomtype[0].roomNumber} - ${roomtype[0].roomType}`
+  var room = null;
+ if(guestCategory === "Room Wise")
+ {
+ const roomtype = roomNumbers.filter((room)=>{if(room.roomNumber === roomNumber) {return `${room.roomNumber} - ${room.roomType}`}})
+ room = `${roomtype[0].roomNumber} - ${roomtype[0].roomType}`
+ }
   const unit = "pt";
   const size = "A3"; // Use A1, A2, A3 or A4
   const orientation = "landscape"; // portrait or landscape
@@ -248,7 +271,7 @@ const getRoomOptions = () => {
   }
   if(guestCategory === "Room Wise")
   {
-   headers = [["NAME OF THE GUEST","CHECKIN","CHECKOUT","ROOM NO","NATIONALITY","BOOKED BY","REFERENCE NUMBER","BILLING ADVANCE","BILLING AMOUNT"]];
+   headers = [["NAME OF THE GUEST","CHECKIN","CHECKOUT","ROOM NO","NATIONALITY","BOOKED BY","BILLING AMOUNT"]];
 
   }
   let content = {
@@ -280,7 +303,7 @@ const getRoomOptions = () => {
       headStyles: {
         3 : { halign: 'right'},6 : { halign: 'right'},7: { halign: 'right'},8: { halign: 'right'}
       },
-      columnStyles: { 5 : { halign: 'right'},3 : { halign: 'right'},7: { halign: 'right'},8: { halign: 'right'},9: { halign: 'right'}},
+      columnStyles: { 5 : { halign: 'center'},3 : { halign: 'center'},7: { halign: 'center'},8: { halign: 'center'},9: { halign: 'center'}},
       margin: marginLeft,
       pageBreak:'auto'
     };

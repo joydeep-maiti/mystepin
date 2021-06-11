@@ -11,4 +11,15 @@ async function getBillingOptions(optiontype) {
     console.log(error);
   }
 }
-export default {getBillingOptions};
+async function getAgentCommssion(optiontype) {
+  try {
+    const { data: options } = await http.get(
+      `${http.baseUrl}/agentcommission/${optiontype}`
+    );
+    return options;
+  } catch (error) {
+    
+    console.log(error);
+  }
+}
+export default {getBillingOptions,getAgentCommssion};

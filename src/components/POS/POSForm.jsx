@@ -54,7 +54,7 @@ const useStyles = makeStyles(theme => ({
   }));
 const { success, error } = constants.snackbarVariants;
 const schema = schemas.POSFormSchema;
-let total = 0;
+
 const POSForm = ({ allBookings, title, onClose, onSnackbarEvent }) => {
   const [errors, setErrors] = useState({});
   const [openDatePicker, setOpenDatePicker] = useState(false);
@@ -75,7 +75,6 @@ const [item,setItem] = useState({
       itemQuantity: 1,
       itemPrice: Number,
 })
-const [kotDetails,setkotDetails] = useState({})
 const [kot,setKot]=useState(null)
 const [view, setView] = useState('manual');
 const [foods,setFoods] = useState([])
@@ -298,9 +297,7 @@ const handleQuantityChange=(e)=>{
 const fetchKOT=async()=>{
   const items = await kotService.getKOTByBookingId(bid);
   if(items){
-    console.log("KOT",items)
-    console.log("Items",items)
-    setkotDetails(items)
+    console.log("KOT Items",items.kot)
     setKot(items.kot)
   }
 }
@@ -377,50 +374,62 @@ const fetchKOT=async()=>{
     // onClose();
   };
 
-//For dialog Open
+
+//Api Calls
+
+
+//Add first element to KOT
+const addFirstElement = async () =>{ 
+  const res = await await kotService.addKOT({bookingId:bid,date:data.date,kotArray:kotArray})
+  if(res.status === 200){
+    openSnackBar("Element added Successfully", success);
+    return res.data.kotId;
+  }
+  else{
+    openSnackBar("Error Occurred", error);
+  }
+}
+//Add next Elements
+const addNextElement = async () =>{ 
+  const res = await kotService.updateKOT({bookingId:bid,kotArray:kotArray});
+  if(res.status === 200){
+    openSnackBar("Element added Successfully", success);
+    return res.data.kotId;
+  }
+  else{
+    openSnackBar("Error Occurred", error);
+  }
+}
 const handleKOTSUBMIT = async (e)=>{
     e.preventDefault();
     handleKOTClose();
     if(kotArray){
     if(kot){
       console.log("Update Method")
-      const response = await kotService.updateKOT({bookingId:bid,kotArray:kotArray})
-      if(response.status === 200){
-        console.log("data and status ",response.data.kotId)
-        setData({...data,kotId:response.data.kotId})
-        openSnackBar("Element added Successfully", success);
-        fetchKOT()
+      const resId =  await addNextElement();
+       setData({...data,kotId:resId})
         handlePOSKOTUpload()
-      }
-        else{
-           openSnackBar("Error Occurred", error);
-       }
-    }
-    else{
-      console.log("Post Method")
-      const res = await kotService.addKOT({bookingId:bid,date:data.date,kotArray:kotArray})
-      if(res){
-      openSnackBar("Element added Successfully", success);
-      console.log("First Insertion",res)
-      fetchKOT()
-      handlePOSKOTUpload();
-      }
+        fetchKOT()
+      } 
       else{
-       openSnackBar("Error Occurred", error);
-      }
-    }
+        console.log("Post Method")
+        const resId = await addFirstElement();
+       setData({...data,kotId:resId,remarks:resId})
+        handlePOSKOTUpload();
+        fetchKOT()
+        }
     }
 }
 const handlePOSKOTUpload = async()=>{ 
-    const { _id,kotId,date, amount} = data;
+    const { _id,kotId,date, amount,remarks} = data;
     const booking = {
       ...allBookings.find(booking => booking._id === _id)
     };
     if (pos) {
       let _pos = { ...pos };
       _pos[title] = _pos[title]
-        ? [..._pos[title], { kotId,date,amount }]
-        : [{kotId,date,amount}];
+        ? [..._pos[title], { kotId,date,amount,remarks }]
+        : [{kotId,date,amount,remarks}];
       // booking.pos = _pos;
       const response = await posService.updatePos({
         ...posDetails,
@@ -433,7 +442,7 @@ const handlePOSKOTUpload = async()=>{
       else openSnackBar("Error Occurred", error);
     } else {
       let _pos = {};
-      _pos[title] = [{kotId,date,amount}];
+      _pos[title] = [{kotId,date,amount,remarks}];
       const _posDetails = {
         pos:_pos,
         bookingId:booking._id,
@@ -454,8 +463,6 @@ const handlePOSKOTUpload = async()=>{
 const handleKOT= async (e)=>{
   e.preventDefault();
   let kottemp = [...kotArray];
-  console.log("setdata",data)
-  console.log("Item",item);
   kottemp.push(item);
   setKotArray(kottemp)
   setItem({
@@ -597,7 +604,6 @@ const handleKOT= async (e)=>{
         title={title}
         data={data}
         setData = {setData}
-        handlePosDelete={handlePosDelete}
         handleKOTSUBMIT={handleKOTSUBMIT}
         />}
     </Dialog>

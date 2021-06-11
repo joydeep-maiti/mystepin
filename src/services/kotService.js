@@ -9,15 +9,15 @@ async function getKOTByBookingId(id) {
     console.log(error);
   }
 }
-async function addKOT(data) {
+async function addKOT(kot) {
 
-console.log("Add Data",data)
+console.log("Add Data",kot)
   try {
-    const response = await http.post(
+    const {data,status} = await http.post(
       `${http.baseUrl}/kot`,
-      data
+      kot
     );
-    return response
+    return {data,status}
   } catch (error) {
     console.log(error);
     return false

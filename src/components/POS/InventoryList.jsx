@@ -56,7 +56,7 @@ const InventoryList = (props) => {
                       <TableCell align="center">{el.itemName}</TableCell>
                       <TableCell align="center">{el.itemQuantity}</TableCell>
                       <TableCell align="center">{el.itemPrice}</TableCell>
-                      <TableCell align="center"><DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(el)}/></TableCell>
+                      <TableCell align="center"><DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}}/></TableCell>
                     </TableRow>
                   )
                 })

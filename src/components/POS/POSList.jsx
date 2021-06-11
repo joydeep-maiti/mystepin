@@ -12,11 +12,8 @@ import moment from "moment";
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 
 const POSList = (props) => {
-
-  console.log("pos",props.pos)
-
+  console.log("POS Elements",props.pos)
   const [pos, setPos] =  React.useState(null)
-
   React.useEffect(()=>{
     setPos(props.pos)
   },[props.pos])
@@ -30,7 +27,7 @@ const POSList = (props) => {
     props.handlePosDelete(el);
   }
 
-  return (
+return (
     <DialogContent>
        <div>{"POS-"+props.title+" Transaction"}</div>
       <TableContainer component={Paper} style={{marginTop:"0.7rem"}}>
@@ -63,7 +60,7 @@ const POSList = (props) => {
   
                       props.view === "kot" ? 
                       <TableRow>
-                      <TableCell align="center">KOTID</TableCell>
+                      <TableCell align="center"><span style={{cursor:"pointer", color:"blue"}} >{el.kotId}</span></TableCell>
                       <TableCell align="center">{moment(el.date).format("Do MMMM YYYY")}</TableCell>
                       <TableCell align="center">{el.amount}</TableCell>
                       <TableCell align="center"><DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(el)}/></TableCell>

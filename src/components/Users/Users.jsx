@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import roomService from "../../services/roomService";
 import userService from "../../services/userService";
-
+import { roles, departments } from '../../utils/enums'
 import Loader from "../../common/Loader/Loader";
 import {
   DialogActions,
@@ -63,20 +63,20 @@ const useStyles = makeStyles(theme => ({
 const Users = ({ onClose }) => {
   const classes = useStyles();
   const [rooms, setRooms] = useState([]);
-  const [roles, setRoles] = useState([
-    { label: "Admin", value: "Admin" },
-    { label: "Manager", value: "Manager" },
-    { label: "General Manager", value: "General Manager" },
-    { label: "Staff", value: "Staff" },
-  ]);
-  const [departments, setDepartment] = useState([
-    { label: "Front Office", value: "Front Office" },
-    { label: "Restaurant", value: "Restaurant" },
-    { label: "Finance", value: "Finance" },
-    { label: "Operations", value: "Operations" },
-    { label: "House Keeping", value: "House Keeping" },
-    { label: "IT", value: "IT" },
-  ]);
+  // const [roles, setRoles] = useState([
+  //   { label: "Admin", value: "Admin" },
+  //   { label: "Manager", value: "Manager" },
+  //   { label: "General Manager", value: "General Manager" },
+  //   { label: "Staff", value: "Staff" },
+  // ]);
+  // const [departments, setDepartment] = useState([
+  //   { label: "Front Office", value: "Front Office" },
+  //   { label: "Restaurant", value: "Restaurant" },
+  //   { label: "Finance", value: "Finance" },
+  //   { label: "Operations", value: "Operations" },
+  //   { label: "House Keeping", value: "House Keeping" },
+  //   { label: "IT", value: "IT" },
+  // ]);
   const [loading, setLoading] = useState(false);
   const [newDoc, setNewDoc] = useState({});
   const [editingRow, setEditingRow] = useState({});

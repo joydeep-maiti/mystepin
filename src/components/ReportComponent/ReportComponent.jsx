@@ -12,6 +12,7 @@ import Agent from '../Agent/Agent';
 import Occupancy from '../Occupancy/Occupancy';
 import CollectionReport from '../CollectionReport/CollectionReport';
 import GuestDetails from '../GuestDetails/GuestDetails';
+import UserLog from '../UserLog/UserLog';
 
 
 function TabPanel(props) {
@@ -96,6 +97,7 @@ const ReportComponent = ({ onSnackbarEvent, userData }) => {
         case "Occupancy": i++; return <Tab label="Occupancy" {...a11yProps(i)} />
         case "Collection Report": i++; return <Tab label="Collection Report" {...a11yProps(i)} />
         case "Guest Details": i++; return <Tab label="Guest Details" {...a11yProps(i)} />
+        case "User Logs": i++; return <Tab label="User Logs" {...a11yProps(i)} />
       }
     })
   }
@@ -111,6 +113,7 @@ const ReportComponent = ({ onSnackbarEvent, userData }) => {
         case "Occupancy": i++; return <TabPanel className={classes.tabDiv} value={tabvalue} index={i}><Occupancy onSnackbarEvent={onSnackbarEvent} /></TabPanel>
         case "Collection Report": i++; return <TabPanel className={classes.tabDiv} value={tabvalue} index={i}><CollectionReport onSnackbarEvent={onSnackbarEvent} /></TabPanel>
         case "Guest Details": i++; return <TabPanel className={classes.tabDiv} value={tabvalue} index={i}><GuestDetails onSnackbarEvent={onSnackbarEvent} /></TabPanel>
+        case "User Logs": i++; return <TabPanel className={classes.tabDiv} value={tabvalue} index={i}><UserLog onSnackbarEvent={onSnackbarEvent} /></TabPanel>
       }
     })
   }

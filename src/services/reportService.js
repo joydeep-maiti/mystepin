@@ -12,7 +12,6 @@ async function getDailyOccupancyReport() {
   }
 }
 
-
 async function getMonthlyOccupancyReport(category,startDate,endDate) {
   try {
     const {data} = await http.get(`${http.baseUrl}/monthlyreport?reportType=${category}&fromDate=${startDate}&toDate=${endDate}`);
@@ -22,4 +21,13 @@ async function getMonthlyOccupancyReport(category,startDate,endDate) {
   }
 }
 
-export default { getDailyOccupancyReport ,getMonthlyOccupancyReport};
+async function getUserLogReport(user,fromDate, toDate) {
+  try {
+    const {data} = await http.get(`${http.baseUrl}/report/userlog`,{params:{user,fromDate, toDate}});
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export default { getDailyOccupancyReport ,getMonthlyOccupancyReport, getUserLogReport};

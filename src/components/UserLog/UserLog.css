@@ -1,0 +1,20 @@
+.container{
+    display: grid;
+  align-items: center;
+  justify-items: center;
+    background-color: #e6f5fa;
+    width: 400px;
+    height: 300px;
+    margin: auto;
+    padding: 10px 20px;
+   border: 2px solid black;
+}
+
+.container .button{   
+    background-color:#0088bc;
+    color: white;
+}
+.container .button:hover{
+    background-color:#0088bc;
+    color: white;
+}

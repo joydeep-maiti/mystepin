@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import accessService from "../../services/accessService";
+import { roles, departments, permissions } from '../../utils/enums'
 
 import Loader from "../../common/Loader/Loader";
 import {
@@ -62,25 +63,25 @@ const useStyles = makeStyles(theme => ({
 const AccessMngmt = ({ onClose }) => {
   const classes = useStyles();
   const [rooms, setRooms] = useState([]);
-  const [roles, setRoles] = useState([
-    { label: "Admin", value: "Admin" },
-    { label: "Manager", value: "Manager" },
-    { label: "General Manager", value: "General Manager" },
-    { label: "Staff", value: "Staff" },
-  ]);
-  const [departments, setDepartment] = useState([
-    { label: "Front Office", value: "Front Office" },
-    { label: "Restaurant", value: "Restaurant" },
-    { label: "Finance", value: "Finance" },
-    { label: "Operations", value: "Operations" },
-    { label: "House Keeping", value: "House Keeping" }
-  ]);
-  const permissions = {
-    Configuration: ["Rooms", "Room Category", "Rate Master", "Season Master", "Taxes", "Property Details", "User Management", "Inventory", "Access Management"],
-    Reports: ["Billing Details", "Booking Report", "POS Sales", "Agent", "Occupancy", "Collection Report", "Guest Details"],
-    Others: ["Utility", "POS", "Booking", "Checkin/Checkout"],
-    Default: ["Room Chart", "Occupancy Chart"]
-  }
+  // const [roles, setRoles] = useState([
+  //   { label: "Admin", value: "Admin" },
+  //   { label: "Manager", value: "Manager" },
+  //   { label: "General Manager", value: "General Manager" },
+  //   { label: "Staff", value: "Staff" },
+  // ]);
+  // const [departments, setDepartment] = useState([
+  //   { label: "Front Office", value: "Front Office" },
+  //   { label: "Restaurant", value: "Restaurant" },
+  //   { label: "Finance", value: "Finance" },
+  //   { label: "Operations", value: "Operations" },
+  //   { label: "House Keeping", value: "House Keeping" }
+  // ]);
+  // const permissions = {
+  //   Configuration: ["Rooms", "Room Category", "Rate Master", "Season Master", "Taxes", "Property Details", "User Management", "Inventory", "Access Management"],
+  //   Reports: ["Billing Details", "Booking Report", "POS Sales", "Agent", "Occupancy", "Collection Report", "Guest Details"],
+  //   Others: ["Utility", "POS", "Booking", "Checkin/Checkout"],
+  //   Default: ["Room Chart", "Occupancy Chart"]
+  // }
   const [loading, setLoading] = useState(false);
   const [newDoc, setNewDoc] = useState({});
   const [editingRow, setEditingRow] = useState();

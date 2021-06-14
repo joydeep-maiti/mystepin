@@ -26,6 +26,12 @@ const POSList = (props) => {
     console.log("el",el)
     props.handlePosDelete(el);
   }
+  const handleKOTDisplay=(el)=>{
+    console.log()
+    if(el.kotId){
+      props.getArray(props.bid,el.kotId);
+    }
+  }
 
 return (
     <DialogContent>
@@ -60,7 +66,7 @@ return (
   
                       props.view === "kot" ? 
                       <TableRow>
-                      <TableCell align="center"><span style={{cursor:"pointer", color:"blue"}} >{el.kotId}</span></TableCell>
+                      <TableCell align="center"><span style={{cursor:"pointer", color:"blue"}} onClick={()=>{handleKOTDisplay(el)}}>{el.kotId}</span></TableCell>
                       <TableCell align="center">{moment(el.date).format("Do MMMM YYYY")}</TableCell>
                       <TableCell align="center">{el.amount}</TableCell>
                       <TableCell align="center"><DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(el)}/></TableCell>

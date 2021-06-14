@@ -12,7 +12,6 @@ import moment from "moment";
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 
 const InventoryList = (props) => {
-
   const {kotArray,handleKOTSUBMIT,data,setData} =props;
   console.log("Inventory",kotArray)
   const [kot, setKot] =  React.useState([])

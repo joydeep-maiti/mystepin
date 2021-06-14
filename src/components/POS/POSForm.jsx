@@ -419,7 +419,6 @@ const handleKOTSUBMIT = async (e)=>{
       console.log("Update Method")
       const resId =  await addNextElement();
       setData({...data,kotId:resId})
-      console.log("Data in Update",data)
         handlePOSKOTUpload()
         fetchKOT()
       } 
@@ -427,7 +426,6 @@ const handleKOTSUBMIT = async (e)=>{
         console.log("Post Method")
         const resId = await addFirstElement();
         setData({...data,kotId:resId,remarks:resId})
-        console.log("Data in Post",data)
         handlePOSKOTUpload();
         fetchKOT()
         }
@@ -444,6 +442,8 @@ const handlePOSKOTUpload = async()=>{
         ? [..._pos[title], { kotId,date,amount,remarks }]
         : [{kotId,date,amount,remarks}];
       // booking.pos = _pos;
+
+      console.log("Bef insertion",_pos)
       const response = await posService.updatePos({
         ...posDetails,
         pos:_pos
@@ -464,6 +464,7 @@ const handlePOSKOTUpload = async()=>{
         guestName: guest,
         rooms:booking.rooms
       }
+      console.log("Bef insertion",_pos)
       const response = await posService.addPos(_posDetails);
       if (response.status === 201){
         openSnackBar("Updated Successfully", success);

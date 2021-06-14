@@ -385,8 +385,6 @@ const getArray = async (bid,inputId) => {
 
 }
 
-
-
 //Add first element to KOT
 const addFirstElement = async () =>{ 
   const res = await await kotService.addKOT({bookingId:bid,date:data.date,kotArray:kotArray})

@@ -286,7 +286,7 @@ const getRoomOptions = () => {
     headStyles: {
       3 : { halign: 'center'},6 : { halign: 'right'},7: { halign: 'right'},8: { halign: 'right'}
     },
-    columnStyles: { 6 : { halign: 'right'},3 : { halign: 'right'},7: { halign: 'right'},8: { halign: 'right'}},
+    columnStyles: { 6 : { halign: 'center'},3 : { halign: 'center'},7: { halign: 'center'},8: { halign: 'center'}},
     margin: marginLeft,
     pageBreak:'auto'
   };

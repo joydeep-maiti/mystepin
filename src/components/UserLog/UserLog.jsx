@@ -128,10 +128,11 @@ const UserLog = () => {
   //Room Options
 
   const getUserOptions = () => {
-    return users.map(user => {
-      return { label: user.username, value: user.username };
+    let options = [{ label: "All User", value: "All User" }]
+    users.map(user => {
+      options.push({ label: user.username, value: user.username })
     });
-
+    return options;
   };
 
 

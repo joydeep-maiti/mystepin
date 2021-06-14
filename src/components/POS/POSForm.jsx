@@ -419,27 +419,27 @@ const handleKOTSUBMIT = async (e)=>{
       console.log("Update Method")
       const resId =  await addNextElement();
       setData({...data,kotId:resId})
-        handlePOSKOTUpload()
+        handlePOSKOTUpload({...data,kotId:resId})
         fetchKOT()
       } 
       else{
         console.log("Post Method")
         const resId = await addFirstElement();
         setData({...data,kotId:resId,remarks:resId})
-        handlePOSKOTUpload();
+        handlePOSKOTUpload({...data,kotId:resId,remarks:resId});
         fetchKOT()
         }
     }
 }
-const handlePOSKOTUpload = async()=>{ 
-    const { _id,date, amount,remarks} = data;
+const handlePOSKOTUpload = async(_data)=>{ 
+    const { _id, kotId, date, amount,remarks} = _data;
     const booking = {
       ...allBookings.find(booking => booking._id === _id)
     };
     if (pos) {
       let _pos = { ...pos };
       _pos[title] = _pos[title]
-        ? [..._pos[title], { kotId,date,amount,remarks }]
+        ? [..._pos[title], { kotId, date, amount, remarks }]
         : [{kotId,date,amount,remarks}];
       // booking.pos = _pos;
 

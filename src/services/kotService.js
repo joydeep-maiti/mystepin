@@ -39,4 +39,15 @@ async function updateKOT(kot) {
   }
 }
 
-export default { getKOTByBookingId, addKOT, updateKOT};
+const getKOTArray = async (bookingId,kotID )=>{
+
+  try{
+    const {data:kotarray} = await http.get(`${http.baseUrl}/kotById/${bookingId}/${kotID}`)
+    return kotarray
+  }catch (error) {
+    console.log(error);
+  }
+
+}
+
+export default { getKOTByBookingId, addKOT, updateKOT,getKOTArray};

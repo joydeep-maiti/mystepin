@@ -99,9 +99,9 @@ useEffect(() => {
   date: utils.getDate(),
   amount: "",
   remarks: "Manual Entry",
-  kotId:""
 }
 );
+const [kotId,setKotId]=useState("")
 const [kotArray,setKotArray] = useState([])
 const [showKot,setShowKot] = useState(true)
 useEffect(() => {
@@ -374,8 +374,17 @@ const fetchKOT=async()=>{
     // onClose();
   };
 
-
 //Api Calls
+const getArray = async (bid,inputId) => {
+  const array = await kotService.getKOTArray(bid,inputId);
+  console.log("array ",array)
+  if(array){
+    setKotArray(array[0].kot);
+    handleKot();
+  }
+
+}
+
 
 
 //Add first element to KOT
@@ -383,6 +392,7 @@ const addFirstElement = async () =>{
   const res = await await kotService.addKOT({bookingId:bid,date:data.date,kotArray:kotArray})
   if(res.status === 200){
     openSnackBar("Element added Successfully", success);
+    setKotId(res.data.kotId)
     return res.data.kotId;
   }
   else{
@@ -394,6 +404,7 @@ const addNextElement = async () =>{
   const res = await kotService.updateKOT({bookingId:bid,kotArray:kotArray});
   if(res.status === 200){
     openSnackBar("Element added Successfully", success);
+    setKotId(res.data.kotId)
     return res.data.kotId;
   }
   else{
@@ -407,21 +418,23 @@ const handleKOTSUBMIT = async (e)=>{
     if(kot){
       console.log("Update Method")
       const resId =  await addNextElement();
-       setData({...data,kotId:resId})
+      setData({...data,kotId:resId})
+      console.log("Data in Update",data)
         handlePOSKOTUpload()
         fetchKOT()
       } 
       else{
         console.log("Post Method")
         const resId = await addFirstElement();
-       setData({...data,kotId:resId,remarks:resId})
+        setData({...data,kotId:resId,remarks:resId})
+        console.log("Data in Post",data)
         handlePOSKOTUpload();
         fetchKOT()
         }
     }
 }
 const handlePOSKOTUpload = async()=>{ 
-    const { _id,kotId,date, amount,remarks} = data;
+    const { _id,date, amount,remarks} = data;
     const booking = {
       ...allBookings.find(booking => booking._id === _id)
     };
@@ -437,6 +450,8 @@ const handlePOSKOTUpload = async()=>{
       });
       if (response){
         openSnackBar("Updated Successfully", success);
+        console.log("Update Method pos",pos)
+        console.log("Update Method _pos",_pos)
         setPos(_pos)
       } 
       else openSnackBar("Error Occurred", error);
@@ -452,6 +467,8 @@ const handlePOSKOTUpload = async()=>{
       const response = await posService.addPos(_posDetails);
       if (response.status === 201){
         openSnackBar("Updated Successfully", success);
+        console.log("First Insertion pos",pos)
+        console.log("First Insertion _pos",_pos)
         setPos(_pos)
         setPosDetails(_posDetails)
       } 
@@ -557,6 +574,8 @@ const handleKOT= async (e)=>{
         pos={pos[title]}
         title={title}
         view= {view}
+        bid={bid}
+        getArray={getArray}
         handlePosDelete={handlePosDelete}
         />}
     </form>

@@ -38,44 +38,26 @@ return (
        <div>{"POS-"+props.title+" Transaction"}</div>
       <TableContainer component={Paper} style={{marginTop:"0.7rem"}}>
         <Table size="small" stickyHeader aria-label="sticky table">
-              <TableHead>
-                 {
-                  props.view === "kot" ? 
-                  <TableRow>
-                   <TableCell align="center">KOT ID</TableCell>
-                  <TableCell align="center">DATE</TableCell>
-                  <TableCell align="center">AMOUNT</TableCell>
-                  <TableCell align="center">Delete</TableCell>
-                  </TableRow>
-                  :
+              <TableHead>       
                     <TableRow>
+                { props.title === "Food" &&  <TableCell align="center">KOT ID</TableCell>}
                     <TableCell align="center">Date</TableCell>
                    <TableCell align="center">Amount</TableCell>
                    <TableCell align="center">Remarks</TableCell>
                    <TableCell align="center">Delete</TableCell>
                    </TableRow>
-                  
-                 }  
-                 
-                 
               </TableHead>
               <TableBody>
               {
                 pos && pos.map(el => {
                   return(
   
-                      props.view === "kot" ? 
+                     
                       <TableRow>
-                      <TableCell align="center"><span style={{cursor:"pointer", color:"blue"}} onClick={()=>{handleKOTDisplay(el)}}>{el.kotId}</span></TableCell>
+                { props.title === "Food" && <TableCell align="center"><span style={{cursor:"pointer", color:"blue"}} onClick={()=>{handleKOTDisplay(el)}}>{el.kotId ? el.kotId : ""}</span></TableCell>}  
                       <TableCell align="center">{moment(el.date).format("Do MMMM YYYY")}</TableCell>
                       <TableCell align="center">{el.amount}</TableCell>
-                      <TableCell align="center"><DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(el)}/></TableCell>
-                     </TableRow>
-                      :
-                      <TableRow>
-                      <TableCell align="center">{moment(el.date).format("Do MMMM YYYY")}</TableCell>
-                      <TableCell align="center">{el.amount}</TableCell>
-                      <TableCell align="center">{el.remarks}</TableCell>
+                      <TableCell align="center">{el.remarks ?el.remarks : el.kotId }</TableCell>
                       <TableCell align="center"><DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(el)}/></TableCell>
                     </TableRow>
                      

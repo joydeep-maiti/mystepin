@@ -72,7 +72,7 @@ const InventoryList = (props) => {
           >
             Save 
           </Button>
-          <div className="total">{`Total Advance : ${total}`}</div>
+          <div className="total">{`Total  : ${total}`}</div>
       
     </DialogContent>
   );

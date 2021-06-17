@@ -98,7 +98,7 @@ useEffect(() => {
   bookingId: "",
   date: utils.getDate(),
   amount: "",
-  remarks: "Manual Entry",
+  remarks: "",
 }
 );
 const [kotId,setKotId]=useState("")
@@ -496,7 +496,7 @@ const handleKOT= async (e)=>{
     <RadioGroup aria-label="view" style={{ flexDirection: "row" }} name="view" value={view} onChange={handleViewChange}>
       <FormControlLabel value="manual" control={<Radio style={{ color: "#0088bc" }} />} label="MANUAL" />
    { title === "Food" && <FormControlLabel value="kot" control={<Radio style={{ color: "#0088bc" }} />} label="KOT" /> }
-    { title === "Laundary" &&  <FormControlLabel value="linen" control={<Radio style={{ color: "#0088bc" }} />} label="LENIN" /> }
+    { title === "Laundary" &&  <FormControlLabel value="linen" control={<Radio style={{ color: "#0088bc" }} />} label="LINEN" /> }
 
      {title ==="Food" && <Button onClick={handleKot} disabled={showKot}>KOT</Button> }
      {title ==="Laundary" && <Button disabled={showKot}>LINEN</Button> }
@@ -581,14 +581,16 @@ const handleKOT= async (e)=>{
     {/* ********************************* KOT *****************************************/}
     {title === "Food" &&
         <Dialog onClose={handleKOTClose} aria-labelledby="simple-dialog-title" open={open} maxWidth="lg">
-        <DialogTitle><FastfoodIcon/> KOT</DialogTitle>
-        <DialogContent className={classes.roomsDiv}>
-        <form className={classes.formGroup} autoComplete="off">
+          <div>
+          <DialogTitle><FastfoodIcon/> KOT</DialogTitle>   
         <div  onClick={handleDatePicker}>
             {FormUtils.renderDatepicker(
               getDateArgObj("date", "Date", "text", minDate, disable)
               )}
           </div>
+          </div>
+        <DialogContent className={classes.roomsDiv}>
+        <form className={classes.formGroup} autoComplete="off">
            <Autocomplete
             id="combo-box-demo"
             options={foods}

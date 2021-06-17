@@ -30,9 +30,14 @@ const ActiveUsers = ({ allBookings, onClose, title, onSnackbarEvent, history, ha
         }
     }
 
-    const handleReport = (el) => {
-        onClose();
-        history.push("/approximatebill", el);
+    const terminateSession = async(username) => {
+        setLoading(true)
+        const res = await userService.logout({username})
+        setLoading(false)
+        console.log("res", res)
+        if (res.status===200) {
+            fetchBills()
+        }
     }
 
     return (
@@ -48,6 +53,7 @@ const ActiveUsers = ({ allBookings, onClose, title, onSnackbarEvent, history, ha
                                 <TableCell style={{ background: "#0088bc", color: "white" }} align="center">Sl No.</TableCell>
                                 <TableCell style={{ background: "#0088bc", color: "white" }} align="center">Username</TableCell>
                                 <TableCell style={{ background: "#0088bc", color: "white" }} align="center">Login Time</TableCell>
+                                <TableCell style={{ background: "#0088bc", color: "white" }} align="center">End Session</TableCell>
                             </TableRow>
                         </TableHead>
                         {
@@ -60,6 +66,11 @@ const ActiveUsers = ({ allBookings, onClose, title, onSnackbarEvent, history, ha
                                         <TableCell align="center">{i + 1}</TableCell>
                                         <TableCell align="center">{el._id}</TableCell>
                                         <TableCell align="center">{moment(el.logId).local(true).format('D.MMM.YYYY, h:mm:ss A')}</TableCell>
+                                        <TableCell align="center">
+                                            <Button size="small" onClick={()=>terminateSession(el._id)} color="secondary">
+                                                End
+                                            </Button>
+                                        </TableCell>
                                     </TableRow>
                                 )
                             })

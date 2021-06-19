@@ -147,7 +147,7 @@ const Dashboard = props => {
     let allBookings;
     console.log("currentDate",currentDate)
     if(view === "week"){
-      allBookings = await bookingService.getBookingsForWeek(currentDate);
+      allBookings = await bookingService.getBookingsForWeek(moment(currentDate).subtract(1,'d'));
     }else {
       allBookings = await bookingService.getBookings(dateObj);
     }

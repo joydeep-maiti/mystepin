@@ -29,11 +29,11 @@ const CalendarHeader = ({ title, onChange, month, currentDate, view }) => {
   const [disable, setDisable] = React.useState(true)
 
   React.useEffect(()=>{
-    if(view === "day"){
+    if(view === "day" || view==="week"){
       setDisable(moment(currentDate).isSame(new Date(),'d'))
-      return
+    }else {
+      setDisable(moment().month() === month)
     }
-    setDisable(moment().month() === month)
   },[ currentDate, month, view])
 
   return (

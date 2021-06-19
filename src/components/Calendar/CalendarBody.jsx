@@ -214,8 +214,8 @@ const getArgObj = (column, index, classes, dateObj, view, presentDate) => {
     handleRedirect =
       index >= currentDate || booking || view==="day" || view=== "week" ? handleRedirect : () => {};
   }
-
-  const date = view==="day" ? presentDate : new Date(`${dateObj.month + 1}/${index}/${dateObj.year}`);
+  // console.log("presentdate", moment(presentDate).add(index,'d'),index)
+  const date = view==="day" ? presentDate : view==="week" ? moment(presentDate).add(index-1,'d')._d : new Date(`${dateObj.month + 1}/${index}/${dateObj.year}`);
 
   if (show) return { key, value: room.roomNumber, classes };
   else

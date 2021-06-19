@@ -18,6 +18,7 @@ const Calendar = props => {
   } = props;
 
   console.log("Allrooms",allRooms)
+  console.log("currentDate",currentDate)
    //console.log("props",props)
   const [title, setTitle] = useState("");
   const [rows, setRows] = useState([]);
@@ -38,7 +39,7 @@ const Calendar = props => {
   }, [view,currentDate]);
 
   useEffect(() => {
-    setRows(rows.splice(startEnd,7))
+    // setRows(rows.splice(startEnd,7))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startEnd]);
 
@@ -52,13 +53,14 @@ const Calendar = props => {
   useEffect(() => {
     if (allRooms.length > 0) {
       const rows = getTableRows(allRooms, dateObj);
-      if(view==="week"){
-        // console.log("weekRows B", rows)
-        let _rows = rows.splice(startEnd,7)
-        // console.log("weekRows A", _rows)
-        setRows(_rows);
-        return
-      }
+      console.log("getTableRows",rows)
+      // if(view==="week"){
+      //   // console.log("weekRows B", rows)
+      //   let _rows = rows.splice(startEnd,7)
+      //   // console.log("weekRows A", _rows)
+      //   setRows(_rows);
+      //   return
+      // }
       setRows(rows);
     }
 
@@ -184,13 +186,21 @@ const Calendar = props => {
     }
     else if(view==="week"){
       console.log("rowsArray B",rowsArray)
-      let curr = moment(currentDate).date()
+      let curr = moment(currentDate).toISOString().split("T")[0]
       dates.forEach(date => {
-        const dateNumber = moment(date).date();
-        const diff = moment(date).diff(currentDate, 'days');
+        console.log("diff Date", date)
+        // const dateNumber = date.toISOString().split("T")[0];
+        let diff;
+        if(new Date(currentDate).getMonth()=== new Date(date).getMonth()){
+          diff = new Date(date).getDate()-new Date(currentDate).getDate()
+        }else{
+          diff = moment(date).diff(curr, 'days');
+        }
+        diff+=1
+        console.log("diff",date,curr,diff)
         rowsArray[rowIndex] = [...rowsArray[rowIndex]];
-        rowsArray[rowIndex][diff+1] = {
-          ...rowsArray[rowIndex][diff+1],
+        rowsArray[rowIndex][diff] = {
+          ...rowsArray[rowIndex][diff],
           booking,
           color
         }; 
@@ -219,7 +229,7 @@ const Calendar = props => {
     }
     else if(view == "week"){
       return `${moment(date)
-        .format("Do MMMM")}-${moment(date).add(1, "w").format("Do MMMM")} ${moment(date).year()}`;
+        .format("Do MMMM")} - ${moment(date).add(6, "d").format("Do MMMM")} ${moment(date).year()}`;
         
     }
     else {
@@ -265,7 +275,7 @@ const Calendar = props => {
       rows.forEach((row,index)=>{
         rows[index] =  new Array(8).fill({
           room: { ...allRooms[index] },
-          handleRedirect: handleRedirect,
+          handleRedirect: !!allRooms[index].inactive ? ()=>{} :handleRedirect ,
           show: false
         })
         rows[index][0] = { room: { ...allRooms[index] }, show: true};
@@ -304,12 +314,12 @@ const Calendar = props => {
     tableHeaders = new Array(8).fill({});
     let start = moment(currentDate).date()
     let end = start+7;
-    let counter = 0;
+    let counter = -1;
     console.log("end",end)
     tableHeaders = tableHeaders.map((value,index) => {
       if (index !== 0){
         counter++;
-        return { date: counter <= 7 ? moment(currentDate).add(counter,'d').date() : 0};
+        return { date: counter < 7 ? moment(currentDate).add(counter,'d').date() : 0};
       } 
       else return { date: "" };
     });
@@ -333,11 +343,13 @@ const Calendar = props => {
       checkOut = new Date(`${month + 1}/${days}/${year}`);
     }
 
+    console.log("booking, dateObj",booking, dateObj, checkIn, checkOut)
+
     return { checkIn, checkOut };
   };
 
   const handleRedirect = (bookingObj, roomObj, date) => {
-    // console.log("bookingObj, roomObj, date",bookingObj, roomObj, date)
+    console.log("bookingObj, roomObj, date",bookingObj, roomObj, date)
     props.onFormRedirect(bookingObj, roomObj, date);
   };
 

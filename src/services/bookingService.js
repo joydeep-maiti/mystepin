@@ -12,6 +12,20 @@ async function getBookings(monthObj) {
     console.log(error);
   }
 }
+
+async function getBookingsForWeek(date) {
+  try {
+    const { data: bookings } = await http.post(
+      `${http.baseUrl}/bookings/filterByWeek`,
+      {fromDate:date}
+    );
+    return bookings;
+  } catch (error) {
+    
+    console.log(error);
+  }
+}
+
 async function addBooking(booking) {
   try {
     return await http.post(`${http.baseUrl}/bookings/insert`, booking);
@@ -81,4 +95,4 @@ async function getExpectedCheckouts() {
   }
 }
 
-export default { getBookings, addBooking, updateBooking, getProofId, getDayCheckin, searchGuest, getTodaysCheckin, searchGuestByDate, getExpectedCheckouts };
+export default { getBookings, getBookingsForWeek, addBooking, updateBooking, getProofId, getDayCheckin, searchGuest, getTodaysCheckin, searchGuestByDate, getExpectedCheckouts };

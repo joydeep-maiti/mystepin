@@ -56,7 +56,7 @@ const Login = (props) => {
     const classes = useStyles();
 
     const [userData, setUserData] = React.useState({
-        username: "admin",
+        username: "adminj",
         password: "admin"
     })
     const [openSnack, setOpenSnack] = React.useState({

@@ -141,9 +141,16 @@ const Dashboard = props => {
     const allRooms = await roomService.getRooms();
     allRooms.length > 0 && setAllRooms(allRooms);
   };
+
   const setBookings = async dateObj => {
     await getRooms()
-    const allBookings = await bookingService.getBookings(dateObj);
+    let allBookings;
+    console.log("currentDate",currentDate)
+    if(view === "week"){
+      allBookings = await bookingService.getBookingsForWeek(currentDate);
+    }else {
+      allBookings = await bookingService.getBookings(dateObj);
+    }
     if (allBookings.length > 0) {
       setAllBookings(allBookings);
     }

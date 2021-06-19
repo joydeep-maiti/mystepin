@@ -75,7 +75,7 @@ const CalendarBody = ({ tableHeaders, tableRows, loading, dateObj, view , presen
   const classes = useStyles();
 
   // console.log("tableHeaders",tableHeaders)
-  console.log("tableRows",tableRows)
+  console.log("tableRowsW",tableRows)
   // console.log("loading",loading)
   // console.log("dateObj",dateObj)
 

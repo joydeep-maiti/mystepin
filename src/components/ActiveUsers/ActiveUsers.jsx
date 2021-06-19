@@ -12,7 +12,7 @@ import userService from '../../services/userService'
 import Loader from "../../common/Loader/Loader";
 const moment = require("moment");
 
-const ActiveUsers = ({ allBookings, onClose, title, onSnackbarEvent, history, handleBookingselection }) => {
+const ActiveUsers = ({ onClose, title, userData }) => {
 
     const [bills, setBills] = React.useState(null)
     const [loading, setLoading] = React.useState(false);
@@ -67,9 +67,9 @@ const ActiveUsers = ({ allBookings, onClose, title, onSnackbarEvent, history, ha
                                         <TableCell align="center">{el._id}</TableCell>
                                         <TableCell align="center">{moment(el.logId).local(true).format('D.MMM.YYYY, h:mm:ss A')}</TableCell>
                                         <TableCell align="center">
-                                            <Button size="small" onClick={()=>terminateSession(el._id)} color="secondary">
+                                            {userData.username !== el._id && <Button size="small" onClick={()=>terminateSession(el._id)} color="secondary">
                                                 End
-                                            </Button>
+                                            </Button>}
                                         </TableCell>
                                     </TableRow>
                                 )

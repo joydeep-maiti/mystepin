@@ -497,6 +497,7 @@ const Dashboard = props => {
                 title={advancedDialogTitle}
                 onClose={() => handleDialog(dialog.contentOf)}
                 onSnackbarEvent={handleSnackbarEvent}
+                userData={userData}
               />
             )}
         </Dialog>

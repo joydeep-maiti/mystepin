@@ -237,6 +237,10 @@ const Occupancy = () => {
     console.log("Catergory",occupancyCategory)
 
     console.log("monthly report ",options)
+    console.log("monthly report ",options.length)
+    if(options.length ==0){
+      alert("No Data Avalaible");
+    }else{
     let data = options.map(option=>{
       let date = moment(option.date).format('D-MMMM-YYYY');
       return([
@@ -251,6 +255,7 @@ const Occupancy = () => {
     })
     exportMonthlyOccupantToPDF(data)
   } 
+}
   
 
 //Export Monthly occupancy pdf

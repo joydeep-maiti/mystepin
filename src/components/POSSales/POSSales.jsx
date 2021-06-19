@@ -86,7 +86,11 @@ const POSSales = () => {
     let options = await posReportService.getPosReport(posCategory,startD,currentD)
     console.log("Response",options)
     console.log("Category",posCategory)
-   if(options){
+    console.log("options",options.length);
+    if(options.length ==0){
+      alert("No data Avaialabe")
+    }
+    else if(options.length !=0){
     if(posCategory !== "All POS"){
       let data = options.map(option=>{
         let date = moment(option.date).format("DD-MMMM-yyyy");
@@ -110,7 +114,8 @@ const POSSales = () => {
        total[1] += option.Transport ? parseInt(option.Transport) : 0;
        total[2] += option.Laundary ? parseInt(option.Laundary) : 0;
        total[3] += option.Agent ? parseInt(option.Agent) : 0;
-       total[4] += option.Others ? parseInt(option.Others) : 0;    
+       total[4] += option.Others ? parseInt(option.Others) : 0;  
+      
         return([
           date,
           option.guestName,
@@ -118,7 +123,8 @@ const POSSales = () => {
           option.Transport,
           option.Laundary,
           option.Agent,
-          option.Others
+          option.Others,
+          option.Total
         ])
       })   
       setPosTotal(total)
@@ -151,7 +157,7 @@ const POSSales = () => {
     let title = `${posCategory} REPORT`;
     let headers = [["DATE","ROOM NO","AMOUNT","REMARKS"]];
     if(posCategory === "All POS"){
-      headers = [["DATE","GUEST NAME","FOOD","TRANSPORT","LAUNDARY","AGENT","OTHERS"]];
+      headers = [["DATE","GUEST NAME","FOOD","TRANSPORT","LAUNDARY","AGENT","OTHERS","TOTAL"]];
     }
     let content = {
       startY: 120,

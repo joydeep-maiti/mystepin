@@ -11,6 +11,7 @@ import utils from "../../utils/utils";
 import FormUtils from "../../utils/formUtils";
 import reportOptions from '../../services/reportOptions'
 import agentService from '../../services/agentService'
+import { options } from 'joi-browser';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -116,6 +117,11 @@ const Agent = () => {
       console.log("End",currentD)
       const options = await agentService.getAgentDetails(startD,currentD,agent);
       console.log("Navy",options)
+      console.log("options",options.length)
+      if(options.length ==0){
+        alert("No Data avalibale")
+      }
+      if(options.length !=0){
       if(agent == "Agent Collection(Billed)"){
         let total=[0,0,0,0,0,0,0,0];
         let data = options.map(option=>{
@@ -183,7 +189,30 @@ const Agent = () => {
          
          exporttoPDF(data);
       }
+      if(agent == "All Agent Commission"){
+        let total=[0,0,0,0,0,0,0,0];
+        let data = options.map(option=>{
+         
+           let checkIn = moment(option.checkIn).format('YYYY-MMMM-D');
+           let checkOut = moment(option.checkOut).format('YYYY-MMMM-D');
+          return([
+            option.billNo,
+            checkIn,
+            checkOut,
+            option.guestName,
+            
+            option.agentname,
+            option.refnumber,
+            option.roomrate,
+            option.commission,
+           ])
+         })
+         
+         
+         exporttoPDF(data);
+      }
   }
+}
 
   const fetchAgentCommisionReport = async()=>{
     let total=0;
@@ -195,8 +224,16 @@ const Agent = () => {
     let len = options.length || 0 ;
     console.log("len",len)
     console.log("Response",options)
-    console.log("Category",AgentCommissioncategory)
-    if(options && AgentCommissioncategory){
+    console.log("options",options.length)
+    console.log("Category",AgentCommissioncategory.length)
+    
+     if(AgentCommissioncategory.length ==0){
+      alert("Select the Agent type")
+    }
+    else if(options.length ==0){
+      alert("No Data avalibale")
+    }
+    else if((options.length !=0) && AgentCommissioncategory){
         let data = options.map(option=>
           {
           let checkIn = moment(option.checkIn).format('D-MMMM-YYYY');
@@ -220,7 +257,7 @@ const Agent = () => {
         exporttoPDF(data,len,total)
       }
       else{
-    alert("Select the Agent type")
+    alert("Something worng please try again")
       }
 
 
@@ -269,6 +306,11 @@ const getAgentCommissionOptions = () => {
           
          headers = [["Bill No","CheckIn","CheckOut","GuestName","agentname","refnumber","Amount","commission"]];
         }
+        else if(agent === "All Agent Commission")
+        {
+          
+         headers = [["Bill No","CheckIn","CheckOut","GuestName","agentname","refnumber","Amount","commission"]];
+        }
        
        
         let content = {
@@ -294,6 +336,11 @@ const getAgentCommissionOptions = () => {
         }
 
         if(agent === "Agent Commission"){
+          doc.text("Agent Name :  "+AgentCommissioncategory,20,110);
+         doc.text("Commission % : 15 ",200, 110);
+        }
+        if(agent === "All Agent Commission"){
+          
           doc.text("Commission % : 15 ",20, 110);
         }
         doc.setFontSize(12);

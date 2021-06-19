@@ -98,7 +98,14 @@ const fetchAndGenerateMonthlyOccupanyReport = async()=>{
   console.log("Response",options)
   console.log("Category",bookingCategory)
   console.log("monthly report ",options)
-  if(options){
+  console.log(options.length)
+
+if(options.length ==0){
+  console.log("No data Avalaible");
+  alert("No Data Available")
+
+}
+ else if(options.length !=0){
   let data = options.map(option=>{
     let booDate = moment(option.bookingDate).format('D-MMMM-YYYY');
     let arriDate = moment(option.dateOfArrival).format('D-MMMM-YYYY');

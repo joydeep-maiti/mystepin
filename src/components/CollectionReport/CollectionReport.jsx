@@ -94,7 +94,11 @@ const CollectionReport = () => {
        
        }
        console.log("Data",options)
-       if(options){
+       console.log("Data",options.length)
+       if(options.length ==0){
+         alert("No Data Avalaible")
+       }
+       if(options.length !=0){
         if(collectionCategory === "Total Collection"){
           let total=[0,0,0,0,0,0,0,0];
           let data = options.map(option=>{

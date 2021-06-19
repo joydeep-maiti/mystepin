@@ -126,8 +126,12 @@ const fetchAndGenerateGuestReport = async()=>{
   let len = options.length || 0 ;
   console.log("len",len)
   console.log("Response",options)
+  console.log("Response",options.length)
   console.log("Category",guestCategory)
-  if(options){
+  if(options.length ==0){
+    alert("No Data Avalaible")
+  }
+ else if(options.length !=0){
     if(guestCategory === "Domicillary Guest"){
       let data = options.map(option=>{
         let checkIn = moment(option.checkIn).format('D-MMMM-YYYY');
@@ -202,8 +206,16 @@ const fetchRoomWiseReport= async()=>{
   let len = options.length || 0 ;
   console.log("len",len)
   console.log("Response",options)
+  console.log("Response",options.length)
   console.log("Category",guestCategory)
-  if(options && roomNumber){
+  if(roomNumber.length ==0){
+    alert("Select the Roomnumber")
+  }
+  else if(options.length ==0 ){
+    alert("No Data Avalibale");
+  }
+  
+ else if((options.length!=0) && roomNumber){
       let data = options.map(option=>
         {
         let checkIn = moment(option.checkIn).format('D-MMMM-YYYY');
@@ -222,7 +234,7 @@ const fetchRoomWiseReport= async()=>{
       exportGuestReportToPDF(data,len,total)
     }
     else{
-  alert("Select the Roomnumber")
+      alert("Something worng please try again")
     }
 
 }

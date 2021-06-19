@@ -88,9 +88,16 @@ const BillingDetails = () => {
     console.log("End",currentD)
      const options = await billingReport.getBillingDetails(startD,currentD,billingCategory);
      console.log("Hari",options)
-     if(options){
+     console.log("Hari",options.length)
+     if(options.length == 0){
+       alert("No data available")
+     }
+     if(options.length !=0){
        let total=[0,0,0,0,0,0,0,0,0,0];
       let data = options.map(option=>{
+      
+       // console.log(option.tax,option.food)
+       
         let billingDate = moment(option.billingDate).format('D-MMMM-YYYY');
         total[0] += option.roomrate ? parseInt(option.roomrate) : 0;
         total[1] += option.tax ? parseInt(option.tax.toFixed(2)) : 0;
@@ -104,6 +111,7 @@ const BillingDetails = () => {
         total[9] += option.Balance ? parseInt(Number(option.Balance).toFixed(2)) : 0;
  
         //let boardingDate = moment(option.boardingDate).format('D-MMMM-YYYY');
+       
         return([
          ` ${option.billNo} \n ${option.name}` ,
           billingDate,

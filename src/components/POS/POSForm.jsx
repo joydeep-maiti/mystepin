@@ -384,6 +384,9 @@ const getArray = async (bid,inputId) => {
   }
 
 }
+//modified array need to be saved in kot and pos table
+
+
 
 //Add first element to KOT
 const addFirstElement = async () =>{ 
@@ -435,6 +438,7 @@ const handlePOSKOTUpload = async(_data)=>{
       ...allBookings.find(booking => booking._id === _id)
     };
     if (pos) {
+      setKotArray([])
       let _pos = { ...pos };
       _pos[title] = _pos[title]
         ? [..._pos[title], { kotId, date, amount, remarks }]
@@ -454,6 +458,7 @@ const handlePOSKOTUpload = async(_data)=>{
       } 
       else openSnackBar("Error Occurred", error);
     } else {
+      setKotArray([])
       let _pos = {};
       _pos[title] = [{kotId,date,amount,remarks}];
       const _posDetails = {
@@ -473,7 +478,6 @@ const handlePOSKOTUpload = async(_data)=>{
       } 
       else openSnackBar("Error Occurred", error);
     }
-    setKotArray([])
     }
 
 const handleKOT= async (e)=>{
@@ -488,6 +492,12 @@ const handleKOT= async (e)=>{
 })
   console.log("kotArray",kottemp)
 }
+
+const handleKClose=()=>{
+  handleKOTClose();
+  setKotArray([])
+}
+
 ////////////////***************** ENd  **********************************/
   return (
     <> 
@@ -574,6 +584,7 @@ const handleKOT= async (e)=>{
         title={title}
         view= {view}
         bid={bid}
+        onClose={onClose}
         getArray={getArray}
         handlePosDelete={handlePosDelete}
         />}
@@ -581,13 +592,22 @@ const handleKOT= async (e)=>{
     {/* ********************************* KOT *****************************************/}
     {title === "Food" &&
         <Dialog onClose={handleKOTClose} aria-labelledby="simple-dialog-title" open={open} maxWidth="lg">
-          <div>
+          <div style={{display:"flex"}}>
           <DialogTitle><FastfoodIcon/> KOT</DialogTitle>   
-        <div  onClick={handleDatePicker}>
+          <div onClick={handleDatePicker} style={{width:"200px"}}>
             {FormUtils.renderDatepicker(
               getDateArgObj("date", "Date", "text", minDate, disable)
               )}
           </div>
+          <Button 
+          type="submit" 
+          variant="contained"
+          color="secondary"  
+          style={{color:'white',margin:"10px",height:"30px",float:"right",marginLeft:"37rem"}}
+          onClick={handleKClose}
+          >
+            CLOSE 
+          </Button>
           </div>
         <DialogContent className={classes.roomsDiv}>
         <form className={classes.formGroup} autoComplete="off">
@@ -622,6 +642,7 @@ const handleKOT= async (e)=>{
         {kotArray && <InventoryList 
         kotArray={kotArray}
         title={title}
+        setKotArray={setKotArray}
         data={data}
         setData = {setData}
         handleKOTSUBMIT={handleKOTSUBMIT}

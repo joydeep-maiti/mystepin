@@ -1,6 +1,6 @@
 import React from "react";
 
-import { DialogTitle, DialogContent } from "@material-ui/core";
+import { DialogTitle, DialogContent,Button } from "@material-ui/core";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -65,9 +65,18 @@ return (
                 })
               }
               </TableBody>
+              
         </Table>
       </TableContainer>
-      
+      <Button 
+               type="submit" 
+                variant="contained" 
+                color="secondary"
+               style={{color:'white',margin:"10px",float:"right"}}
+               onClick={()=>props.onClose()}
+              >
+            CLOSE 
+          </Button>
     </DialogContent>
   );
 };

@@ -12,7 +12,7 @@ import moment from "moment";
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 
 const InventoryList = (props) => {
-  const {kotArray,handleKOTSUBMIT,data,setData} =props;
+  const {kotArray,handleKOTSUBMIT,data,setData,setKotArray} =props;
   console.log("Inventory",kotArray)
   const [kot, setKot] =  React.useState([])
   const [total,setTotal] = React.useState(null)
@@ -31,7 +31,16 @@ const InventoryList = (props) => {
   }
 
   const handleDelete = (el) => {
-    props.handlePosDelete(el);
+    console.log("el",el)
+    console.log("before kot",kot)
+    let index = kot.findIndex(e => e.itemName === el.itemName)
+    console.log("Index",index)
+    let temp = JSON.parse(JSON.stringify(kot))
+    temp.splice(index,1)
+    setKot(temp);
+    console.log("After moving",kot)
+    setKotArray(kot)
+    console.log("Kotarray",kotArray)
   }
 
   return (
@@ -55,7 +64,7 @@ const InventoryList = (props) => {
                       <TableCell align="center">{el.itemName}</TableCell>
                       <TableCell align="center">{el.itemQuantity}</TableCell>
                       <TableCell align="center">{el.itemPrice}</TableCell>
-                      <TableCell align="center"><DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}}/></TableCell>
+                      <TableCell align="center"><DeleteOutlineOutlinedIcon  style={{cursor:"pointer"}} onClick={()=>handleDelete(el)}/></TableCell>
                     </TableRow>
                   )
                 })

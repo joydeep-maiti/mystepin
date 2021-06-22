@@ -229,7 +229,7 @@ const Calendar = props => {
     }
     else if(view == "week"){
       return `${moment(date)
-        .format("Do MMMM")} - ${moment(date).add(6, "d").format("Do MMMM")} ${moment(date).year()}`;
+        .format("Do MMMM YYYY")} - ${moment(date).add(6, "d").format("Do MMMM YYYY")}`;
         
     }
     else {

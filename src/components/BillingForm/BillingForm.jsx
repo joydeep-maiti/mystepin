@@ -11,6 +11,7 @@ import { YearSelection } from "@material-ui/pickers/views/Year/YearView";
 import { InputLabel} from "@material-ui/core";
 import moment from 'moment';
 
+
 const useStyles = makeStyles(theme => ({
   formGroup: {
     display: "flex",
@@ -72,7 +73,7 @@ const BillingForm = props => {
   const [pos, setPos] = React.useState(null)
   // const [roomChargesTotal, setRoomChargesTotal] = React.useState(0)
   // const [roomChargesTotalWithTax, setRoomChargesTotalWithTax] = React.useState(0)
-  // const [tax, setTax] = React.useState(0)
+ const [taxSlabs, setTaxSlabs] = React.useState(0)
   // const [slab, setSlab] = React.useState(0)
   const [balance, setBalance] = React.useState(0)
   // const [taxSlabs, setTaxSlabs] = React.useState([]);
@@ -87,6 +88,14 @@ const BillingForm = props => {
       setRooms(bookedRooms.toString())
   },[booking])
 
+  React.useEffect(async()=>{
+    const data = await taxService.getTaxSlabs("CITY")
+    if(data){
+
+    console.log("Tax-data",data[0].taxPercent)
+    setTaxSlabs(data[0].taxPercent)
+    }
+  },[])
   // const billingStatus=due?[
   //   {label:"Due" ,value:"Due"},
   //   {label:"Bill to Company" ,value:"Bill to Company"},
@@ -153,6 +162,7 @@ const BillingForm = props => {
       balance: balance,
       posData: pos
     })
+    console.log("POSTOATA",postotal)
   },[balance])
 
   React.useEffect(()=>{
@@ -160,7 +170,18 @@ const BillingForm = props => {
       setBalance(Number(Number(data.totalRoomCharges)+Number(postotal)-Number(advanceAmount)).toFixed(2))
     }
   },[advanceAmount])
+  // let type = "CITY"
+  // const fetchTaxes = async () => {
+  //     setLoading(true)
+  //     const taxSlabs = await taxService.getTaxSlabs(type);
+  //     //console.log(taxSlabs)
+  //     setTaxSlabs(taxSlabs);
+  //     setLoading(false);
+  //   };
   
+  //   React.useEffect(()=>{
+  //    fetchTaxes()
+  //   },[taxSlabs])
   // React.useEffect(()=>{
   //   let balance = data.taxStatus==="withTax"?Number(roomChargesTotalWithTax)-Number(booking.advance):Number(roomChargesTotal)-Number(booking.advance)
   //   setBalance(balance)
@@ -272,6 +293,9 @@ const BillingForm = props => {
       </div>
     );
   };
+//let cityTax =taxSlab
+  let cityTax = (Number(postotal)*(parseInt(taxSlabs)/100)).toFixed(2) || 0
+  let misc = ((Number(postotal) )+ (Number(postotal)*(parseInt(taxSlabs)/100))).toFixed(2) || 0
 
   // const radioButtons = [
   //   { value: "withoutTax", label: "Without Tax" },
@@ -322,11 +346,12 @@ const BillingForm = props => {
         <div style={{display:"flex", flexWrap:"wrap", marginTop:"1rem"}}>
           {renderInputItems("Room Charges", booking.flatRoomRate?(Number(data.totalRoomCharges)-Number(data.tax)).toFixed(2):booking.roomCharges, "roomCharges")}
           {renderInputItems("Tax", data.tax, "tax")}
-          {renderInputItems("Misllaneous", postotal || '0', "misllaneous")}
-          {renderInputItems("Total Charges", Number(data.totalRoomCharges)+Number(postotal || 0), "totalRoomCharges")}
+          {renderInputItems("Misllaneous", misc || '0', "misllaneous")}
+          {renderInputItems("City Tax", cityTax|| '0', "cityTax")} {/*get city tax and replace with postotal */}
+          {renderInputItems("Total Charges", Number(data.totalRoomCharges)+ Number(misc), "totalRoomCharges")} {/*Add city tax to it */}
           {renderInputItems("Advance", advanceAmount || '0', "advance")}
-          {renderInputItems("Balance",  balance, "balance")}
-        </div>
+          {renderInputItems("Balance", Number(balance) + Number(cityTax) , "balance")}
+       
         <div style={{width:"20rem",display:"flex", alignItems:"center"}}>
         <label style={{width:"16rem"}}>Billing Status</label>
         <span>:</span>
@@ -337,6 +362,7 @@ const BillingForm = props => {
           onChange: event => selectBillingStatus(event),
           billingStatus
         })}
+         </div>
         </div>
         {/* <Divider className={classes.divider} /> */}
         <div className={classes.paymentMethods}>

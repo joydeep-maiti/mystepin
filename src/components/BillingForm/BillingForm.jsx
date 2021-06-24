@@ -346,7 +346,7 @@ const BillingForm = props => {
         <div style={{display:"flex", flexWrap:"wrap", marginTop:"1rem"}}>
           {renderInputItems("Room Charges", booking.flatRoomRate?(Number(data.totalRoomCharges)-Number(data.tax)).toFixed(2):booking.roomCharges, "roomCharges")}
           {renderInputItems("Tax", data.tax, "tax")}
-          {renderInputItems("Misllaneous", misc || '0', "misllaneous")}
+          {renderInputItems("Misllaneous", postotal || '0', "misllaneous")}
           {renderInputItems("City Tax", cityTax|| '0', "cityTax")} {/*get city tax and replace with postotal */}
           {renderInputItems("Total Charges", Number(data.totalRoomCharges)+ Number(misc), "totalRoomCharges")} {/*Add city tax to it */}
           {renderInputItems("Advance", advanceAmount || '0', "advance")}

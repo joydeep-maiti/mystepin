@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Typography } from "@material-ui/core";
 import { IconButton } from "@material-ui/core";
 import Input from "../../common/Input/Input";
@@ -31,6 +31,7 @@ import taxService from "../../services/taxService";
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import GuestNameDialog from './GuestNameDialog'
+
 const BookingForm = props => {
   const classes = useStyles();
 
@@ -61,24 +62,26 @@ const BookingForm = props => {
     onCheckIn,
     setData,
     isDirtyroomSelected,
-    isEdit
+    isEdit,
+    onHandleAdditionalGuest,
+    additionalGuests
   } = props;
-  console.log("errorsshouldDisable",errors,shouldDisable)
+  console.log("errorsshouldDisable", errors, shouldDisable)
 
   const [loading, setLoading] = React.useState(false);
   const [openPriceModal, setOpenPriceModal] = React.useState(false)
   const [dayWiseRates, setDayWiseRates] = React.useState([])
   const [formattedRates, setFormattedRates] = React.useState({})
   const [planTypes, setPlanTypes] = React.useState([
-    {planType:"AP"},
-    {planType:"CP"},
-    {planType:"EP"},
-    {planType:"MAP"},
+    { planType: "AP" },
+    { planType: "CP" },
+    { planType: "EP" },
+    { planType: "MAP" },
   ]);
   const proofTypes = [
-    {label:"Passport",value :"Passport"}
+    { label: "Passport", value: "Passport" }
   ]
-    const [taxSlabs, setTaxSlabs] = React.useState([]);
+  const [taxSlabs, setTaxSlabs] = React.useState([]);
   // const roomOptions = availableRooms.map(room => {
   //   return { label: room.roomNumber, value: room.roomNumber };
   // });
@@ -90,25 +93,25 @@ const BookingForm = props => {
   //   })
   // );
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
     fetchTaxes()
-  },[])
+  }, [])
 
-  React.useEffect(()=>{
-    if(data["checkIn"] > data["checkOut"]){
+  React.useEffect(() => {
+    if (data["checkIn"] > data["checkOut"]) {
       return
     }
     fetchRates()
-  },[data["checkIn"],data["checkOut"]])
+  }, [data["checkIn"], data["checkOut"]])
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
     formatRates()
-  },[dayWiseRates,data.planType, data.flatRoomRate,data.roomCharges])
+  }, [dayWiseRates, data.planType, data.flatRoomRate, data.roomCharges])
 
 
-  React.useEffect(()=>{
-    calculateBookingPrice(formattedRates,data.rooms)
-  },[data.rooms])
+  React.useEffect(() => {
+    calculateBookingPrice(formattedRates, data.rooms)
+  }, [data.rooms])
 
   const fetchTaxes = async () => {
     setLoading(true)
@@ -117,34 +120,34 @@ const BookingForm = props => {
     setLoading(false);
   };
 
-  const fetchRates = async()=>{
-    if(!data["checkIn"] || !data["checkOut"])
+  const fetchRates = async () => {
+    if (!data["checkIn"] || !data["checkOut"])
       return
     setLoading(true);
-    const dayRates = await ratemasterService.getDayWiseRate(data["checkIn"],data["checkOut"]);
-    if(dayRates){
+    const dayRates = await ratemasterService.getDayWiseRate(data["checkIn"], data["checkOut"]);
+    if (dayRates) {
       setDayWiseRates(dayRates)
     }
-    console.log("----------------dayRates",dayRates)
+    console.log("----------------dayRates", dayRates)
     setLoading(false);
   }
 
-  const formatRates = ()=>{
+  const formatRates = () => {
     const rates = {}
-    dayWiseRates.forEach(el=>{
-      if(el.planType === data.planType && !rates[el.roomType]){
+    dayWiseRates.forEach(el => {
+      if (el.planType === data.planType && !rates[el.roomType]) {
         rates[el.roomType] = []
         rates[el.roomType].push(el)
-      }else if(el.planType === data.planType && rates[el.roomType]){
+      } else if (el.planType === data.planType && rates[el.roomType]) {
         rates[el.roomType].push(el)
       }
     })
     // .sort((a,b) => moment(a.date).isBefore(b.date))
-    Object.keys(rates).forEach(el=>{
+    Object.keys(rates).forEach(el => {
       // debugger
       let arr = rates[el]
-      rates[el] = arr.sort((a,b) => {
-        if(a.date > b.date ){
+      rates[el] = arr.sort((a, b) => {
+        if (a.date > b.date) {
           return 1;
         }
         return -1;
@@ -152,56 +155,56 @@ const BookingForm = props => {
     })
     // console.log
     setFormattedRates(rates)
-    calculateBookingPrice(rates,data.rooms)
+    calculateBookingPrice(rates, data.rooms)
   }
 
   const calculateBookingPrice = (rates, rooms) => {
-    console.log("--------shouldDisable",shouldDisable,data.roomCharges)
+    console.log("--------shouldDisable", shouldDisable, data.roomCharges)
     // debugger
-    if(shouldDisable)
+    if (shouldDisable)
       return
-    let price = data.flatRoomRate?data.roomCharges:0
-    console.log("rates, rooms",rates, rooms)
+    let price = data.flatRoomRate ? data.roomCharges : 0
+    console.log("rates, rooms", rates, rooms)
     const roomWiseRatesForBooking = []
-    let dates = data.flatRoomRate && daysBetweenDates(data.checkIn,data.checkOut)
-    let nights = dates.length > 0? dates.length : 1 
-    let divi = data.flatRoomRate && Number(nights)*Number(rooms.length)
+    let dates = data.flatRoomRate && daysBetweenDates(data.checkIn, data.checkOut)
+    let nights = dates.length > 0 ? dates.length : 1
+    let divi = data.flatRoomRate && Number(nights) * Number(rooms.length)
     // console.log("data.roomCharges/divi",data.roomCharges/divi,data.roomCharges,divi)
-    let singleRooomSingleNightRateT = data.flatRoomRate && data.roomCharges/divi;
-    console.log("singleRooomSingleNightRateT", dates,singleRooomSingleNightRateT)
-    rooms.forEach(room=>{
+    let singleRooomSingleNightRateT = data.flatRoomRate && data.roomCharges / divi;
+    console.log("singleRooomSingleNightRateT", dates, singleRooomSingleNightRateT)
+    rooms.forEach(room => {
       const bookingRate = {
-        roomNumber:room.roomNumber,
+        roomNumber: room.roomNumber,
       }
       const bookingRates = []
-      if(!data.flatRoomRate){
-        rates[room.roomType] && rates[room.roomType].forEach(dayrate=>{
+      if (!data.flatRoomRate) {
+        rates[room.roomType] && rates[room.roomType].forEach(dayrate => {
           // debugger
           price += parseInt(dayrate.rate)
-          const slab = taxSlabs.filter(el => dayrate.rate>el.greaterThan && dayrate.rate<= (el.lessThanAndEqual || 9999999999))
+          const slab = taxSlabs.filter(el => dayrate.rate > el.greaterThan && dayrate.rate <= (el.lessThanAndEqual || 9999999999))
           let taxPercent;
           let tax;
-          if(slab.length>0){
+          if (slab.length > 0) {
             taxPercent = slab[0].taxPercent
-            tax = dayrate.rate*(slab[0].taxPercent/100)
+            tax = dayrate.rate * (slab[0].taxPercent / 100)
           }
           bookingRates.push({
             date: dayrate.date,
             rate: dayrate.rate,
             extra: dayrate.extraRate,
             taxPercent,
-            tax:Number(tax).toFixed(2)
+            tax: Number(tax).toFixed(2)
           })
         })
-      }else {
+      } else {
         let singleRooomSingleNightRate;
-        const slab = taxSlabs.filter(el => Number(singleRooomSingleNightRateT)>Number(el.greaterThan) && Number(singleRooomSingleNightRateT)<= (Number(el.lessThanAndEqual) || 9999999999))
+        const slab = taxSlabs.filter(el => Number(singleRooomSingleNightRateT) > Number(el.greaterThan) && Number(singleRooomSingleNightRateT) <= (Number(el.lessThanAndEqual) || 9999999999))
         let taxPercent;
         let tax;
-        if(slab.length>0){
-          console.log("slab Price",slab)
+        if (slab.length > 0) {
+          console.log("slab Price", slab)
           taxPercent = slab[0].taxPercent
-          singleRooomSingleNightRate = (Number(singleRooomSingleNightRateT)/((100+Number(taxPercent))/100)).toFixed(2)
+          singleRooomSingleNightRate = (Number(singleRooomSingleNightRateT) / ((100 + Number(taxPercent)) / 100)).toFixed(2)
           // console.log("singleRooomSingleNightRate Price",singleRooomSingleNightRate)
           // const slab2 = taxSlabs.filter(el => singleRooomSingleNightRate>el.greaterThan && singleRooomSingleNightRate<= (el.lessThanAndEqual || 9999999999))
           // if(Number(slab2[0].taxPercent) !== Number(taxPercent)){
@@ -210,23 +213,23 @@ const BookingForm = props => {
           //   singleRooomSingleNightRate = (Number(singleRooomSingleNightRateT)/((100+Number(taxPercent))/100)).toFixed(2)
           //   console.log("singleRooomSingleNightRate2 Price",singleRooomSingleNightRate)
           // }
-          tax = (singleRooomSingleNightRate*(taxPercent/100)).toFixed(2)
+          tax = (singleRooomSingleNightRate * (taxPercent / 100)).toFixed(2)
         }
-        dates.forEach(el=>{
+        dates.forEach(el => {
           bookingRates.push({
             date: el.toISOString(),
             rate: Number(singleRooomSingleNightRate).toFixed(2),
             extra: 0,
             taxPercent,
-            tax:Number(tax).toFixed(2)
+            tax: Number(tax).toFixed(2)
           })
         })
       }
       bookingRate.rates = bookingRates
       roomWiseRatesForBooking.push(bookingRate)
     })
-    console.log("Final Price",price, roomWiseRatesForBooking)
-    onSetPrice(price,roomWiseRatesForBooking)
+    console.log("Final Price", price, roomWiseRatesForBooking)
+    onSetPrice(price, roomWiseRatesForBooking)
   };
 
   const daysBetweenDates = (startDate, endDate) => {
@@ -290,14 +293,14 @@ const BookingForm = props => {
   const getPlanOptions = () => {
 
     return planTypes.map(plan => {
-      return { label: plan.planType, value: plan.planType};
+      return { label: plan.planType, value: plan.planType };
     });
   };
 
   const getRoomTypeOptions = (roomtypes) => {
 
     return roomtypes.map(room => {
-      return { label: room.roomType, value: room.roomType, key:room.roomType};
+      return { label: room.roomType, value: room.roomType, key: room.roomType };
     });
   };
 
@@ -309,67 +312,67 @@ const BookingForm = props => {
     return null;
   };
 
-  console.log("*******formattedRates",formattedRates)
+  console.log("*******formattedRates", formattedRates)
   //Type
-  useEffect(()=>{
-    if(data.bookedBy === "Agent"){
+  useEffect(() => {
+    if (data.bookedBy === "Agent") {
       setIsAgent(true);
       setIsMember(false);
       console.log("Hello Agent")
     }
-    else if(data.bookedBy === 'Head Office'){
+    else if (data.bookedBy === 'Head Office') {
       setisHeadOffice(true)
       setIsAgent(false)
       setIsMember(false);
       console.log("Hello member")
     }
-    else if(data.bookedBy === "Member"){
+    else if (data.bookedBy === "Member") {
       setIsMember(true)
       setIsAgent(false)
       setisHeadOffice(false)
       console.log("Hello member")
     }
-    else{
+    else {
       setIsAgent(false)
       setIsMember(false)
       setisHeadOffice(false)
-  }
-  },[data.bookedBy])
+    }
+  }, [data.bookedBy])
   //Adding BookedOptions
-  const [bookedBy,setBookedBy] = useState("")
-  const [agent,setAgent] = useState("")
-  const [nationality,setNationality] = useState("")
-  const [memberShipNumber,setMembershipNumber]=useState()
-  const [isAgent,setIsAgent] = useState(false);
-  const [isMember,setIsMember] = useState(false);
-  const [isHeadOffice,setisHeadOffice] = useState(false);
-  const bookedByOptions=[
-    {label:"Walk In" ,value:"Walk In"},
-    {label:"Agent" ,value:"Agent"},
-    {label:"Member" ,value:"Member"},
-    {label:"Head Office" ,value:"Head Office"},
-  
+  const [bookedBy, setBookedBy] = useState("")
+  const [agent, setAgent] = useState("")
+  const [nationality, setNationality] = useState("")
+  const [memberShipNumber, setMembershipNumber] = useState()
+  const [isAgent, setIsAgent] = useState(false);
+  const [isMember, setIsMember] = useState(false);
+  const [isHeadOffice, setisHeadOffice] = useState(false);
+  const bookedByOptions = [
+    { label: "Walk In", value: "Walk In" },
+    { label: "Agent", value: "Agent" },
+    { label: "Member", value: "Member" },
+    { label: "Head Office", value: "Head Office" },
+
   ]
-  const agentOption=[
-    {label:"Make my Trip" ,value:"Make my Trip"},
-    {label:"Gobibo" ,value:"Gobibo"},
-    {label:"Sitram Travel Agent" ,value:"Sitram Travel Agent"},
-    {label:"Local Agent" ,value:"Local Agent"},
-  
+  const agentOption = [
+    { label: "Make my Trip", value: "Make my Trip" },
+    { label: "Gobibo", value: "Gobibo" },
+    { label: "Sitram Travel Agent", value: "Sitram Travel Agent" },
+    { label: "Local Agent", value: "Local Agent" },
+
   ]
   //Adding Nationality
- 
+
   const nationalityOptions = [
-    {label : "Indian",value : "Indian"}
-    ,{label : "British",value : "British"}
-    ,{label : "American",value : "American"}
-    ,{label : "Australian",value : "Australian"}
-    ,{label : "Japan",value : "Japan"}
-    ,{label : "Saudi Arab",value : "Saudi Arab"}
-    ,{label : "UAE",value : "UAE"}
-    ,{label : "Africa",value : "Africa"},
-    ,{label : "French",value : "French"}
- ]
+    { label: "Indian", value: "Indian" }
+    , { label: "British", value: "British" }
+    , { label: "American", value: "American" }
+    , { label: "Australian", value: "Australian" }
+    , { label: "Japan", value: "Japan" }
+    , { label: "Saudi Arab", value: "Saudi Arab" }
+    , { label: "UAE", value: "UAE" }
+    , { label: "Africa", value: "Africa" },
+    , { label: "French", value: "French" }
+  ]
 
   console.log(memberShipNumber)
   //BookedByType
@@ -388,7 +391,7 @@ const BookingForm = props => {
   const selectNationalityOption = (event) => {
     setNationality(event.target.value);
     updatedata({
-      nationality : event.target.value
+      nationality: event.target.value
     })
   }
 
@@ -403,9 +406,16 @@ const BookingForm = props => {
     setOpen(false);
   };
 
+  const onHandleGuest = (guests) => {
+    setOpen(false);
+    onHandleAdditionalGuest(guests)
+  };
+
 
   return (
-    <form onSubmit={event => onFormSubmit(event)} style={{marginBottom:"2rem"}}>
+    <React.Fragment>
+    <GuestNameDialog open={open} onClose={handleClose} shouldDisable={shouldDisable} onHandleGuest={onHandleGuest} additionalGuests={additionalGuests}/>
+    <form onSubmit={event => onFormSubmit(event)} style={{ marginBottom: "2rem" }}>
       {loading && <Loader color="#0088bc" />}
       <div className="form-group">
         {FormUtils.renderInput(
@@ -415,19 +425,17 @@ const BookingForm = props => {
           getInputArgObj("lastName", "Last Name", "text", shouldDisable)
         )}
 
-        <GuestNameDialog open={open} onClose={handleClose} shouldDisable={shouldDisable}/>
         <IconButton>
-
-       <Fab
-                size="small"
-                color="primary"
-                aria-label="add"
-                onClick={handleClickOpen}
-                disabled={shouldDisable}
-             >
-                <AddIcon />
-         </Fab>
-         </IconButton>
+          <Fab
+            size="small"
+            color="primary"
+            aria-label="add"
+            onClick={handleClickOpen}
+            disabled={shouldDisable}
+          >
+            <AddIcon />
+          </Fab>
+        </IconButton>
         {FormUtils.renderInput(
           getInputArgObj(
             "contactNumber",
@@ -444,13 +452,13 @@ const BookingForm = props => {
         {FormUtils.renderNationality({
           id: "nationality",
           label: "Nationality",
-          name:"nationality",
+          name: "nationality",
           value: data.nationality,
           onChange: event => selectNationalityOption(event),
           nationalityOptions,
           disabled: shouldDisable
         })}
-          </div>
+      </div>
       <div className="form-group">
         <div
           className={classes.datePicker}
@@ -491,13 +499,13 @@ const BookingForm = props => {
         {FormUtils.renderInput(
           getInputArgObj("children", "Children", "number", shouldDisable)
         )}
-        
+
       </div>
-      <div className="form-group" style={{position:"relative"}}>
+      <div className="form-group" style={{ position: "relative" }}>
         {FormUtils.renderSelect({
           id: "planType",
           label: "Plan Type",
-          name:"planType",
+          name: "planType",
           value: data.planType,
           onChange: event => selectfun1(event),
           options: getPlanOptions(),
@@ -512,24 +520,24 @@ const BookingForm = props => {
               color="primary"
               disabled={shouldDisable}
             />
-          
+
           }
           label="Flat Rate"
-          style={{minWidth:"max-content", marginLeft:"0.3rem"}}
+          style={{ minWidth: "max-content", marginLeft: "0.3rem" }}
         />
         {FormUtils.renderInput(
           getInputArgObj("roomCharges", "Total Room Charge", "number", shouldDisable || !data.flatRoomRate)
         )}
-        <IconButton color="primary" aria-label="Price breakup" style={{position:"absolute",left:"65%", top:"20px"}} onClick={()=>setOpenPriceModal(true)}>
+        <IconButton color="primary" aria-label="Price breakup" style={{ position: "absolute", left: "65%", top: "20px" }} onClick={() => setOpenPriceModal(true)}>
           <InfoOutlinedIcon />
         </IconButton>
-        
+
         {FormUtils.renderInput(
           getInputArgObj("advance", "Advance", "number", shouldDisable)
         )}
       </div>
       <div className="form-group">
-      {FormUtils.renderBookedBy({
+        {FormUtils.renderBookedBy({
           id: "bookedBy",
           name: "bookedBy",
           label: "Booked By",
@@ -561,10 +569,10 @@ const BookingForm = props => {
             label: "Membership Number",
             type: "string",
             value: data.memberNumber,
-            onChange: (e)=>selectfun1(e),
+            onChange: (e) => selectfun1(e),
             error: errors["memberNumber"],
             disabled: shouldDisable,
-            }
+          }
           )
         }
       </div>
@@ -590,7 +598,7 @@ const BookingForm = props => {
           error: errors["proofs"]
         })}
         {FormUtils.renderInput(
-        getInputArgObj("Idproof", "ID Proof Number", "text", shouldDisable)
+          getInputArgObj("Idproof", "ID Proof Number", "text", shouldDisable)
         )}
       </div>
       <div className="form-group">
@@ -604,13 +612,13 @@ const BookingForm = props => {
             id="proofImage"
             type="file"
             onChange={onFileSelect}
-            disabled= {shouldDisable && !enableFileUpload}
-            style={{display:"none"}}
+            disabled={shouldDisable && !enableFileUpload}
+            style={{ display: "none" }}
           />
           <label htmlFor="proofImage">
-            <Button variant="contained" color="primary" component="span" startIcon={<CloudUploadIcon />} disabled= {shouldDisable && !enableFileUpload}>
+            <Button variant="contained" color="primary" component="span" startIcon={<CloudUploadIcon />} disabled={shouldDisable && !enableFileUpload}>
               Id Proof
-            </Button> 
+            </Button>
           </label>
           {/* <label htmlFor="proofImage">
           <Button
@@ -662,9 +670,9 @@ const BookingForm = props => {
                     id: "roomType",
                     label: "Room Type",
                     value: room.roomType,
-                    renderValue:(value)=>(<label>{value}</label>),
+                    renderValue: (value) => (<label>{value}</label>),
                     onChange: event => selectfun(event, index),
-                    options:getRoomTypeOptions(options),
+                    options: getRoomTypeOptions(options),
                     error,
                     disabled: shouldDisable
                   })}
@@ -720,67 +728,67 @@ const BookingForm = props => {
         {FormUtils.renderButton({
           type: "submit",
           size: "large",
-          label: data._id?"Save":"Book",
+          label: data._id ? "Save" : "Book",
           color: "primary",
           className: null,
           disabled: Object.keys(errors).length || shouldDisable ? true : false
         })}
 
-        {data.status && !isDirtyroomSelected && !data.status.checkedIn && !isEdit && moment().startOf('date').toDate() >= moment(data.checkIn).startOf('date').toDate()  && FormUtils.renderButton({
+        {data.status && !isDirtyroomSelected && !data.status.checkedIn && !isEdit && moment().startOf('date').toDate() >= moment(data.checkIn).startOf('date').toDate() && FormUtils.renderButton({
           type: "button",
           size: "large",
           label: "CheckIn",
           color: "primary",
           className: null,
           disabled: Object.keys(errors).length ? true : false,
-          style: {marginLeft:"1rem"},
+          style: { marginLeft: "1rem" },
           onClick: onCheckIn
         })}
         {/* && moment(data.checkOut).toDate() >= moment(data.checkIn).startOf('date').toDate() */}
       </div>
-      <Dialog onClose={()=>setOpenPriceModal(false)} aria-labelledby="simple-dialog-title" open={openPriceModal} maxWidth="md" fullWidth={true}>
+      <Dialog onClose={() => setOpenPriceModal(false)} aria-labelledby="simple-dialog-title" open={openPriceModal} maxWidth="md" fullWidth={true}>
         {/* <div style={{textAlign:"right", padding:"0.5rem"}}>
           <CloseIcon onClick={()=>setOpenPriceModal(false)} style={{cursor:"pointer"}}/>
         </div> */}
-        <DialogTitle id="simple-dialog-title" style={{textAlign:"center"}}>
+        <DialogTitle id="simple-dialog-title" style={{ textAlign: "center" }}>
           Date Wise Price Breakup
-          <CloseIcon onClick={()=>setOpenPriceModal(false)} style={{cursor:"pointer", float:"right"}}/>
+          <CloseIcon onClick={() => setOpenPriceModal(false)} style={{ cursor: "pointer", float: "right" }} />
         </DialogTitle>
-          <DialogContent style={{maxHeight:"500px",overflowY:"auto"}}>
-            <span style={{float:"right"}}>Nights Stay - {" "+data.nights}</span>
-            {Object.keys(formattedRates).map(element => {
-              return (
-                <React.Fragment>
-                  <p>{element}-{data.planType}</p>
-                  <div style={{overflowX:"auto"}}>
+        <DialogContent style={{ maxHeight: "500px", overflowY: "auto" }}>
+          <span style={{ float: "right" }}>Nights Stay - {" " + data.nights}</span>
+          {Object.keys(formattedRates).map(element => {
+            return (
+              <React.Fragment>
+                <p>{element}-{data.planType}</p>
+                <div style={{ overflowX: "auto" }}>
                   <table className={classes.pricebreaktable}>
                     <tr className={classes.pricebreaktableTr}>
-                    {formattedRates[element].map(rate => {                      
-                      return(
-                        <th className={classes.pricebreaktableTh}>{moment(rate.date).format('D.MMM.YYYY')}</th>
-                      )
-                    })}
+                      {formattedRates[element].map(rate => {
+                        return (
+                          <th className={classes.pricebreaktableTh}>{moment(rate.date).format('D.MMM.YYYY')}</th>
+                        )
+                      })}
                     </tr>
                     <tr>
                       {formattedRates[element].map(rate => {
-                        return(
+                        return (
                           <td className={classes.pricebreaktableTd}>Rate: {rate.rate}</td>
                         )
                       })}
                     </tr>
                     <tr>
                       {formattedRates[element].map(rate => {
-                        return(
+                        return (
                           <td className={classes.pricebreaktableTd}>Extra Rate: {rate.extraRate}</td>
                         )
                       })}
                     </tr>
                   </table>
-                  </div>
-                </React.Fragment>
-              )
-            })}
-            {/* <div>
+                </div>
+              </React.Fragment>
+            )
+          })}
+          {/* <div>
               {
                dayWiseRates.map(rate => {
                 if(rate.planType === data.planType){
@@ -796,9 +804,10 @@ const BookingForm = props => {
                }) 
               }
             </div> */}
-          </DialogContent>
+        </DialogContent>
       </Dialog>
     </form>
+    </React.Fragment>
   );
 };
 

@@ -76,6 +76,7 @@ const BookingFormLayout = ({
     }
   });
   const [errors, setErrors] = useState({});
+  const [additionalGuests, setAdditionalGuests] = useState([]);
   const [openDatePickerCheckIn, setOpenDatePickerCheckIn] = useState(false);
   const [openDatePickerCheckOut, setOpenDatePickerCheckOut] = useState(false);
   const [roomTypes, setRoomTypes] = useState([]);
@@ -169,6 +170,7 @@ const BookingFormLayout = ({
   const setViewBookingData = async () => {
     const booking = { ...selectedBooking };
     fetchProofId()
+    setAdditionalGuests(booking.guests[0]?booking.guests[0].guests:[])
     setData(booking);
     setShouldDisable(!isEdit);
     // setShouldDisable(isEdit);
@@ -253,7 +255,7 @@ const BookingFormLayout = ({
       setLoading(false);
       return
     }
-    const { status } = await bookingService.addBooking(bookingData);
+    const { status } = await bookingService.addBooking({...bookingData, additionalGuests});
     setLoading(false);
     if (status === 200) openSnackBar("Booking Successfull", success, "/");
     else openSnackBar("Error Occurred", error);
@@ -268,7 +270,8 @@ const BookingFormLayout = ({
       setLoading(false);
       return
     }
-    const { status } = await bookingService.updateBooking(bookingData);
+    delete bookingData.guests
+    const { status } = await bookingService.updateBooking({...bookingData, additionalGuests});
     setLoading(false);
     if (status === 200) openSnackBar(message, success, "/");
     else openSnackBar("Error Occurred", error);
@@ -601,6 +604,8 @@ const BookingFormLayout = ({
               updatedata={(val)=>setData({...data,...val})}
               onCheckIn={handleCheckIn}
               isDirtyroomSelected={isDirtyroomSelected}
+              onHandleAdditionalGuest={(guests)=>setAdditionalGuests(guests)}
+              additionalGuests={additionalGuests}
             />
           }
           maxWidth={700}

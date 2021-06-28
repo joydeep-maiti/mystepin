@@ -268,6 +268,8 @@ const BillingFormLayout = props => {
       paymentData,
 
     }
+    selectedBooking.additionalGuests = selectedBooking.guests[0]?selectedBooking.guests[0].guests:[]
+    delete selectedBooking.guests
     updateBookingPayment(selectedBooking,billingData);
   };
 

@@ -88,14 +88,18 @@ const BillingForm = props => {
       setRooms(bookedRooms.toString())
   },[booking])
 
-  React.useEffect(async()=>{
+  React.useEffect(()=>{
+    fetchTax()
+  },[])
+
+   const fetchTax = async()=>{
     const data = await taxService.getTaxSlabs("CITY")
     if(data){
 
     console.log("Tax-data",data[0].taxPercent)
     setTaxSlabs(data[0].taxPercent)
     }
-  },[])
+  }
   // const billingStatus=due?[
   //   {label:"Due" ,value:"Due"},
   //   {label:"Bill to Company" ,value:"Bill to Company"},

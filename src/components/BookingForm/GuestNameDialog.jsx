@@ -73,9 +73,13 @@ const GuestNameDialog = (props) => {
     // setGuest({})
   }
 
-  const handleDelete = (el) => {
-    console.log("el",el)
-    props.handlePosDelete(el);
+  const handleDelete = (index) => {
+    console.log("el",index)
+    let _guests = [...guests]
+    console.log("additionalGuests delete", _guests)
+    _guests.splice(index,1)
+    console.log("additionalGuests delete", _guests)
+    setGuests(_guests)
   }
 
   const handleDone = (el) => {
